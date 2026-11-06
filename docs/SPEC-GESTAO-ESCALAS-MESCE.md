@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft v0.6** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
+Status: **draft v0.7** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -56,8 +56,8 @@ Campos técnicos recomendados: ativo/inativo; data de criação/atualização. V
 - Regra de não designar um mesmo ministro simultaneamente para missa e visita.
 
 ### 2.6 Escalas e alocações (`schedules`, `assignments`)
-- Mês/ano, modalidade `CELEBRATION` ou `ASSISTED_VISIT`; estados da escala: `DRAFT`, `AWAITING_CONFIRMATIONS`, `IN_REVIEW`, `APPROVED`, `PUBLISHED` ou `CANCELLED`.
-- Alocações identificam ministro, compromisso, data/hora e origem (automática/manual), com autor e justificativa de alterações. Cada alocação possui confirmação **individual** do ministro: `PENDING`, `CONFIRMED` ou `DECLINED`, com registro do usuário e horário de resposta.
+- Mês/ano, modalidade `CELEBRATION` ou `ASSISTED_VISIT`; estados operacionais: `DRAFT`, `IN_REVIEW`, `APPROVED`, `PUBLISHED` ou `CANCELLED`. **Não há etapa obrigatória de aceite individual da designação.**
+- Alocações identificam ministro, compromisso, data/hora e origem (automática/manual), com autor e justificativa de alterações. Os ministros registram **impedimentos/ausências antes da geração**, não respostas individuais de aceite/recusa a cada alocação.
 - Manter histórico de alterações e de escalas publicadas; editar uma publicação exige registrar revisão.
 - A interface deverá mostrar visualização mensal, filtros e exportação/impressão (formato a confirmar).
 
@@ -95,18 +95,17 @@ Campos técnicos recomendados: ativo/inativo; data de criação/atualização. V
 - Se endereço incompleto ou geocodificação falhar, permitir atribuição manual e registrar distância como indisponível, nunca inventar valor.
 - Não transmitir dados pessoais de assistidos a terceiros sem base legal, controles e ciência dos responsáveis.
 
-### 3.5 Fluxo de geração
-1. Selecionar mês e modalidade.
-2. Materializar eventos fixos e extraordinários do período e os domingos com visitas previstas.
-3. Recuperar ministros ativos, indisponibilidades, preferências e histórico definido.
-4. Aplicar filtros obrigatórios e detectar conflitos.
-5. Calcular distribuição tentando cumprir cobertura, equidade, casais e proximidade.
-6. Salvar como rascunho com relatório de conflitos, exceções e métricas.
-7. O coordenador envia a proposta aos ministros designados; **cada ministro** confirma ou recusa sua própria alocação (não a escala inteira). Confirmação é distinta da indisponibilidade cadastrada previamente.
-8. O coordenador acompanha respostas, substitui recusas, reabre confirmações somente das alocações alteradas e revisa conflitos.
-9. Aprovar somente após todas as designações finais estarem confirmadas e as validações obrigatórias aprovadas; então publicar e disponibilizar PDF oficial e visualização conforme permissões.
+### 3.5 Fluxo vigente de elaboração e aprovação (substitui confirmação individual)
+1. **Coordenador solicita impedimentos e ausências para o próximo mês.**
+2. **Ministros informam impedimentos e ausências até o dia 25 do mês anterior.** A informação alimenta o cadastro de indisponibilidades. A ausência de envio de resposta não é aceite de designação nem garante disponibilidade; política de omissão ainda requer definição.
+3. **Coordenador consolida e complementa** as informações recebidas, corrigindo cadastros e atualizando a agenda com missas habituais e celebrações extras (casamentos, sétimo dia, datas comemorativas etc.).
+4. **Coordenador gera escalas preliminares** de celebrações e visitas, com validação de regras obrigatórias e equilíbrio.
+5. **Coordenador faz ajustes manuais pontuais**, com registro de autoria/justificativa, e executa novamente as validações afetadas.
+6. **Coordenador aprova** a versão final após verificar impedimentos, conflitos, limites, casais, preferências locais e vagas.
+7. **Sistema gera planilhas finais em PDF somente da versão aprovada** e o coordenador **envia/disponibiliza aos ministros**; o canal de entrega é configurável e ainda não está decidido.
+8. Eventos avulsos inseridos após o fechamento passam por **revisão pontual e nova versão aprovada**, com comunicação das alterações aos afetados. Não alterar retroativamente a versão oficial sem auditoria.
 
-A geração precisa ser determinística para os mesmos dados e parâmetros, ou registrar a semente/versão do algoritmo quando utilizar aleatoriedade; impedir duplicações por repetição de solicitações.
+A geração precisa ser determinística para os mesmos dados e parâmetros, ou registrar semente/versão do algoritmo quando utilizar aleatoriedade; impedir duplicações por repetição de solicitações. **Não existe bloqueio de aprovação por falta de confirmação individual da escala.**
 
 ## 4. Páginas da aplicação (MVP)
 1. Painel mensal: resumo de eventos, visitas previstas, vagas preenchidas e pendências.
@@ -114,8 +113,8 @@ A geração precisa ser determinística para os mesmos dados e parâmetros, ou r
 3. Celebrações/Missas: calendário, recorrências e eventos extraordinários.
 4. Assistidos: cadastro protegido e dados de contato.
 5. Visitas dominicais: calendário com os domingos e assistidos previstos.
-6. Escalas: coordenador cria proposta, envia a cada ministro, acompanha respostas, resolve recusas, valida, aprova e publica.
-7. **Minhas designações**: ministro visualiza local/data/horário e confirma ou recusa individualmente cada compromisso, com histórico de suas respostas.
+6. Escalas: coordenador solicita e consolida impedimentos, gera proposta, ajusta, valida, aprova, emite PDF e distribui aos ministros.
+7. **Minhas escalas e impedimentos**: ministro informa ausências para o mês seguinte até o dia 25 do mês anterior e consulta as escalas finais publicadas; **não confirma nem recusa cada designação antes da aprovação**.
 
 Interface PT-BR, responsiva, acessível e com estados de erro/vazio.
 
@@ -157,7 +156,7 @@ Interface PT-BR, responsiva, acessível e com estados de erro/vazio.
 6. A referência define equilíbrio histórico anual com análise dos últimos 12 meses e compensação de quem serviu menos. Confirmar pontuação e peso relativo de celebrações versus visitas.
 7. Quais perfis usarão o sistema e quais dados podem aparecer em escalas compartilhadas?
 8. Como calcular proximidade (bairro/CEP, coordenada, distância real) e quais permissões de dados?
-9. A confirmação **individual por compromisso** é obrigatória no fluxo. Definir prazo de resposta, lembretes, canal de notificações (web/e-mail/WhatsApp), permissões para editar resposta e escalonamento de falta de resposta.
+9. Definir canal de solicitação de impedimentos, lembrete antes do dia 25, política para ministro que não informou impedimentos e canal de envio de PDF final (web, e-mail, WhatsApp, outros).
 10. Qual banco de dados e qual hospedagem de backend são aceitáveis para o compilador KofLang disponível?
 
 As questões acima **não bloqueiam a documentação**; bloqueiam decisões de implementação que dependam das respostas.
@@ -168,7 +167,7 @@ As questões acima **não bloqueiam a documentação**; bloqueiam decisões de i
 **Fonte:** documento fornecido `Projeto MESCE.docx`, intitulado *Relatório do Projeto MESCE — Sistema de Gestão dos Ministros Extraordinários da Sagrada Comunhão Eucarística, Versão 3.0 (Especificação Funcional)*. Os itens abaixo representam exigências dessa referência; não representam recursos já implementados. A referência previa inicialmente Excel Online/Copilot, enquanto este repositório mantém o objetivo de aplicativo web em KofLang.
 
 ### 9.1 Fluxo operacional e período de atualização
-- Janela mensal sugerida no documento: **dias 25 a 29**, para atualização dos dados, antes da geração da escala preliminar.
+- **Registro histórico da referência de outubro/2026:** janela sugerida entre **dias 25 e 29**. **Regra substituída:** agora os ministros enviam impedimentos e ausências **até o dia 25 do mês anterior**; a coordenação consolida e elabora as escalas em seguida.
 - Fluxo: atualização dos dados → geração preliminar → validação → ajustes manuais → aprovação → geração de PDF final → publicação.
 - Tela inicial com ações de gerar escala preliminar, validar escala, aprovar escala, gerar PDF final, relatórios e dashboard.
 - Configurações de referência: ano, mês, data inicial/final de atualização, limite mensal padrão e número de meses do histórico.
@@ -209,7 +208,7 @@ Além dos campos já descritos:
 
 ### 9.6 Estados, aprovação, PDF e auditoria
 - Estados documentados: **Pendente → Em Revisão → Aprovada**; `Publicada` pode ser estado separado de distribuição, a decidir.
-- O sistema só poderá **aprovar** quando todas as validações forem executadas, **todos os ministros da versão final tiverem confirmado suas próprias alocações** e **não houver conflitos, violações de indisponibilidade nem limites excedidos**. Confirmações pendentes ou recusas exigem revisão; respostas de versões anteriores não podem aprovar automaticamente substituições.
+- **Regra vigente:** somente o **coordenador** aprova após validações completas e ausência de conflitos bloqueantes, indisponibilidades violadas e limites excedidos. **Não depende de aceite individual prévio dos ministros**. A versão aprovada é a fonte do PDF oficial.
 - **PDF final só pode ser gerado de escala aprovada**. Uma prévia para revisão, se existir, deve ser claramente identificada e não confundida com o PDF oficial.
 - Ajustes manuais devem registrar **data, alteração e responsável** (por exemplo, troca de um ministro por outro), com revalidação obrigatória antes de aprovação.
 - Auditoria deve registrar **criação, alteração, exclusão, aprovação e emissão de PDF**, com **data/hora, usuário, ação e descrição**.
@@ -250,57 +249,66 @@ Além dos campos já descritos:
 - Como aplicar `SEPARADOS` e como conciliar preferências conflitantes.
 - Se os locais de celebração listados são exclusivos dessa paróquia ou exemplos editáveis.
 - Escopo e prioridade de campos personalizados, dashboards avançados e exportação de dados.
-- Política de confirmação, substituição e divulgação segura de informações dos assistidos.
+- Política de mudanças após envio do PDF, substituições extraordinárias e divulgação segura de informações dos assistidos.
 
-## 10. Complemento operacional — agendas variáveis e confirmação individual (definição de 2026-11-06)
+## 10. Fluxo operacional vigente — solicitação de impedimentos → escala final (revisão de 2026-11-06)
 
-**Esta seção explicita decisão operacional posterior à referência MESCE v3.0.** Se divergir do fluxo da seção 9, prevalece esta definição de confirmação individual antes da aprovação.
+**Decisão vigente do projeto, com prioridade sobre descrições anteriores deste documento e sobre o fluxo preliminar da referência MESCE v3.0.**
 
 ### 10.1 Agenda dinâmica
-- O coordenador pode criar, alterar e cancelar compromissos avulsos **a qualquer momento**: **casamento, missa de sétimo dia, celebrações comemorativas, adoração, missa especial** e outras categorias cadastráveis.
-- Celebrações podem ou não ser recorrentes. Uma data extraordinária não requer edição de calendário fixo ou nova geração de todo o mês.
-- Campos por ocorrência: tipo, data, hora, duração prevista, local, vagas necessárias, observações, status e responsável pela alteração.
-- Alterar data, horário ou local **depois da confirmação** invalida somente as confirmações das designações impactadas e exige nova aceitação; registrar versão e trilha de auditoria.
-- Cancelar evento notifica os ministros afetados e preserva registro histórico. Não contar participação cancelada como efetivamente realizada.
+- Celebrações podem ser habituais ou incluídas a qualquer momento pelo coordenador: casamento, missa de sétimo dia, datas comemorativas, eventos especiais e outras ocorrências.
+- Alterações de calendário antes da geração ou durante a revisão entram na proposta de escala; alterações posteriores à publicação exigem revisão versionada e nova comunicação.
+- Cancelamentos, remarcações e substituições preservam histórico de auditoria e não são contados como serviço realizado quando não ocorrerem.
 
-### 10.2 Atores e responsabilidades
-1. **Coordenador:** mantém agenda, define quantitativo de vagas, compõe a escala preliminar manualmente ou com sugestão do algoritmo, encaminha propostas, acompanha respostas, substitui recusas/ausentes, executa validações e aprova/publica.
-2. **Ministro:** consulta **apenas suas designações** (e os detalhes necessários), responde individualmente `CONFIRMED` ou `DECLINED`. Pode manter suas indisponibilidades, respeitando o fluxo da coordenação.
-3. Confirmação do ministro **não publica a escala** e não substitui aprovação do coordenador.
+### 10.2 Ciclo mensal obrigatório
+1. **Solicitação:** coordenador solicita impedimentos/ausências para o **mês seguinte**.
+2. **Prazo:** ministros informam impedimentos e ausências **até o dia 25 do mês anterior ao mês escalado**.
+3. **Consolidação:** coordenador alimenta/corrige informações recebidas, atualiza cadastro de impedimentos e ajusta calendário, incluindo eventos extraordinários.
+4. **Proposta:** coordenador executa geração das escalas preliminares para celebrações e assistidos, respeitando indisponibilidades, limites, casais, locais e equilíbrio histórico.
+5. **Revisão manual:** coordenador faz ajustes pontuais, com justificativas, e revalida conflitos.
+6. **Aprovação:** coordenador aprova a escala; não há coleta de aceite/recusa individual dos ministros sobre cada designação.
+7. **PDF final:** sistema gera as planilhas definitivas **somente após aprovação**, com identificação de mês, modalidade, versão e data de emissão.
+8. **Envio:** coordenador encaminha as planilhas finais aos ministros; disponibilizar também a versão publicada na área autenticada do aplicativo. O canal externo de envio está pendente de escolha.
 
-### 10.3 Máquina de estados sugerida
-- **Escala:** `DRAFT` → `AWAITING_CONFIRMATIONS` → `IN_REVIEW` → `APPROVED` → `PUBLISHED`. Estados anteriores podem ser retomados por revisão; `CANCELLED` é terminal para uma versão cancelada.
-- **Designação individual:** `PENDING` → `CONFIRMED` ou `DECLINED`. Uma substituição cria uma nova designação pendente; não herda a confirmação do ministro substituído.
-- O coordenador pode reenviar a proposta para o grupo afetado e finalizar somente quando não houver alocações pendentes ou recusadas na versão a publicar.
-- **Sem resposta** permanece `PENDING`; não implica aceite. Prazo e tratamento da ausência de resposta serão configuráveis após definição com a pastoral.
-- Se um dos cônjuges designados como unidade recusar ou não confirmar, a unidade permanece pendente para revisão; não confirmar automaticamente o outro.
+### 10.3 Estados e responsabilidade
+- **Escala:** `DRAFT` (geração inicial) → `IN_REVIEW` (ajustes e validação) → `APPROVED` (coordenador aprovou) → `PUBLISHED` (disponibilizada/enviada); `CANCELLED` para versão cancelada.
+- **Impedimento:** identificador do ministro, intervalo de data, motivo opcional, quem registrou e quando; pode ser enviado pelo ministro e atualizado pelo coordenador com rastreabilidade.
+- **Alocação:** ministro designado, evento, origem, dados da versão e eventual alteração; **não** terá estados obrigatórios `PENDING`/`CONFIRMED`/`DECLINED` de convocação.
+- **Aprovação:** somente perfil coordenador, com validação de restrições e auditoria. Nenhum simples recebimento ou leitura de aviso aprova a escala.
 
-### 10.4 Efeito no equilíbrio e disponibilidade
-- **Indisponibilidade informada antecipadamente** impede a sugestão; **recusa da proposta** informa uma impossibilidade posterior sem contar como serviço realizado.
-- Para histórico de participação, separar **alocações propostas**, **confirmadas**, **canceladas** e **efetivamente realizadas**. Definir a conciliação após o evento.
-- Reequilibrar somente as vagas alteradas sempre que possível, protegendo designações já confirmadas e válidas.
-- Não violar indisponibilidade, limite mensal, restrição de local nem alocar ministro em duas atividades sobrepostas para preencher vaga emergencial.
+### 10.4 Notificações e exceções
+- Lembretes para o ministro **informar impedimentos antes do dia 25** e aviso de prazo encerrado, se aplicável.
+- Aviso ao coordenador de impedimentos recebidos, respostas ausentes e mudanças relevantes.
+- Aviso de publicação, emissão/disponibilização do PDF e alteração/cancelamento após envio.
+- Se surgir um impedimento extraordinário após o dia 25, o ministro poderá comunicar à coordenação pelo canal definido; ajuste posterior não modifica a escala aprovada silenciosamente. O sistema registra alteração e permite uma nova versão.
+- O prazo de 25 é fixo como **limite de envio**; ainda é necessário definir o **dia em que a solicitação será enviada** e o tratamento de não resposta.
+- Para assistidos, mantêm-se o calendário dominical e a necessidade de proteger endereços/contatos.
 
 ### 10.5 Critérios de aceitação
-1. Coordenador cria um casamento ou missa de sétimo dia em data avulsa, sem alterar padrão semanal.
-2. Cada ministro confirma/recusa **cada uma** de suas designações e não pode responder por outro.
-3. A escala fica bloqueada para aprovação enquanto houver confirmação pendente ou recusa não resolvida.
-4. Substituição invalida a confirmação da posição substituída e exige resposta do novo ministro.
-5. Mudança material de data/hora/local solicita reconfirmação dos afetados, sem redefinir respostas de designações não alteradas.
-6. Atualizações posteriores preservam histórico de versões, respostas e autoria.
-7. PDF final só pode ser emitido de versão aprovada.
+1. O sistema identifica o mês alvo e informa prazo de impedimentos no **dia 25 do mês anterior**.
+2. O ministro envia ausência/impedimento para o próximo mês e o coordenador pode consolidá-lo com trilha de auditoria.
+3. Eventos extraordinários podem ser adicionados antes da proposta ou após ela, com revalidação da escala.
+4. A geração não escala ministros indisponíveis e respeita as demais restrições obrigatórias.
+5. O coordenador pode alterar manualmente a proposta e deve ver conflitos antes da aprovação.
+6. A aprovação é exclusiva do coordenador e **não exige confirmação individual das designações**.
+7. O PDF final é gerado somente para uma versão aprovada; a versão distribuída corresponde à aprovada.
+8. Todos os ministros abrangidos podem consultar a escala publicada, com dados pessoais de assistidos restritos aos autorizados.
+9. Alterações após publicação geram revisão auditada, novo PDF e comunicação aos afetados.
+10. Falha de entrega push não impede o fluxo; o PDF permanece acessível no aplicativo.
 
-### 10.6 Questões em aberto
-- Prazo para cada ministro responder, notificações e meios de contato.
-- Possibilidade de o ministro retirar uma confirmação e até quando; procedimento emergencial após publicação.
-- Se o coordenador poderá finalizar vaga **sem cobertura** em casos excepcionais, mediante justificativa e aprovação explícita, sem jamais marcar ministro como confirmado indevidamente.
+### 10.6 Decisões pendentes
+- Data inicial da solicitação e lembretes (o prazo final é dia 25).
+- Regra para ausência de resposta do ministro até o dia 25: presumir ausência de impedimentos ou exigir revisão manual? **Não assumir nenhuma das duas automaticamente.**
+- Canal do envio final: link autenticado, download do PDF, e-mail, WhatsApp ou combinação; nada externo deve ser enviado sem decisão.
+- Política para impedimento emergencial ou indisponibilidade informada após aprovação.
+- Quais dados pessoais podem aparecer nos PDFs de assistidos e quem pode acessá-los.
 
 ## 11. Plataforma web e evolução para Android/iOS (decisão de 2026-11-06)
 
 ### 11.1 Objetivo e fases
 A **interface web é parte obrigatória da primeira entrega funcional**. A arquitetura deverá preservar a possibilidade de criar aplicativos Android e iOS em etapas posteriores, sem reimplementar regras de distribuição nem criar bases de dados independentes.
 
-- **Fase 1 — Web responsiva (prioridade):** oferecer o fluxo funcional completo, com autenticação e autorização, agenda dinâmica, ministros, assistidos, disponibilidades, propostas de escala, confirmação/recusa individual, revisão, aprovação, publicação e PDF oficial.
+- **Fase 1 — Web responsiva (prioridade):** oferecer autenticação/autorização, agenda dinâmica, cadastros, envio de impedimentos até o dia 25, proposta, revisão pelo coordenador, aprovação, publicação e PDF oficial.
 - **Fase 2 — PWA (opção a validar):** manifesto, instalação na tela inicial, ícones, navegação móvel e cache seguro dos recursos estáticos; capacidades offline e notificações push exigem análise específica de compatibilidade e privacidade. PWA não equivale automaticamente a aplicativo nativo distribuído nas lojas.
 - **Fase 3 — Android e iOS (planejamento):** avaliar aplicativos nativos ou multiplataforma que consumam a mesma API autenticada, conforme necessidades concretas de notificações, dispositivos, distribuição e manutenção. Não escolher framework móvel antes de validar requisitos e integração com KofLang.
 
@@ -311,23 +319,23 @@ Não há prazo nem compromisso de publicação nas lojas nesta etapa.
 - Autenticação e painel com escala do período, pendências, confirmações, recusas e eventos extraordinários.
 - Criação/edição de compromissos recorrentes e avulsos, inclusive casamento, missa de sétimo dia e datas comemorativas.
 - Cadastro protegido de ministros, assistidos, locais e regras; ajuste de vagas e consulta de histórico.
-- Geração ou edição de proposta; encaminhamento para respostas individuais; acompanhamento de pendências.
-- Substituições com reconfirmação dos envolvidos; revisão de conflitos, aprovação, PDF e publicação.
+- Solicitação de impedimentos para o próximo mês, consolidação das respostas e geração/edição de propostas de escala.
+- Ajustes e substituições pontuais com revalidação; aprovação pelo coordenador, PDF final e distribuição.
 
 **Ministro — web e futura experiência móvel:**
 - Autenticação, tela **Minhas escalas**, com data, hora, local e tipo de celebração.
-- **Confirmar** ou **recusar** cada designação separadamente, com feedback e histórico da resposta.
+- **Informar impedimentos e ausências do mês seguinte até o dia 25 do mês anterior**, com feedback de recebimento; consultar a escala final quando publicada.
 - Informar indisponibilidades e manter seus dados, dentro dos limites de permissão definidos.
 - Consultar apenas informações de assistidos estritamente necessárias às visitas atribuídas e autorizadas.
-- Ser informado de alterações que exijam nova confirmação; definição de canal/prazo está pendente.
+- Receber avisos de prazo de impedimentos, publicação e alterações de escala; o prazo de envio de impedimentos é o dia 25.
 
 ### 11.3 Contratos e compartilhamento entre plataformas
 - Uma única fonte de verdade para ministros, celebrações, assistidos, alocações, respostas, permissões e histórico.
-- Colocar cálculo de elegibilidade, equilíbrio, unidade de casais, limites, confirmação individual, aprovação e auditoria no **serviço de domínio/backend**, nunca exclusivamente na interface web ou móvel.
+- Colocar cálculo de elegibilidade, equilíbrio, unidade de casais, limites, registro de impedimentos, aprovação e auditoria no **serviço de domínio/backend**, nunca exclusivamente na interface web ou móvel.
 - Expor APIs versionadas e autorizadas (contrato a definir), reutilizáveis por web, Android e iOS.
 - Validar autenticação/autorização em cada chamada e impedir acesso cruzado por troca de identificadores.
 - Tratar horário com fuso da celebração, guardar instantes adequadamente e apresentar datas no padrão local.
-- Eventos de confirmação devem ser idempotentes para evitar duplicações em conexões instáveis.
+- Registro de impedimentos e aprovação devem ser idempotentes para evitar duplicações em conexões instáveis.
 - Compartilhar design tokens, regras de acessibilidade e terminologia; não exigir compartilhamento do mesmo código de interface entre tecnologias diferentes.
 
 ### 11.4 KofLang e publicação
@@ -341,14 +349,14 @@ Não há prazo nem compromisso de publicação nas lojas nesta etapa.
 - Layout responsivo para celulares, tablets e desktops; navegação por toque e teclado; foco, contraste, mensagens de erro, estados vazios/carregamento.
 - Não armazenar listas completas de endereços, telefones, informações de assistidos ou tokens de longa duração em caches públicos ou armazenamento offline inseguro.
 - Exigir sessão autenticada nas telas com dados pessoais; tratamento seguro de logout, expiração e perda de dispositivo.
-- Proteger APIs contra acesso não autorizado e operações duplicadas, inclusive no fluxo de confirmação.
+- Proteger APIs contra acesso não autorizado e operações duplicadas, inclusive no registro de impedimentos e aprovação.
 - Projetar notificações com conteúdo mínimo e sem dados sensíveis em prévias na tela bloqueada.
-- Medir usabilidade de confirmação/recusa em viewport móvel, com alvos de toque adequados.
+- Medir usabilidade do envio de impedimentos e consulta às escalas em viewport móvel, com alvos de toque adequados.
 
 ### 11.6 Critérios de aceitação e marcos
-1. A versão web permite ao coordenador realizar o ciclo completo: criar evento avulso → propor escala → coletar respostas → revisar → aprovar → emitir PDF.
-2. Cada ministro consegue entrar pelo navegador móvel e confirmar/recusar **somente as próprias designações**, com persistência da resposta e autoria.
-3. A mesma informação aparece atualizada em sessões diferentes; não existe estado privado apenas no frontend que represente uma confirmação final.
+1. A versão web permite o ciclo completo: solicitar impedimentos do próximo mês → recebê-los até dia 25 → consolidar e ajustar agenda → gerar escala preliminar → fazer ajustes pontuais → aprovar → emitir PDF final → enviar/disponibilizar.
+2. Cada ministro consegue entrar pelo navegador móvel e registrar **seus próprios impedimentos**, com persistência e autoria, além de consultar a escala final publicada.
+3. A mesma informação aparece atualizada em sessões diferentes; impedimentos e aprovação não podem depender apenas do frontend.
 4. O layout funciona em celular e desktop; ações principais são acessíveis por toque e teclado.
 5. A interface web é publicada em ambiente controlado com autenticação e controles LGPD antes de receber dados reais.
 6. A prova de compilação KofLang/KofJS e a execução de backend estão documentadas com comandos reais e resultados.
@@ -363,72 +371,54 @@ Não há prazo nem compromisso de publicação nas lojas nesta etapa.
 
 **Em aberto:** prazo de entrega dos apps, notificação preferida, disponibilidade offline, necessidade de login biométrico, plataforma de distribuição e eventual acesso exclusivo a membros da pastoral.
 
-## 12. Notificações push de eventos da escala (decisão de 2026-11-06)
+## 12. Notificações push de eventos de escala — fluxo vigente (revisão de 2026-11-06)
 
-**Requisito:** avisar coordenadores e ministros sobre eventos que exigem ciência ou ação no fluxo da escala, inicialmente pela interface web/PWA quando tecnicamente suportado e posteriormente por aplicativos Android/iOS. A confirmação de recebimento da notificação **não equivale** à confirmação do compromisso.
+**Requisito:** notificações apoiam o pedido de impedimentos, a coordenação e a distribuição de escalas. **Não há solicitação de aceite/recusa individual de cada designação**. Push é complementar à caixa de notificações autenticada; falha de entrega não bloqueia o planejamento.
 
 ### 12.1 Eventos e destinatários
 
-| Evento de domínio | Destinatário | Conteúdo mínimo / ação |
+| Evento | Destinatário | Ação |
 | --- | --- | --- |
-| Nova designação proposta / pedido de confirmação | Ministro designado | "Você tem uma nova designação para confirmar"; abrir a designação autenticada |
-| Lembrete de confirmação pendente | Ministro que ainda não respondeu | "Há uma designação aguardando resposta"; abrir as pendências |
-| Confirmação recebida | Coordenador responsável | "Um ministro confirmou uma designação"; abrir acompanhamento |
-| Recusa da designação | Coordenador responsável | "Uma designação foi recusada"; abrir revisão e substituição |
-| Substituição / nova convocação | Ministro substituto e envolvidos afetados | Solicitar nova confirmação individual; informar alteração aos afetados |
-| Alteração de data, horário ou local | Ministros afetados | Comunicar alteração e indicar se exige reconfirmação |
-| Cancelamento de celebração/visita | Ministros anteriormente designados | Informar cancelamento; invalidar compromisso na agenda |
-| Escala aprovada/publicada | Ministros abrangidos | "Sua escala foi publicada"; consultar versão final |
-| Evento próximo (lembrete de serviço) | Ministros confirmados na versão vigente | Avisar proximidade do compromisso, sem gerar nova confirmação |
-| Pendências acumuladas ou vagas descobertas | Coordenador | Resumo de respostas atrasadas e necessidades de revisão |
+| Solicitação de impedimentos para o mês seguinte | Todos os ministros ativos elegíveis | Abrir formulário de indisponibilidades do próximo mês |
+| Lembrete de prazo antes do dia 25 | Ministros que não concluíram o envio, conforme política a confirmar | Abrir formulário; respeitar horários silenciosos |
+| Impedimento enviado ou atualizado | Coordenador e ministro autor (aviso de recebimento) | Consultar alterações e pendências |
+| Encerramento do prazo (dia 25) | Coordenador | Revisar recebimentos, ausentes de resposta e iniciar consolidação |
+| Calendário ou celebração extraordinária adicionada/alterada | Coordenador; ministros impactados apenas se escala já publicada | Consultar evento atualizado |
+| Escala preliminar gerada / revisão pendente | Coordenador | Abrir escala para ajustes manuais e validação |
+| Escala aprovada e PDF final disponível | Ministros abrangidos e coordenador | Abrir versão oficial autenticada |
+| Escala enviada/publicada | Ministros abrangidos | Consultar/download do PDF, sem dados pessoais desnecessários |
+| Alteração, substituição ou cancelamento de escala publicada | Somente ministros afetados e coordenador | Consultar versão atualizada; indicar claramente que a anterior mudou |
+| Lembrete de compromisso próximo | Ministros designados na versão vigente | Consultar data/hora/local, sem exigir aceite |
 
-A emissão de eventos extraordinários (casamentos, missa de sétimo dia e datas comemorativas) segue as mesmas regras, sem exigir agenda mensal fixa. Visitas dominicais também geram notificações, sem incluir nome, endereço ou condição do assistido no texto push.
+Não enviar notificações para confirmar ou recusar a designação. Eventos extraordinários (casamento, missa de sétimo dia, datas comemorativas) são tratados como outros compromissos. Dados e endereços de assistidos nunca entram no texto de push.
 
-### 12.2 Fluxo e preferências
-1. Registrar mudança de estado no servidor e evento de domínio correspondente somente após transação bem-sucedida.
-2. Identificar destinatários autorizados e preferências pessoais; criar notificação interna persistida na caixa **Notificações**.
-3. Enviar push apenas quando existir permissão válida do navegador ou dispositivo e assinatura/token ativo.
-4. Ao tocar/clicar, abrir rota HTTPS da designação/notificação; exigir autenticação e autorização antes de exibir dados.
-5. O ministro confirma/recusa **no sistema**, separadamente da leitura e do recebimento do push.
-6. Armazenar estado `UNREAD`/`READ` para notificações internas e histórico técnico de tentativa de entrega separado do histórico de escala.
-7. Permitir ao usuário ativar/desativar push no próprio dispositivo, consultar preferências e revogar inscrições. Alertas operacionais importantes devem continuar acessíveis dentro do app mesmo sem push.
-8. Horários silenciosos, frequência de lembrete e prazo para resposta serão configuráveis após decisão da pastoral. Evitar repetição excessiva e notificações durante a madrugada, exceto situações urgentes explicitamente configuradas.
+### 12.2 Entrega e preferências
+1. Registrar evento de domínio após transação persistida, destinatários autorizados, versão e identificador.
+2. Persistir notificação interna com estado `UNREAD`/`READ`, independentemente de permissão Web Push.
+3. Respeitar permissão do dispositivo, inscrição ativa e preferência do ministro; push não é requisito para acesso ao sistema.
+4. Ao clicar, abrir rota HTTPS autenticada de impedimentos, escala ou aviso; autenticar e autorizar novamente.
+5. Lembretes de prazo não devem afirmar que falta envio quando o usuário já registrou dados; reconciliar pelo estado mais recente.
+6. Restringir payload aos dados mínimos: tipo de alerta, mês ou referência genérica, sem telefones, endereços ou observações.
+7. Horários, quantidade de lembretes e canal externo de envio das planilhas ainda dependem de decisão.
 
-### 12.3 Arquitetura proposta, sujeita à validação técnica
-- Entidades lógicas: `notification_events` (evento, agregado, versão, autor, momento), `notifications` (destinatário, tipo, vínculo, leitura), `push_subscriptions` (usuário/dispositivo, plataforma, inscrição, expiração/revogação) e `notification_delivery_attempts` (tentativas, resultado e horário). Não executar schema sem decisão de backend/banco.
-- Um serviço central no backend KofLang (se viável após prova técnica) publica eventos da escala e resolve destinatários; adapters independentes entregam via **Web Push** (navegadores/PWA) ou, futuramente, provedores compatíveis com Android e iOS.
-- Usar fila ou padrão outbox transacional para reduzir perda entre confirmação de escala e solicitação de envio, conforme a infraestrutura escolhida. Entrega é **best effort**: push pode falhar ou atrasar sem bloquear operação de escala.
-- Chave de deduplicação por tipo de evento + designação + versão + destinatário; retries com backoff e expurgo de inscrições inválidas. Não notificar duas vezes pelo mesmo evento em um mesmo canal por reprocessamento.
-- Notificações de uma versão obsoleta não podem solicitar aceite como se fossem atuais; no acesso, validar versão vigente e situação da designação.
-- Não pressupor que web push funciona igualmente em todos os navegadores e versões de iOS/Android: validar permissões, service worker, HTTPS e requisitos de instalação/compatibilidade nos dispositivos-alvo.
-- Tokens, chaves e endpoints sensíveis ficam sob proteção; evitar registrar payloads ou URLs de inscrição em logs acessíveis.
+### 12.3 Arquitetura e resiliência
+- Modelo lógico sugerido: `notification_events`, `notifications`, `push_subscriptions` e `notification_delivery_attempts`; schema concreto será decidido após validação do Neon e do backend.
+- Um serviço central em KofLang, se validado, identifica destinatários e publica eventos; adapters Web Push e futuros clientes móveis usam a mesma fonte de eventos.
+- Preferir outbox/fila para desacoplar gravação de escala de envio de push. Entrega best effort, retries e remoção de inscrições inválidas.
+- Deduplicação por evento + destinatário + canal + versão; não disparar publicação de versão antiga após nova revisão.
+- Não exigir conexão ou validação de push para que o coordenador possa aprovar uma escala com restrições verificadas.
 
-### 12.4 Segurança e LGPD
-- Solicitar permissão push contextual e voluntariamente; não exigir aceite de push para utilizar funcionalidades essenciais.
-- Não expor dados de assistidos, telefones, endereços, informações de saúde, justificativas de indisponibilidade ou observações nas notificações da tela bloqueada.
-- Enviar notificações apenas a usuários autorizados para o evento; retirar inscrições após logout quando aplicável, revogação, troca de conta ou exclusão do dispositivo.
-- O clique não contorna autenticação/autorização; proteger contra IDOR/BOLA.
-- Definir retenção e limpeza de inscrições e histórico de tentativas; não tratar confirmação de entrega como comprovação de leitura.
-- Registrar ações sensíveis de confirmação/recusa e revisão na auditoria da escala, e não depender de logs de push para isso.
+### 12.4 Segurança e testes
+- Push é opcional e solicitado com consentimento do dispositivo; não usar prévia da tela bloqueada para dados de assistidos ou justificativas privadas.
+- Não expor tokens/endpoints de inscrição; controlar revogação, logout, troca de conta, retenção e links antigos.
+- Testes: pedido enviado ao público correto, lembrete somente quando aplicável, recebimento pelo coordenador, publicação do PDF, alterações de versão, deduplicação, falha temporária, expiração de permissão, acesso não autorizado e dispositivos Android/iOS.
+- Confirmação de leitura da notificação **não** é confirmação de disponibilidade e não altera a escala.
 
-### 12.5 Critérios de aceitação
-1. Ao criar proposta, cada ministro designado com push autorizado recebe aviso e a notificação aparece em sua caixa interna.
-2. Ministro sem permissão de push visualiza a pendência no sistema e pode responder normalmente.
-3. Uma recusa informa o coordenador; a substituição notifica o novo ministro e exige confirmação própria.
-4. Alteração de horário/local/data notifica apenas afetados e exige reconfirmação quando aplicável.
-5. Cancelamento comunica afetados e impede abrir ação de confirmação para compromisso cancelado.
-6. A publicação de escala avisa os ministros correspondentes; o push não revela dados pessoais de assistidos.
-7. Reprocessar o mesmo evento não cria push duplicado para o mesmo destinatário/canal.
-8. Uma notificação antiga não consegue confirmar alocação substituída ou versão desatualizada.
-9. Erro ou bloqueio de push não impede gerar, revisar ou aprovar a escala; registrar falha e permitir consulta interna.
-10. Testes incluem autorização, revogação de permissão, falha temporária, deduplicação, versão obsoleta e viewport móvel.
-
-### 12.6 Decisões a confirmar
-- Frequência e horários exatos dos lembretes; se haverá prazo por designação.
-- Se o coordenador também receberá avisos individuais de **todas** as confirmações ou um resumo agrupado.
-- Se haverá categoria de urgência para eventos com pouco aviso prévio.
-- Quais plataformas/navegadores serão priorizados no piloto, com especial atenção ao suporte a push em iOS.
-- Canais alternativos em ausência de push (e-mail, SMS, WhatsApp) são escopo **não aprovado** e não devem ser implementados por inferência.
+### 12.5 Pendências
+- Quando enviar o pedido inicial de impedimentos e quantos lembretes antes do dia 25.
+- Como tratar ministros que não enviaram impedimentos até o prazo.
+- Se escala final será distribuída por download autenticado, e-mail, WhatsApp ou combinação.
+- Política para aviso urgente de remarcação de celebração após distribuição.
 
 ## 13. Infraestrutura candidata: Neon, Auth0, web e PWA primeiro (decisão de 2026-11-06)
 
@@ -482,7 +472,7 @@ O login pode envolver redirecionamento direto do cliente para o Auth0, mas decis
 - Android: testar Chrome e pelo menos outro navegador relevante no piloto. iOS: testar Safari e execução da PWA adicionada à tela de início; **Web Push em iOS exige web app adicionado à tela inicial em iOS 16.4+**, além de permissão e requisitos de plataforma.
 - Notificações push são requisito do MESCE, mas não devem ser a única forma de convocação: manter centro de notificações interno e status persistido no servidor.
 - Não prometer **uso offline completo**: leitura/edição de dados pessoais offline e confirmação de escala sem internet exigiriam desenho de sincronização, segurança e resolução de conflitos; escopo não aprovado.
-- Para o MVP, confirmação/recusa, revisão e publicação devem exigir conexão e resposta confirmada da API. Nunca exibir “confirmado” apenas por ação local sem persistência.
+- Para o MVP, registro de impedimentos, revisão, aprovação e publicação devem exigir conexão e resposta confirmada da API. Nunca exibir 'impedimento enviado' ou 'escala aprovada' sem persistência.
 - Em iOS, validar **Auth0 redirecionando de volta para PWA standalone**, cookies/sessão isolados, links de notificação, ícone e permissão Web Push; avaliar workaround apenas após testes.
 - PWA **não exige publicação nas lojas** para ser instalada pela tela inicial; publicar em Play Store/App Store é iniciativa futura e não garantida.
 - Não cachear endereços, contatos, observações, tokens ou respostas sensíveis no service worker, armazenamento compartilhado ou cache público.
@@ -493,11 +483,11 @@ O login pode envolver redirecionamento direto do cliente para o Auth0, mas decis
 | --- | --- | --- |
 | Abrir em navegador, login/logout Auth0 e retorno à rota certa | Testar | Testar |
 | Instalar e abrir como app standalone | Testar | Testar |
-| Visualizar escala, confirmar e recusar (com servidor) | Testar | Testar |
+| Informar impedimentos e consultar PDF/escala (com servidor) | Testar | Testar |
 | Receber push em segundo plano após consentimento | Testar | Testar PWA instalada no iOS 16.4+ |
 | Abrir designação correta por toque na notificação | Testar | Testar |
 | Sessão expirada e reconexão sem perda de autorização | Testar | Testar |
-| Alteração/cancelamento e reconfirmação | Testar | Testar |
+| Alteração/cancelamento e publicação de nova versão | Testar | Testar |
 | App sem conexão e retorno à conexão | Não confirmar ações offline; indicar erro recuperável | Igual |
 | Dados sensíveis ausentes de caches e push | Testar | Testar |
 | Acessibilidade, contraste, navegação e toque | Testar | Testar |
