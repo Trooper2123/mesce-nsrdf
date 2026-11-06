@@ -13,15 +13,17 @@
 <body>
 <header><div class="wrap"><div class="top"><div class="brand">MESCE<span> • </span>NSR-DF</div><span class="pill">PROVA DE CONCEITO</span></div><div class="hero"><h1>Escalas com clareza e cuidado.</h1><p>Exemplo navegável do fluxo mensal: informar impedimentos, incluir celebrações, gerar proposta e finalizar a escala pela coordenação.</p></div></div></header>
 <main class="wrap">
-<div class="alert" role="note"><strong>Ambiente demonstrativo.</strong> Todos os nomes são fictícios. Os dados ficam apenas nesta aba, desaparecem ao recarregar e não são enviados ao Neon ou Auth0. Não insira dados reais.</div>
+<div class="alert" role="note"><strong>Ambiente demonstrativo.</strong> Todos os ministros são identificados por letras fictícias. Os dados ficam apenas nesta aba, desaparecem ao recarregar e não são enviados ao Neon ou Auth0. Não insira dados reais.</div>
 <div class="grid">
 <section class="panel no-print" aria-labelledby="imped-title"><h2 id="imped-title">1. Impedimentos</h2><p class="hint" id="deadline"></p>
 <form id="absence-form"><div class="field"><label for="minister">Ministro demonstrativo</label><select id="minister" required></select></div><div class="field"><label for="absence-type">Abrangência</label><select id="absence-type"><option value="CELEBRATION">Missa ou celebração específica</option><option value="DAY">Dia(s) avulsos</option><option value="PERIOD">Período contínuo</option></select></div><div class="field" id="absence-event-field"><label for="absence-event">Celebração específica</label><select id="absence-event"></select></div><div class="field" id="absence-days-field" hidden><label for="absence-days">Dias (separados por vírgula, ex.: 8, 22)</label><input id="absence-days" placeholder="8, 22" inputmode="numeric"></div><div class="fields" id="absence-period-field" hidden><div><label for="start">Data inicial</label><input id="start" type="date"></div><div><label for="end">Data final</label><input id="end" type="date"></div></div><button class="btn" type="submit">Registrar impedimento</button><p class="status" id="absence-message" role="status" aria-live="polite"></p></form><h3>Registros nesta sessão</h3><ul class="rows" id="absences"></ul></section>
 <section class="panel no-print" aria-labelledby="event-title"><h2 id="event-title">2. Agenda dinâmica</h2><p class="hint">O coordenador pode adicionar celebrações extraordinárias.</p><form id="event-form"><div class="field"><label for="event-name">Celebração</label><input id="event-name" required maxlength="70" placeholder="Ex.: missa de sétimo dia"></div><div class="fields"><div><label for="event-date">Data</label><input id="event-date" type="date" required></div><div><label for="event-time">Horário</label><input id="event-time" type="time" required value="19:00"></div></div><div class="field"><label for="event-slots">Ministros necessários</label><input id="event-slots" type="number" min="1" max="30" value="1" required></div><button class="btn" type="submit">Incluir celebração</button></form><ul class="rows" id="events"></ul></section>
 <section class="panel full no-print" aria-labelledby="flow-title"><h2 id="flow-title">3. Coordenação</h2><p class="hint">A distribuição respeita impedimentos por missa, dias ou período e o quantitativo de cada celebração. Não implementa todas as regras da SPEC.</p><div class="actions"><button class="btn" id="generate" type="button">Gerar escala preliminar</button><button class="btn secondary" id="approve" disabled type="button">Aprovar escala</button><button class="btn secondary" id="reset" type="button">Reiniciar demonstração</button></div><p id="schedule-message" class="status" role="status" aria-live="polite"></p></section>
+<section class="panel full no-print" aria-labelledby="aggregate-title"><h2 id="aggregate-title">Indicadores agregados • demonstração</h2><p class="hint">Não apresenta nomes, endereços ou dados individuais. Valores pequenos são suprimidos para reduzir risco de identificação. Não é certificação de anonimização.</p><p id="aggregate-result" role="status" aria-live="polite">Gere uma escala para consultar os indicadores.</p></section>
 <section class="panel printable full" id="schedule-panel" aria-labelledby="schedule-title"><h2 id="schedule-title">4. Escala <span id="schedule-state">— não gerada</span></h2><p class="hint" id="schedule-subtitle">Gere uma proposta para visualizar as designações.</p><div class="print-title"><h1>MESCE NSR-DF — Escala demonstrativa</h1></div><div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Horário</th><th>Celebração</th><th>Ministro</th></tr></thead><tbody id="schedule-rows"><tr><td colspan="4">Nenhuma escala gerada.</td></tr></tbody></table></div><div class="actions no-print"><button class="btn" id="print" type="button" disabled>Imprimir / Salvar como PDF</button></div></section>
-</div><footer class="caption">POC 0.1 • Sem autenticação, persistência, push real, dados pessoais ou algoritmo definitivo. O PDF é obtido pela função de impressão do navegador após aprovação.</footer>
+</div><footer class="caption">POC 0.2 • Resumos agregados com supressão de amostras pequenas; não equivale a anonimização certificada. Sem autenticação, persistência, push real, dados pessoais ou algoritmo definitivo. O PDF é obtido pela função de impressão do navegador após aprovação.</footer>
 </main>
+<script src="/app/privacy.js"></script>
 <script>
 (() => {
   'use strict';
@@ -33,7 +35,7 @@
   const dateOf = day => year+'-'+pad(month+1)+'-'+pad(day);
   const last = new Date(year,month+1,0).getDate();
   const labelDate = value => value.split('-').reverse().join('/');
-  const ministers = [{id:'a',name:'Ana (fictícia)'},{id:'b',name:'João (fictício)'},{id:'c',name:'Maria (fictícia)'}];
+  const ministers = Array.from('ABCDEFGH',letter=>({id:letter.toLowerCase(),name:'Ministro '+letter+' (fictício)'}));
   let absences=[],events=[],schedule=[],approved=false,generated=false,nextEventId=1;
   const node = (tag,text,cls) => { const el=document.createElement(tag);el.textContent=text;if(cls)el.className=cls;return el; };
   const isTarget = date => date.slice(0,7)===dateOf(1).slice(0,7);
@@ -74,7 +76,16 @@
     $('absence-days-field').hidden=type!=='DAY';
     $('absence-period-field').hidden=type!=='PERIOD';
   }
+  function updateAggregate(){
+    const area=$('aggregate-result');
+    if(!generated){area.textContent='Gere uma escala para consultar os indicadores.';return;}
+    const report=window.MescePrivacy.aggregateAssignments(schedule);
+    area.textContent=report.published
+      ? report.celebrationCount+' celebrações e '+report.assignmentCount+' designações (sem identificadores).'
+      : 'Dados suprimidos: amostra insuficiente para exibição agregada segura.';
+  }
   function drawSchedule(){
+    updateAggregate();
     $('schedule-state').textContent=approved?'— aprovada (simulação)':generated?'— preliminar':'— não gerada';
     $('schedule-subtitle').textContent=approved?'Esta versão está liberada para impressão demonstrativa.':generated?'Revise a distribuição antes da aprovação.':'Gere uma proposta para visualizar as designações.';
     const body=$('schedule-rows');body.replaceChildren();

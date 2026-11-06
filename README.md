@@ -43,6 +43,13 @@ kof run poc-kof/main.kf --target=js
 
 A documentação oficial do KofLang descreve `kof build <dir> --target=js`. Antes de substituir a demonstração HTML/JS por uma UI KofJS, validar a versão instalada e o formato de saída gerado.
 
+## Construção e privacidade
+- [Backlog por prioridade e critérios de conclusão](docs/TASKS.md)
+- [Política de privacidade, minimização e anonimização](docs/PRIVACIDADE-LGPD.md)
+- A POC agora possui um painel de **indicadores agregados** sem nomes ou datas individuais; grupos pequenos são ocultados. Este método é demonstrativo, **não certifica anonimização de dados reais**.
+- Testes da transformação: `node --test tests/privacy.test.cjs` (exige Node instalado).
+- Os dados de assistidos do PDF de referência **não** foram copiados para o código; não usar dados reais nesta POC.
+
 ## Documentação
 - [SPEC — Gestão e escalas MESCE, com referência Projeto MESCE v3.0](docs/SPEC-GESTAO-ESCALAS-MESCE.md)
 - [Regras dos agentes de desenvolvimento](AGENTS.md)

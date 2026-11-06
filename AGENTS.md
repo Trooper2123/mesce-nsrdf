@@ -34,7 +34,7 @@
 - Não editar manualmente artefatos gerados como substituição permanente do código-fonte.
 - Antes de estabelecer pipeline, validar com um exemplo mínimo que o compilador KofLang/KofJS funciona no ambiente de build e que o Vercel serve a saída resultante.
 - Manter a configuração de produção vinculada ao repositório `Trooper2123/mesce-nsrdf` e à branch `main`.
-- Commits em branches de trabalho devem gerar previews quando a integração estiver operacional; mudanças na `main` podem seguir para produção somente após validação.
+- **Não disparar deploy para cada commit.** Previews automáticos estão desativados no Vercel por decisão do projeto; somente solicitar preview manual quando uma entrega estiver pronta para testes. A `main` é reservada à produção após revisão.
 - Nunca afirmar que uma build, teste, integração Git ou deploy passou sem consultar seu resultado real.
 - Não inventar comandos KofLang: incluir no README os comandos exatos apenas quando confirmados por execução ou documentação compatível.
 

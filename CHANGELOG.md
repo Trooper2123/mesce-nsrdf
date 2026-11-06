@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Backlog e resumo agregado com proteção LGPD (sem deploy)
+- **Tipo:** `feat`, `test`, `docs`.
+- **Arquivos:** `docs/TASKS.md`, `docs/PRIVACIDADE-LGPD.md`, `app/privacy.js`, `tests/privacy.test.cjs`, `index.html`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** backlog P0/P1/P2, política de minimização/pseudonimização, resumo agregado da POC com supressão de coortes pequenas; ministros de teste substituídos por identificadores fictícios.
+- **Validação:** verificação de sintaxe e testes da função de agregação; sem build KofLang, Neon/Auth0, testes PWA reais ou deploy.
+- **Branch:** `feature/lgpd-backlog-app`. Nenhum merge automático na `main`.
+
+
 ## 2026-11-06 — Vagas por celebração e impedimentos de escopo variável (BRT; horário exato não registrado)
 - **Tipo:** `feat`, `docs`, `fix`.
 - **Arquivos:** `index.html`, `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
