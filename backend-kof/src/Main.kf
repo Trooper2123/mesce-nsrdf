@@ -1,0 +1,81 @@
+// MESCE API — KofLang JVM, Auth0 RS256/JWKS e Neon PostgreSQL.
+// Não expor na internet antes da prova de compilação e testes 401/403.
+// Nenhum usuário tem acesso sem vínculo explícito em mesce_dev.actors.
+record ActorRole(String role)
+record NewMinister(String name, String phone)
+record EncryptedMinister(String id, String name_ciphertext, String phone_ciphertext)
+record MinisterResponse(String id, String name, String phone)
+
+main() {
+    var issuer = secrets.get("MESCE_AUTH0_ISSUER")
+    var audience = secrets.get("MESCE_AUTH0_AUDIENCE")
+    var jwksUrl = secrets.get("MESCE_AUTH0_JWKS_URL")
+    var dbUrl = secrets.get("MESCE_DATABASE_URL")
+    var dataKey = secrets.get("MESCE_DATA_KEY_HEX")
+
+    if (issuer == "" || audience == "" || jwksUrl == "" || dbUrl == "" || dataKey == "") {
+        println("MESCE: configuração obrigatória ausente; API não iniciada.")
+        return
+    }
+
+    // Kof JVM valida assinatura RS256 por JWKS, iss, aud e exp.
+    var configured = auth.resourceServer(jwksUrl, issuer, audience)
+    if (!configured) {
+        println("MESCE: verificação de identidade indisponível; API não iniciada.")
+        return
+    }
+
+    var database = db.connect(dbUrl)
+    var app = web.app()
+    var policy = mapOf()
+    policy.put("auth", true)
+    app.security(policy)
+
+    // Toda a API exige Bearer access token verificado.
+    app.get("/api/me") {
+        var roles = db.query<ActorRole>(database, "SELECT role FROM mesce_dev.actors WHERE auth0_sub = ? AND active = true", auth.user())
+        if (roles.size == 0) {
+            return status(403, "{\"error\":\"access_denied\"}")
+        }
+        return json.encode(roles.get(0))
+    }
+
+    // Apenas coordenador, nunca retornar colunas cifradas em bruto.
+    app.get("/api/ministers") {
+        var roles = db.query<ActorRole>(database, "SELECT role FROM mesce_dev.actors WHERE auth0_sub = ? AND active = true", auth.user())
+        if (roles.size == 0 || roles.get(0).role != "COORDINATOR") {
+            return status(403, "{\"error\":\"forbidden\"}")
+        }
+
+        var encrypted = db.query<EncryptedMinister>(database, "SELECT id::text AS id, name_ciphertext, phone_ciphertext FROM mesce_dev.ministers WHERE active = true ORDER BY created_at")
+        var result = listOf<MinisterResponse>()
+        for (item in encrypted) {
+            var name = crypto.decryptAesGcm(item.name_ciphertext, dataKey)
+            var phone = ""
+            if (item.phone_ciphertext != null && item.phone_ciphertext != "") {
+                phone = crypto.decryptAesGcm(item.phone_ciphertext, dataKey)
+            }
+            result.add(MinisterResponse(item.id, name, phone))
+        }
+        return json.encode(result)
+    }
+
+    // Um cadastro identificado só pode ser criado pelo coordenador.
+    app.post("/api/ministers") {
+        var roles = db.query<ActorRole>(database, "SELECT role FROM mesce_dev.actors WHERE auth0_sub = ? AND active = true", auth.user())
+        if (roles.size == 0 || roles.get(0).role != "COORDINATOR") {
+            return status(403, "{\"error\":\"forbidden\"}")
+        }
+        var input = json.decode<NewMinister>(body())
+        if (input.name == "" || input.phone == "") {
+            return status(400, "{\"error\":\"invalid_payload\"}")
+        }
+        var encryptedName = crypto.encryptAesGcm(input.name, dataKey)
+        var encryptedPhone = crypto.encryptAesGcm(input.phone, dataKey)
+        db.execute(database, "INSERT INTO mesce_dev.ministers(name_ciphertext, phone_ciphertext) VALUES(?, ?)", encryptedName, encryptedPhone)
+        return status(201, "{\"created\":true}")
+    }
+
+    // Somente loopback em desenvolvimento. Publicação exige proxy TLS e CORS/CSRF revisados.
+    app.listen(8081)
+}
