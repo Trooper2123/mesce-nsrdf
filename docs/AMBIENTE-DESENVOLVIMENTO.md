@@ -2,7 +2,7 @@
 
 ## Estado desta entrega
 - A interface web/PWA contém um **modo demonstrativo com dados fictícios, mantidos em memória**.
-- Há um módulo puro de regras de alocação e impedimentos em `app/scheduling.js` com testes; é um **adaptador transitório de demonstração**, não backend final de produção.
+- Há um módulo puro de regras de alocação e impedimentos em `app/scheduling.js` com testes; é um **adaptador transitório de demonstração**, não backend final de produção. A visualização de coordenador/ministro é **simulação visual**, não controle de acesso.
 - Os domínios definitivos do MESCE permanecem planejados para **KofLang**. O compilador não está instalado no ambiente desta entrega e a prova de compatibilidade com Neon/Auth0 ainda é pendente.
 - **Nenhum usuário real deve ser cadastrado**, nenhuma informação real sobre assistidos deve ser inserida e nenhum segredo deve ser usado neste servidor.
 - Nenhum deploy Vercel é necessário para desenvolver localmente.

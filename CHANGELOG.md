@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Ambiente local e motor demonstrativo de escalas
+- **Tipo:** `feat`, `test`, `docs`, `chore`.
+- **Arquivos:** `app/scheduling.js`, `tests/scheduling.test.cjs`, `scripts/dev-server.cjs`, `package.json`, `index.html`, `sw.js`, `docs/AMBIENTE-DESENVOLVIMENTO.md`, `docs/TASKS.md`, `README.md`.
+- **Resumo:** ambiente de desenvolvimento local sem dependências externas; domínio demonstrativo de bloqueios por celebração/dias/período, quantitativos variáveis, alocação e substituições; interface com visualizações simuladas de coordenador/ministro; testes e cache PWA de recursos estáticos.
+- **Validação:** sintaxe de scripts e execução de cenários em runtime JavaScript isolado. **Ainda não executados** `npm test`/teste HTTP real, compilação KofLang, autenticação Auth0, acesso Neon nem testes reais de navegador.
+- **Branch:** `feature/lgpd-backlog-app`; sem merge na `main`, sem deploy.
+
+
 ## 2026-11-06 — Planejamento de hashing e criptografia no Neon
 - **Tipo:** `docs`.
 - **Arquivos:** `docs/PRIVACIDADE-LGPD.md`, `docs/TASKS.md`, `CHANGELOG.md`.

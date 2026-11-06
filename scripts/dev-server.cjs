@@ -18,4 +18,4 @@ const server = http.createServer((req,res)=>{
     res.end(bytes);
   });
 });
-server.listen(port,'127.0.0.1',()=>process.stdout.write('MESCE DEV: http://127.0.0.1:'+port+' (somente dados fictícios)\n'));
+server.listen(port,'127.0.0.1',()=>process.stdout.write('MESCE DEV: http://127.0.0.1:'+server.address().port+' (somente dados fictícios)\n'));

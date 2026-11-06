@@ -16,6 +16,20 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 - **Notificações push** para solicitação de impedimentos, lembretes antes do dia 25, atualizações recebidas, escala final/PDF, alterações, cancelamentos e lembretes de serviço. Histórico de avisos dentro do sistema.
 
+## Ambiente local de desenvolvimento
+
+A aplicação demonstrativa pode ser executada **localmente, sem Vercel e sem dependências externas**, utilizando Node.js 20+:
+
+```bash
+npm run dev
+npm test
+npm run check
+```
+
+Abra `http://127.0.0.1:4173`. Há visualizações simuladas de **coordenador** e **ministro**, impedimentos por celebração/dia/período, quantidade variável de ministros, geração de escala, substituição manual e aprovação demonstrativa. O motor JS está isolado em `app/scheduling.js` com testes; ele é transitório e **não substitui o domínio KofLang final**.
+
+[Instruções e limites de segurança do ambiente local](docs/AMBIENTE-DESENVOLVIMENTO.md).
+
 ## POC web/PWA (demonstração mínima)
 
 A raiz do repositório contém uma POC estática navegável em `index.html`, com `manifest.webmanifest`, `sw.js` e ícone. O deploy via GitHub/Vercel é automático quando a integração está operacional.

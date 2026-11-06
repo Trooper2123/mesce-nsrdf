@@ -72,7 +72,7 @@
     items.forEach(item=>list.append(render(item)));
   }
   function draw(){
-    drawList('absences',absences,a=>{
+    drawList('absences',isCoordinator()?absences:absences.filter(item=>item.minister===currentMinister),a=>{
       const li=node('li',''),minister=ministers.find(m=>m.id===a.minister).name;
       const summary=a.type==='CELEBRATION'?(events.find(e=>e.id===a.eventId)?.name+' ('+labelDate(events.find(e=>e.id===a.eventId).date)+')'):a.type==='DAY'?a.days.map(labelDate).join(', '):labelDate(a.start)+' a '+labelDate(a.end);
       li.append(node('span',minister+' — '+summary));return li;
