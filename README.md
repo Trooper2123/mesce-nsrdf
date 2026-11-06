@@ -16,6 +16,33 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 - **Notificações push** para solicitação de impedimentos, lembretes antes do dia 25, atualizações recebidas, escala final/PDF, alterações, cancelamentos e lembretes de serviço. Histórico de avisos dentro do sistema.
 
+## POC web/PWA (demonstração mínima)
+
+A raiz do repositório contém uma POC estática navegável em `index.html`, com `manifest.webmanifest`, `sw.js` e ícone. O deploy via GitHub/Vercel é automático quando a integração está operacional.
+
+**Fluxo demonstrativo (dados fictícios, somente em memória):**
+1. Escolher um dos três ministros fictícios e registrar um impedimento dentro do próximo mês.
+2. Adicionar uma celebração extraordinária com data e horário.
+3. Gerar uma escala preliminar simplificada, que evita ministros impedidos nas datas e distribui a menor quantidade de compromissos.
+4. Aprovar a escala na simulação e usar a impressão do navegador para **Salvar como PDF**.
+
+**Limitações intencionais:**
+- Não é sistema operacional: **não inserir nomes, endereços ou contatos reais**. Tudo é perdido ao recarregar.
+- O fluxo do coordenador não possui autenticação. A POC não chama **Auth0**, **Neon** ou APIs de produção, não dispara push, não implementa casais, limite mensal, visitas, locais ou algoritmo histórico completo.
+- A aprovação e a impressão são simulações: a geração de PDF usa `window.print()` e não representa um PDF oficial do MESCE.
+- O service worker só cacheia recursos estáticos públicos. Não cachear dados pessoais/autenticação em futuras versões.
+- PWA: manifesto e service worker são apenas a base. A instalação e compatibilidade no Android/iOS **não foram testadas**; podem requerer ícones PNG, ajustes de navegador e fluxo Auth0.
+- Fonte de prova da sintaxe Kof: `poc-kof/main.kf`. Ainda não foi compilada neste ambiente.
+
+**Validação KofLang (após instalar a CLI oficial):**
+
+```bash
+kof check poc-kof/main.kf --target js
+kof run poc-kof/main.kf --target=js
+```
+
+A documentação oficial do KofLang descreve `kof build <dir> --target=js`. Antes de substituir a demonstração HTML/JS por uma UI KofJS, validar a versão instalada e o formato de saída gerado.
+
 ## Documentação
 - [SPEC — Gestão e escalas MESCE, com referência Projeto MESCE v3.0](docs/SPEC-GESTAO-ESCALAS-MESCE.md)
 - [Regras dos agentes de desenvolvimento](AGENTS.md)
@@ -32,7 +59,7 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - **Backend:** hospedagem a definir após prova técnica.
 - **Regra arquitetural:** regras de escalas, autorizações, impedimentos, aprovação pela coordenação e auditoria não devem ficar duplicadas nos clientes.
 
-**Situação:** fase de especificação; Neon e Auth0 foram informados como configurados, mas a vinculação exata e o funcionamento ainda não foram verificados.  o backend, os cadastros e o algoritmo de escalas ainda não foram implementados. A compilação KofLang/KofJS, persistência e pipeline de deploy precisam ser validados antes de definir comandos de execução. O protótipo visual publicado anteriormente no Vercel não representa ainda estas funcionalidades.
+**Situação:** POC web demonstrativa adicionada; domínio e integrações reais continuam em fase de especificação.  Neon e Auth0 foram informados como configurados, mas a vinculação exata e o funcionamento ainda não foram verificados.  o backend, os cadastros e o algoritmo de escalas ainda não foram implementados. A compilação KofLang/KofJS, persistência e pipeline de deploy precisam ser validados antes de definir comandos de execução. O protótipo visual publicado anteriormente no Vercel não representa ainda estas funcionalidades.
 
 Repositório: [Trooper2123/mesce-nsrdf](https://github.com/Trooper2123/mesce-nsrdf) · branch principal: `main`. Projeto Vercel: `mesce-nsrdf`.
 
