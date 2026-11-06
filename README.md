@@ -27,14 +27,14 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - **App nativo Android/iOS:** somente após avaliar limitações reais da PWA; preservar as mesmas APIs e regras de domínio.
 - **Linguagem principal pretendida:** **KofLang**, sujeita à validação real do compilador e da arquitetura.
 - **Publicação web:** **Vercel**.
-- **Banco escolhido para avaliação:** **Neon PostgreSQL** integrado ao Vercel; verificar conectividade com KofLang antes de provisionar e criar schema.
-- **Autenticação escolhida para avaliação:** **Auth0** via Marketplace do Vercel; integração pronta é focada em Next.js, portanto validar OIDC/OAuth com KofLang.
+- **Banco selecionado:** **Neon PostgreSQL**. A integração foi informada como configurada; um projeto Neon via Vercel Marketplace foi encontrado, mas seu vínculo exato e conexão com KofLang ainda exigem validação. Não criar schema em ambiente não identificado.
+- **Autenticação selecionada:** **Auth0**. Configuração informada como concluída; confirmar vínculo com o projeto Vercel e validação OIDC/OAuth com backend KofLang.
 - **Backend:** hospedagem a definir após prova técnica.
 - **Regra arquitetural:** regras de escalas, autorizações, impedimentos, aprovação pela coordenação e auditoria não devem ficar duplicadas nos clientes.
 
-**Situação:** fase de especificação; Neon e Auth0 ainda não estão conectados a este projeto.  o backend, os cadastros e o algoritmo de escalas ainda não foram implementados. A compilação KofLang/KofJS, persistência e pipeline de deploy precisam ser validados antes de definir comandos de execução. O protótipo visual publicado anteriormente no Vercel não representa ainda estas funcionalidades.
+**Situação:** fase de especificação; Neon e Auth0 foram informados como configurados, mas a vinculação exata e o funcionamento ainda não foram verificados.  o backend, os cadastros e o algoritmo de escalas ainda não foram implementados. A compilação KofLang/KofJS, persistência e pipeline de deploy precisam ser validados antes de definir comandos de execução. O protótipo visual publicado anteriormente no Vercel não representa ainda estas funcionalidades.
 
-Repositório: [Trooper2123/mesce-nsrdf](https://github.com/Trooper2123/mesce-nsrdf) · branch principal: `main`.
+Repositório: [Trooper2123/mesce-nsrdf](https://github.com/Trooper2123/mesce-nsrdf) · branch principal: `main`. Projeto Vercel: `mesce-nsrdf`.
 
 ## Privacidade
 O aplicativo tratará informações pessoais, inclusive endereços e contatos de ministros e assistidos. Dados reais não devem ser adicionados ao repositório público. As regras de autenticação, autorização e proteção de dados deverão ser definidas antes de implantar os cadastros.
