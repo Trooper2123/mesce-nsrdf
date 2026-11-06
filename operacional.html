@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123d33">
+<meta name="robots" content="noindex,nofollow">
+<title>MESCE — Ambiente operacional de desenvolvimento</title>
+<link rel="stylesheet" href="/app/accessibility.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f9f5;color:#152b24;font:18px/1.65 system-ui,sans-serif}
+main{max-width:880px;margin:auto;padding:24px}h1{font-size:clamp(2rem,4vw,2.6rem);line-height:1.25}h2{font-size:1.4rem}
+.panel{background:white;padding:22px;margin:18px 0;border:2px solid #82998e;border-radius:12px}
+nav{display:flex;gap:18px;flex-wrap:wrap}nav a{min-height:48px;display:inline-flex;align-items:center}
+button{background:#123d33;color:white;border:2px solid #123d33;border-radius:8px;padding:12px 20px;min-height:48px;font-size:1rem;font-weight:700;cursor:pointer}
+button:disabled{background:#e5efe9;color:#374941;cursor:not-allowed}
+label{display:block;font-weight:700;margin-top:12px}input{display:block;width:100%;padding:10px;font:inherit;min-height:48px;border:2px solid #647c70;border-radius:6px}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:4px solid #a95b00;outline-offset:3px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+small{color:#374941}table{width:100%;border-collapse:collapse}th,td{padding:13px;border-bottom:1px solid #82998e;text-align:left}th{background:#eaf1eb}
+[hidden]{display:none!important}.message{padding:12px;border-left:5px solid #123d33;background:#eaf1eb}
+table{font-size:1rem}@media(max-width:650px){main{padding:16px}.panel{padding:16px}.actions button{width:100%}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script src="/app/operational.js" defer></script>
+</head>
+<body><main>
+<nav aria-label="Navegação"><a href="/">Voltar à demonstração</a><a href="/privacidade.html">Privacidade</a></nav>
+<h1>MESCE — Acesso operacional</h1>
+<p><strong>Ambiente de desenvolvimento.</strong> Este acesso requer Auth0 e a API KofLang conectada exclusivamente ao Neon de desenvolvimento. Não cadastre pessoas reais até concluir os testes de segurança e a política LGPD.</p>
+<p id="status" class="message" role="status" aria-live="polite">Verificando configuração…</p>
+<section class="panel" aria-labelledby="session-title">
+<h2 id="session-title">Acesso seguro</h2>
+<p id="role" aria-live="polite">Não autenticado.</p>
+<div class="actions"><button id="login" type="button" disabled>Entrar com Auth0</button><button id="logout" type="button" hidden>Sair</button><button id="refresh" type="button" hidden>Atualizar</button></div>
+</section>
+<section id="celebrations-panel" class="panel" aria-labelledby="celebrations-title" hidden>
+<h2 id="celebrations-title">Celebrações cadastradas</h2>
+<div style="overflow-x:auto" role="region" aria-label="Tabela de celebrações" tabindex="0">
+<table><thead><tr><th scope="col">Data</th><th scope="col">Hora</th><th scope="col">Local</th><th scope="col">Tipo</th><th scope="col">Ministros</th></tr></thead><tbody id="celebrations"><tr><td colspan="5">Nenhuma celebração.</td></tr></tbody></table>
+</div>
+</section>
+<section id="create-panel" class="panel" aria-labelledby="create-title" hidden>
+<h2 id="create-title">Cadastrar celebração (coordenador)</h2>
+<form id="celebration-form">
+<label for="occursOn">Data</label><input id="occursOn" type="date" required>
+<label for="startsAt">Horário</label><input id="startsAt" type="time" required>
+<label for="locationCode">Código do local</label><input id="locationCode" maxlength="60" required placeholder="Ex.: PAROQUIA">
+<label for="kind">Tipo de celebração</label><input id="kind" maxlength="60" required placeholder="Ex.: Missa">
+<label for="requiredMinisters">Quantidade de ministros</label><input id="requiredMinisters" type="number" min="1" max="30" value="3" required>
+<div class="actions"><button id="submit" type="submit">Salvar celebração</button></div>
+</form><p><small>Os dados serão enviados à API autenticada e persistidos no banco de desenvolvimento, se todas as integrações estiverem configuradas.</small></p>
+</section>
+</main></body></html>
