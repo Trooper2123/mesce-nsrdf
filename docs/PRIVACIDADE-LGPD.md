@@ -40,3 +40,25 @@ Trocar nomes por códigos reversíveis, hashes estáveis, iniciais ou mascarar a
 - Acesso por ministro não designado a endereço/contato de assistido retorna `403`.
 - PDF geral não inclui contatos/endereços e guia de visitas exige autenticação e escopo.
 - Downloads, mudanças de autorização e exclusões são auditados; nenhuma API de dados reais é publicada antes dos testes de autorização.
+
+## Uso de hash e criptografia no Neon — decisão técnica proposta (2026-11-06)
+
+**Objetivo:** empregar a técnica correta para cada campo, evitando a falsa alegação de que um hash individual torna a pessoa anônima.
+
+| Caso | Solução | Justificativa |
+|---|---|---|
+| Chave primária de ministros/assistidos | UUID v4 aleatório | Identificador interno não derivado de nome, CPF, telefone ou endereço |
+| Pesquisa exata/deduplicação de telefone ou e-mail | HMAC-SHA-256 do valor normalizado, gerado no **backend** com chave secreta | Reduz ataques triviais por dicionário em comparação a SHA-256 simples; continua sendo dado pessoal/pseudonimizado |
+| Nome, endereço, telefone e contato que precisam ser apresentados a usuários autorizados | Criptografia autenticada (ex.: AES-256-GCM) na camada servidor + autorização forte | Permite recuperação controlada; hash não permite recuperar o endereço |
+| Senhas | Gerenciadas pelo Auth0; não criar tabela própria de senhas | Evita duplicar credenciais e responsabilidades de autenticação |
+| Dashboards de participação | Agregação, minimização, supressão e avaliação de risco de reidentificação | Hashes estáveis de pessoas não garantem anonimização |
+
+**Regras de implementação:**
+1. HMAC é calculado com chave versionada mantida **fora do Neon e fora do código-fonte**, em gerenciador de segredos do runtime; a chave não deve ser transmitida ao SQL, ao navegador ou ao PWA. Considerar rotação/reindexação e separação de chaves por ambiente e finalidade.
+2. Normalização de telefone/e-mail deve ser determinística, documentada e testada; manter versão do algoritmo. Não usar hash direto de dado de baixa entropia (telefone/CPF), pois pode ser descoberto por força bruta/dicionário.
+3. Não armazenar em claro campos sensíveis por conveniência; campos operacionais cifrados só podem ser decifrados após autorização por finalidade e vínculo com o serviço designado.
+4. Proteger logs, backups, consultas, PDFs, APIs e relatórios. Criptografia e HMAC não substituem controles de autorização, auditoria, retenção e base legal.
+5. O PostgreSQL oferece funções `digest()` e `hmac()` pela extensão `pgcrypto`, mas **a preferência para dados pessoais é calcular o HMAC na aplicação**, evitando fornecer a chave ao banco. Fonte: https://www.postgresql.org/docs/current/pgcrypto.html.
+6. **Não aplicar schema nem gerar chaves no banco de produção** antes de prova KofLang/Neon, revisão de segurança e validação de autorização. Os testes usarão exclusivamente entradas fictícias.
+
+**Critérios de aceite:** chaves jamais aparecem no banco ou logs; buscas exatas são determinísticas; rotação planejada; controle de acesso impede recuperação não autorizada; hash não é apresentado como anonimização.

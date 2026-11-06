@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Planejamento de hashing e criptografia no Neon
+- **Tipo:** `docs`.
+- **Arquivos:** `docs/PRIVACIDADE-LGPD.md`, `docs/TASKS.md`, `CHANGELOG.md`.
+- **Resumo:** definido uso proposto de UUIDs, HMAC-SHA-256 para deduplicação/pesquisa exata de campos normalizados e cifragem autenticada para campos recuperáveis; chave separada do Neon, autorização e rotação obrigatórias.
+- **Validação:** revisão documental; **nenhuma migração, criação de segredo ou alteração no banco real**.
+- **Branch:** `feature/lgpd-backlog-app` sem merge na `main`.
+
+
 ## 2026-11-06 — Backlog e resumo agregado com proteção LGPD (sem deploy)
 - **Tipo:** `feat`, `test`, `docs`.
 - **Arquivos:** `docs/TASKS.md`, `docs/PRIVACIDADE-LGPD.md`, `app/privacy.js`, `tests/privacy.test.cjs`, `index.html`, `README.md`, `CHANGELOG.md`.
