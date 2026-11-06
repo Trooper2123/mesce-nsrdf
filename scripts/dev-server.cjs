@@ -36,8 +36,8 @@ async function proxy(req,res,pathname){
  let chunks=[],size=0,exceeded=false;
  for await (const chunk of req){
   size+=chunk.length;
-  if(size>maxBody){exceeded=true;break;}
-  chunks.push(chunk);
+  if(size>maxBody){exceeded=true;chunks=[];continue;}
+  if(!exceeded)chunks.push(chunk);
  }
  if(exceeded){respond(res,413,{error:'payload_too_large'});return;}
  const backendPort=Number(process.env.MESCE_KOF_PORT||8081);
@@ -81,4 +81,6 @@ const server=http.createServer((req,res)=>{
   res.end(bytes);
  });
 });
+server.requestTimeout=10000;
+server.headersTimeout=10000;
 server.listen(port,'127.0.0.1',()=>process.stdout.write('MESCE DEV: http://127.0.0.1:'+server.address().port+' (dados sintéticos apenas)\n'));
