@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft v0.5** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
+Status: **draft v0.6** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -131,7 +131,7 @@ Interface PT-BR, responsiva, acessível e com estados de erro/vazio.
 - Linguagem principal: **KofLang**.
 - Interface web publicada no **Vercel**.
 - Antes de implementar aplicação operacional: validar compilador KofLang/KofJS com exemplo mínimo, mecanismo de hospedagem de backend, persistência e autenticação. Não assumir suporte nativo.
-- Banco relacional é uma **proposta**, não infraestrutura já provisionada; PostgreSQL pode ser adotado após validação.
+- **Decisão arquitetural em avaliação (2026-11-06):** priorizar **Neon PostgreSQL** via integração Vercel. Banco ainda não provisionado; confirmar conectividade ao backend KofLang antes de criar tabelas.
 - Fonte oficial: `Trooper2123/mesce-nsrdf`, branch `main`.
 - Não alterar o protótipo atual ou implantar banco de dados como efeito desta SPEC.
 
@@ -429,3 +429,99 @@ A emissão de eventos extraordinários (casamentos, missa de sétimo dia e datas
 - Se haverá categoria de urgência para eventos com pouco aviso prévio.
 - Quais plataformas/navegadores serão priorizados no piloto, com especial atenção ao suporte a push em iOS.
 - Canais alternativos em ausência de push (e-mail, SMS, WhatsApp) são escopo **não aprovado** e não devem ser implementados por inferência.
+
+## 13. Infraestrutura candidata: Neon, Auth0, web e PWA primeiro (decisão de 2026-11-06)
+
+### 13.1 Prioridades
+- **Prioridade 1:** aplicativo web responsivo operacional, publicado no Vercel.
+- **Prioridade 2:** **PWA instalável** em Android/iOS, buscando oferecer uso equivalente a um aplicativo para os fluxos essenciais da pastoral, com notificações push após permissões e compatibilidade confirmadas.
+- **Prioridade futura e condicional:** aplicativos nativos Android/iOS somente se a validação da PWA identificar lacunas importantes. Não iniciar dois clientes nativos automaticamente.
+- **Persistência preferida:** **Neon PostgreSQL**, pela integração com Vercel, branches para testes/previews e gestão centralizada; **ainda não provisionado neste projeto**.
+- **Identidade preferida:** **Auth0**, via Vercel Marketplace para provisionamento/configuração; **ainda não integrado ao projeto**.
+- **Domínio/backend:** manter **KofLang como linguagem principal planejada**; requer prova técnica de runtime e comunicação com Neon e Auth0.
+
+### 13.2 Organização lógica (não é deploy já existente)
+```text
+Navegador web / PWA (Android, iOS, desktop)
+    |  HTTPS + sessão/autenticação
+    v
+Interface no Vercel
+    |  API autenticada (contrato compartilhado)
+    v
+Backend de domínio em KofLang (hospedagem a validar)
+    |-- OIDC/OAuth 2.0: Auth0 (identidade e emissão de tokens)
+    |-- SQL parametrizado: Neon PostgreSQL
+    |-- Eventos de escala -> notificações internas e serviço Web Push
+    '-- Autorização, confirmação, revisão, aprovação e auditoria
+```
+O login pode envolver redirecionamento direto do cliente para o Auth0, mas decisões de permissão são verificadas no backend; a ilustração não representa um proxy obrigatório da interface.
+
+### 13.3 Neon PostgreSQL — regras
+- Usar PostgreSQL gerenciado via integração Vercel quando a integração e o modelo de execução estiverem confirmados.
+- O backend KofLang deverá conseguir abrir conexões PostgreSQL de modo seguro (JDBC se o target JVM suportar, ou outro driver testado); não assumir que bibliotecas JavaScript específicas de Next.js funcionam em KofLang.
+- Configurar credenciais apenas no runtime servidor, nunca no bundle web, service worker, manifest ou no dispositivo do ministro.
+- Separar ambientes **desenvolvimento/testes, preview e produção** usando bancos ou branches isolados; nunca clonar dados pessoais reais para previews.
+- Usar conexões com TLS, pool/limites compatíveis com o driver e o ambiente, migrations versionadas, backups/recovery e segregação de permissões.
+- Os cadastros, escalas, confirmações, auditoria e notificações compartilham uma fonte persistente de verdade.
+- Avaliar residência de dados e termos de tratamento/privacidade antes de armazenar dados pessoais.
+
+### 13.4 Auth0 — regras
+- Usar **OpenID Connect/OAuth 2.0** com Authorization Code + PKCE onde aplicável, e fluxos adequados para uma aplicação web/PWA.
+- Autenticação central no Auth0; manter no Neon o perfil interno (`auth0_sub` ou identificador externo equivalente, vínculo com ministro, papéis, permissões e status). Não copiar senhas para o banco.
+- Papéis mínimos: **COORDINATOR** e **MINISTER**; poderes e escopo de acesso validados pelo backend (não apenas por claims ou interface).
+- O ministro só confirma/recusa designações associadas à sua identidade; coordenador administra, revisa e aprova; impedir IDOR/BOLA.
+- O backend deve validar **access token de API** (assinatura/JWKS, emissor, audiência, validade, permissões) e não usar ID token para autorizar operações de API.
+- A integração Auth0 do Vercel oferece configuração automatizada e SDK pronto sobretudo para **Next.js**; não pressupor SDK compatível com KofLang. Implementar padrões OIDC com bibliotecas realmente suportadas após prova técnica.
+- Documentar callback URLs para produção, previews e PWA instalada. Testar login, refresh/expiração, logout e deep links sem expor tokens em armazenamento inseguro.
+- Não provisionar tenant, credenciais ou usuários de produção sem uma etapa específica de configuração.
+
+### 13.5 PWA como possível aplicativo principal
+- Interface **mobile-first** com controles de toque, navegação clara, estados de conexão e foco/acessibilidade.
+- HTTPS, `manifest.webmanifest` com nome/ícones/display e `service worker` com estratégia de cache **apenas de assets públicos seguros**.
+- Instalação na tela inicial de Android e iOS e lançamento em modo standalone quando suportado.
+- Android: testar Chrome e pelo menos outro navegador relevante no piloto. iOS: testar Safari e execução da PWA adicionada à tela de início; **Web Push em iOS exige web app adicionado à tela inicial em iOS 16.4+**, além de permissão e requisitos de plataforma.
+- Notificações push são requisito do MESCE, mas não devem ser a única forma de convocação: manter centro de notificações interno e status persistido no servidor.
+- Não prometer **uso offline completo**: leitura/edição de dados pessoais offline e confirmação de escala sem internet exigiriam desenho de sincronização, segurança e resolução de conflitos; escopo não aprovado.
+- Para o MVP, confirmação/recusa, revisão e publicação devem exigir conexão e resposta confirmada da API. Nunca exibir “confirmado” apenas por ação local sem persistência.
+- Em iOS, validar **Auth0 redirecionando de volta para PWA standalone**, cookies/sessão isolados, links de notificação, ícone e permissão Web Push; avaliar workaround apenas após testes.
+- PWA **não exige publicação nas lojas** para ser instalada pela tela inicial; publicar em Play Store/App Store é iniciativa futura e não garantida.
+- Não cachear endereços, contatos, observações, tokens ou respostas sensíveis no service worker, armazenamento compartilhado ou cache público.
+
+### 13.6 Matriz obrigatória de validação de PWA no piloto
+
+| Cenário | Android | iOS |
+| --- | --- | --- |
+| Abrir em navegador, login/logout Auth0 e retorno à rota certa | Testar | Testar |
+| Instalar e abrir como app standalone | Testar | Testar |
+| Visualizar escala, confirmar e recusar (com servidor) | Testar | Testar |
+| Receber push em segundo plano após consentimento | Testar | Testar PWA instalada no iOS 16.4+ |
+| Abrir designação correta por toque na notificação | Testar | Testar |
+| Sessão expirada e reconexão sem perda de autorização | Testar | Testar |
+| Alteração/cancelamento e reconfirmação | Testar | Testar |
+| App sem conexão e retorno à conexão | Não confirmar ações offline; indicar erro recuperável | Igual |
+| Dados sensíveis ausentes de caches e push | Testar | Testar |
+| Acessibilidade, contraste, navegação e toque | Testar | Testar |
+
+**Critério para optar por app nativo:** após pilotar a PWA com ministros reais/dispositivos representativos, listar lacunas mensuráveis (ex.: push não confiável, login interrompido, recursos essenciais indisponíveis). Se as jornadas essenciais funcionarem, **manter PWA como app principal**.
+
+### 13.7 Prova técnica antes da implementação do banco/autenticação
+1. Identificar versão/distribuição do KofLang e executar programa mínimo com logs e teste.
+2. Confirmar geração de saída web compatível com Vercel e chamadas HTTPS seguras.
+3. Confirmar API KofLang utilizável pela interface web/PWA e driver SQL compatível com Neon, sem integrar dados reais.
+4. Confirmar validação OIDC/Auth0 de access token no backend com testes de permissões.
+5. Executar POC de instalação PWA e push em Android/iOS, com dados fictícios.
+6. Registrar arquitetura final, custos/cotas, configuração de ambientes e procedimento de migração/rollback.
+7. Só então provisionar recursos e criar schema operacional mediante etapa autorizada.
+
+### 13.8 Fontes técnicas de referência
+- Neon/Vercel Marketplace: https://vercel.com/marketplace/neon
+- Auth0/Vercel Marketplace: https://vercel.com/marketplace/auth0
+- Apple Web Push para web apps: https://developer.apple.com/documentation/usernotifications/sending-web-push-notifications-in-web-apps-and-browsers
+- MDN: PWA instalável: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable
+- KofLang: https://koflang.github.io/
+
+### 13.9 Status e riscos
+- A verificação da conta em 2026-11-06 **não encontrou conexões de conectores no projeto Vercel `messe-nsrdf` nem projeto Neon com nome MESCE**. Isso não exclui bancos em outras contas/nomeações.
+- **Auth0:** a integração nativa do Vercel é especialmente direcionada a Next.js; a solução KofLang depende de implementação interoperável OIDC/OAuth.
+- **Neon:** a integração Vercel não assegura por si só conectividade com runtime KofLang; realizar prova de driver/protocolo.
+- **PWA:** suporte prático de push e sessão precisa ser testado em Android e iOS instalados, antes de declarar que substitui o app nativo.
