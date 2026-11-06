@@ -1,5 +1,5 @@
-const CACHE = 'mesce-poc-static-v1';
-const ASSETS = ['/', '/index.html', '/manifest.webmanifest', '/icon.svg'];
+const CACHE = 'mesce-poc-static-v2';
+const ASSETS = ['/', '/index.html', '/manifest.webmanifest', '/icon.svg', '/privacidade.html', '/app/privacy.js'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
   self.skipWaiting();
