@@ -3,8 +3,8 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname,'..');
-const type = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.webmanifest':'application/manifest+json; charset=utf-8'};
-const allowed = new Set(['/','/index.html','/privacidade.html','/manifest.webmanifest','/icon.svg','/sw.js','/app/privacy.js','/app/scheduling.js']);
+const type = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.webmanifest':'application/manifest+json; charset=utf-8'};
+const allowed = new Set(['/','/index.html','/privacidade.html','/manifest.webmanifest','/icon.svg','/sw.js','/app/privacy.js','/app/scheduling.js','/app/accessibility.css']);
 const port = Number(process.env.PORT||4173);
 const server = http.createServer((req,res)=>{
   const pathname = new URL(req.url,'http://localhost').pathname;
