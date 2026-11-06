@@ -44,6 +44,8 @@ kof run poc-kof/main.kf --target=js
 A documentação oficial do KofLang descreve `kof build <dir> --target=js`. Antes de substituir a demonstração HTML/JS por uma UI KofJS, validar a versão instalada e o formato de saída gerado.
 
 ## Construção e privacidade
+- **Aviso LGPD:** `index.html` apresenta aviso contextual e `privacidade.html` contém explicação ampliada. A política é preliminar; a identificação do controlador, contato, base legal e retenção precisam ser definidos antes da coleta real.
+
 - [Backlog por prioridade e critérios de conclusão](docs/TASKS.md)
 - [Política de privacidade, minimização e anonimização](docs/PRIVACIDADE-LGPD.md)
 - A POC agora possui um painel de **indicadores agregados** sem nomes ou datas individuais; grupos pequenos são ocultados. Este método é demonstrativo, **não certifica anonimização de dados reais**.
