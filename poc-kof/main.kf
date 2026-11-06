@@ -1,0 +1,11 @@
+// Prova mínima de sintaxe KofLang baseada na documentação oficial.
+// Não há integração real com Neon/Auth0 ou com a tela HTML nesta fase.
+record Ministro(String nome, Int participacoes)
+record Celebracao(String tipo, String data)
+
+main() {
+    var ministro = Ministro("Ministro exemplo", 0)
+    var celebracao = Celebracao("Casamento", "2026-12-12")
+    println(ministro.nome())
+    println(celebracao.tipo())
+}
