@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Novo fluxo de aprovação pelo coordenador (BRT; horário exato não registrado)
+- **Tipo:** `docs`.
+- **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** substituído o aceite individual de designações por: coordenador solicita impedimentos para o próximo mês → ministros enviam até dia 25 do mês anterior → coordenador consolida dados e celebrações extras → gera escala preliminar → faz ajustes manuais → aprova → gera PDFs finais → envia aos ministros. Adaptados estados, regras de autorização, notificações push, funcionalidades web/PWA e testes. Fluxos antigos do histórico não são mais vigentes.
+- **Validação:** revisão documental e atualização de regras; sem implementação, compilação, testes automatizados ou deploy.
+- **Pendências:** data da solicitação inicial, política de ausência de resposta, canal de envio dos PDFs, tratamento de urgências após aprovação.
+
+
 ## 2026-11-06 — Arquitetura candidata Neon/Auth0 e priorização PWA (BRT; horário exato não registrado)
 - **Tipo:** `docs`.
 - **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
