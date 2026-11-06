@@ -1,0 +1,11 @@
+{
+  "name": "mesce-nsrdf",
+  "version": "0.1.0-dev",
+  "private": true,
+  "description": "MESCE — ambiente local demonstrativo, sem banco/autenticação",
+  "scripts": {
+    "dev": "node scripts/dev-server.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "check": "node --check app/scheduling.js && node --check app/visits.js && node --check app/privacy.js && node --check scripts/dev-server.cjs && node --check scripts/validate-pwa.cjs"
+  }
+}

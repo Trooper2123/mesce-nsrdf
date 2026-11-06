@@ -1,0 +1,58 @@
+/* MESCE — acessibilidade por padrão: alto contraste, legibilidade e baixo estímulo. */
+:root {
+  --forest:#123d33;--pine:#185046;--gold:#ffdd84;--paper:#f7f9f5;
+  --ink:#152b24;--muted:#374941;--border:#82998e;--danger:#8d2525;
+}
+html {scroll-behavior:auto;scroll-padding-top:1rem}
+body {font-size:18px;line-height:1.65}
+a {color:#164d41;text-decoration:underline;text-underline-offset:.15em}
+a:hover {text-decoration-thickness:2px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible {
+  outline:4px solid #a95b00;outline-offset:3px;
+}
+header a:focus-visible {outline-color:#ffdd84}
+.brand {font-size:1.35rem;letter-spacing:0}
+.hero h1 {font-size:clamp(2rem,4.5vw,3rem);line-height:1.22;letter-spacing:-.02em}
+.hero p {color:#fff;font-size:1.05rem}
+.hint,.minor,.caption {color:var(--muted);font-size:.94rem}
+.panel {box-shadow:none;border:2px solid var(--border);border-radius:12px}
+.panel h2 {font-size:1.45rem;line-height:1.35}
+.panel h3 {font-size:1.15rem}
+label {font-size:1rem;line-height:1.5}
+input,select,button,.btn {min-height:48px;font-size:1rem}
+input,select {border:2px solid #647c70;padding:10px 12px}
+button,.btn {padding:12px 20px}
+.btn.secondary {background:#e5efe9;color:#123d33;border:2px solid #123d33}
+.btn:disabled {background:#d4dbd7;color:#3e5149;opacity:1;border:2px solid #8da097}
+.rows li {padding:16px 0}
+table {font-size:1rem;line-height:1.55}
+th,td {padding:13px 10px;vertical-align:top;overflow-wrap:anywhere}
+th {font-size:1rem;color:#253e34;background:#eaf1eb}
+.status {font-size:1rem}
+.tag,.pill {font-size:.9rem}
+.alert {font-size:1rem;background:#fff1c8;border:2px solid #b88a30;color:#3c2e15}
+.skip-link {position:absolute;left:12px;top:-120px;background:#fff;color:#123d33;z-index:100;padding:12px 18px;border:3px solid #123d33;border-radius:6px}
+.skip-link:focus {top:10px}
+.quick-nav {display:flex;flex-wrap:wrap;gap:10px;padding:14px 0 8px}
+.quick-nav a {display:inline-flex;align-items:center;justify-content:center;min-height:48px;
+  padding:10px 15px;background:#fff;color:#123d33;border:2px solid #123d33;
+  border-radius:8px;font-weight:700;text-decoration:none}
+.quick-nav a:hover {background:#e5efe9}
+@media(max-width:680px) {
+  .wrap{padding-inline:16px}
+  .top{align-items:flex-start}
+  .panel{padding:18px}
+  .actions{flex-direction:column}
+  .actions .btn{width:100%}
+  .quick-nav a{flex:1 1 100%;justify-content:flex-start}
+  .grid,.fields{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  body{font-size:12pt;line-height:1.4}
+  th,td{font-size:11pt;padding:6px}
+  .panel{border:0}
+  .quick-nav,.skip-link{display:none!important}
+}
