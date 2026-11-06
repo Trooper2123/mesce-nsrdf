@@ -21,16 +21,24 @@
 <p><a href="/privacidade.html">Consultar aviso de privacidade detalhado</a></p>
 <p class="minor"><strong>Esta é uma demonstração:</strong> não há envio de dados ao Neon ou Auth0. Não informe dados pessoais verdadeiros.</p>
 </section>
+<section class="panel no-print" aria-label="Ambiente demonstrativo e papéis">
+<div class="fields">
+  <div><label for="role-view">Visualização de desenvolvimento</label><select id="role-view"><option value="COORDINATOR">Coordenador (simulação)</option><option value="MINISTER">Ministro (simulação)</option></select></div>
+  <div><label for="role-minister">Ministro visualizado</label><select id="role-minister"></select></div>
+</div>
+<p class="hint">Trocar de perfil altera apenas a interface demonstrativa. Não é autenticação nem controle real de acesso.</p>
+</section>
 <div class="grid">
 <section class="panel no-print" aria-labelledby="imped-title"><h2 id="imped-title">1. Impedimentos</h2><p class="hint" id="deadline"></p>
 <form id="absence-form"><div class="field"><label for="minister">Ministro demonstrativo</label><select id="minister" required></select></div><div class="field"><label for="absence-type">Abrangência</label><select id="absence-type"><option value="CELEBRATION">Missa ou celebração específica</option><option value="DAY">Dia(s) avulsos</option><option value="PERIOD">Período contínuo</option></select></div><div class="field" id="absence-event-field"><label for="absence-event">Celebração específica</label><select id="absence-event"></select></div><div class="field" id="absence-days-field" hidden><label for="absence-days">Dias (separados por vírgula, ex.: 8, 22)</label><input id="absence-days" placeholder="8, 22" inputmode="numeric"></div><div class="fields" id="absence-period-field" hidden><div><label for="start">Data inicial</label><input id="start" type="date"></div><div><label for="end">Data final</label><input id="end" type="date"></div></div><button class="btn" type="submit">Registrar impedimento</button><p class="status" id="absence-message" role="status" aria-live="polite"></p></form><h3>Registros nesta sessão</h3><ul class="rows" id="absences"></ul></section>
-<section class="panel no-print" aria-labelledby="event-title"><h2 id="event-title">2. Agenda dinâmica</h2><p class="hint">O coordenador pode adicionar celebrações extraordinárias.</p><form id="event-form"><div class="field"><label for="event-name">Celebração</label><input id="event-name" required maxlength="70" placeholder="Ex.: missa de sétimo dia"></div><div class="fields"><div><label for="event-date">Data</label><input id="event-date" type="date" required></div><div><label for="event-time">Horário</label><input id="event-time" type="time" required value="19:00"></div></div><div class="field"><label for="event-slots">Ministros necessários</label><input id="event-slots" type="number" min="1" max="30" value="1" required></div><button class="btn" type="submit">Incluir celebração</button></form><ul class="rows" id="events"></ul></section>
-<section class="panel full no-print" aria-labelledby="flow-title"><h2 id="flow-title">3. Coordenação</h2><p class="hint">A distribuição respeita impedimentos por missa, dias ou período e o quantitativo de cada celebração. Não implementa todas as regras da SPEC.</p><div class="actions"><button class="btn" id="generate" type="button">Gerar escala preliminar</button><button class="btn secondary" id="approve" disabled type="button">Aprovar escala</button><button class="btn secondary" id="reset" type="button">Reiniciar demonstração</button></div><p id="schedule-message" class="status" role="status" aria-live="polite"></p></section>
-<section class="panel full no-print" aria-labelledby="aggregate-title"><h2 id="aggregate-title">Indicadores agregados • demonstração</h2><p class="hint">Não apresenta nomes, endereços ou dados individuais. Valores pequenos são suprimidos para reduzir risco de identificação. Não é certificação de anonimização.</p><p id="aggregate-result" role="status" aria-live="polite">Gere uma escala para consultar os indicadores.</p></section>
+<section class="panel no-print coordinator-only" aria-labelledby="event-title"><h2 id="event-title">2. Agenda dinâmica</h2><p class="hint">O coordenador pode adicionar celebrações extraordinárias.</p><form id="event-form"><div class="field"><label for="event-name">Celebração</label><input id="event-name" required maxlength="70" placeholder="Ex.: missa de sétimo dia"></div><div class="fields"><div><label for="event-date">Data</label><input id="event-date" type="date" required></div><div><label for="event-time">Horário</label><input id="event-time" type="time" required value="19:00"></div></div><div class="field"><label for="event-slots">Ministros necessários</label><input id="event-slots" type="number" min="1" max="30" value="1" required></div><button class="btn" type="submit">Incluir celebração</button></form><ul class="rows" id="events"></ul></section>
+<section class="panel full no-print coordinator-only" aria-labelledby="flow-title"><h2 id="flow-title">3. Coordenação</h2><p class="hint">A distribuição respeita impedimentos por missa, dias ou período e o quantitativo de cada celebração. Não implementa todas as regras da SPEC.</p><div class="actions"><button class="btn" id="generate" type="button">Gerar escala preliminar</button><button class="btn secondary" id="approve" disabled type="button">Aprovar escala</button><button class="btn secondary" id="reset" type="button">Reiniciar demonstração</button></div><p id="schedule-message" class="status" role="status" aria-live="polite"></p></section>
+<section class="panel full no-print coordinator-only" aria-labelledby="aggregate-title"><h2 id="aggregate-title">Indicadores agregados • demonstração</h2><p class="hint">Não apresenta nomes, endereços ou dados individuais. Valores pequenos são suprimidos para reduzir risco de identificação. Não é certificação de anonimização.</p><p id="aggregate-result" role="status" aria-live="polite">Gere uma escala para consultar os indicadores.</p></section>
 <section class="panel printable full" id="schedule-panel" aria-labelledby="schedule-title"><h2 id="schedule-title">4. Escala <span id="schedule-state">— não gerada</span></h2><p class="hint" id="schedule-subtitle">Gere uma proposta para visualizar as designações.</p><div class="print-title"><h1>MESCE NSR-DF — Escala demonstrativa</h1></div><div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Horário</th><th>Celebração</th><th>Ministro</th></tr></thead><tbody id="schedule-rows"><tr><td colspan="4">Nenhuma escala gerada.</td></tr></tbody></table></div><div class="actions no-print"><button class="btn" id="print" type="button" disabled>Imprimir / Salvar como PDF</button></div></section>
 </div><footer class="caption">POC 0.2 • Resumos agregados com supressão de amostras pequenas; não equivale a anonimização certificada. Sem autenticação, persistência, push real, dados pessoais ou algoritmo definitivo. O PDF é obtido pela função de impressão do navegador após aprovação.</footer>
 </main>
 <script src="/app/privacy.js"></script>
+<script src="/app/scheduling.js"></script>
 <script>
 (() => {
   'use strict';
@@ -44,6 +52,16 @@
   const labelDate = value => value.split('-').reverse().join('/');
   const ministers = Array.from('ABCDEFGH',letter=>({id:letter.toLowerCase(),name:'Ministro '+letter+' (fictício)'}));
   let absences=[],events=[],schedule=[],approved=false,generated=false,nextEventId=1;
+  let currentRole='COORDINATOR',currentMinister='a';
+  const isCoordinator=()=>currentRole==='COORDINATOR';
+  function drawRole(){
+    document.querySelectorAll('.coordinator-only').forEach(element=>{element.hidden=!isCoordinator();});
+    $('minister').value=currentMinister;
+    $('minister').disabled=!isCoordinator();
+    $('print').hidden=!isCoordinator();
+    drawSchedule();
+    draw();
+  }
   const node = (tag,text,cls) => { const el=document.createElement(tag);el.textContent=text;if(cls)el.className=cls;return el; };
   const isTarget = date => date.slice(0,7)===dateOf(1).slice(0,7);
   const message = (id,text,error=false) => {$(id).textContent=text;$(id).className='status '+(error?'error':'ok');};
@@ -97,10 +115,38 @@
     $('schedule-subtitle').textContent=approved?'Esta versão está liberada para impressão demonstrativa.':generated?'Revise a distribuição antes da aprovação.':'Gere uma proposta para visualizar as designações.';
     const body=$('schedule-rows');body.replaceChildren();
     if(!schedule.length){const tr=document.createElement('tr'),td=node('td',generated?'Nenhuma atribuição possível.':'Nenhuma escala gerada.');td.colSpan=4;tr.append(td);body.append(tr);return;}
-    schedule.forEach(a=>{const tr=document.createElement('tr');[labelDate(a.date),a.time,a.name,a.minister].forEach(v=>tr.append(node('td',v)));body.append(tr);});
+    const visible=isCoordinator()?schedule:schedule.filter(row=>row.ministerId===currentMinister);
+    if(!visible.length){const tr=document.createElement('tr'),td=node('td','Nenhuma designação para o perfil selecionado.');td.colSpan=4;tr.append(td);body.append(tr);}
+    visible.forEach(a=>{
+      const tr=document.createElement('tr');
+      [labelDate(a.date),a.time,a.name].forEach(v=>tr.append(node('td',v)));
+      const td=document.createElement('td');
+      if(isCoordinator()&&generated&&!approved){
+        const select=document.createElement('select');
+        select.setAttribute('aria-label','Substituir ministro em '+a.name+' em '+labelDate(a.date));
+        ministers.forEach(m=>{const option=document.createElement('option');option.value=m.id;option.textContent=m.name;select.append(option);});
+        select.value=a.ministerId;
+        select.addEventListener('change',()=>{
+          const output=window.MesceScheduling.replace({ministers,events,absences,rows:schedule,eventId:a.id,oldMinisterId:a.ministerId,newMinisterId:select.value});
+          if(!output.ok){
+            message('schedule-message',output.reason==='INELIGIBLE'?'Ministro impedido ou já escalado no horário.':'Substituição inválida: '+output.reason,true);
+            select.value=a.ministerId;return;
+          }
+          schedule=output.rows;drawSchedule();message('schedule-message','Substituição manual realizada na versão preliminar.');
+        });
+        td.append(select);
+      }else td.textContent=a.minister;
+      tr.append(td);body.append(tr);
+    });
   }
   $('deadline').textContent='Mês de referência: '+target.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})+'. Envio até 25/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+'.';
-  ministers.forEach(m=>{const option=document.createElement('option');option.value=m.id;option.textContent=m.name;$('minister').append(option);});
+  ministers.forEach(m=>{
+    for(const id of ['minister','role-minister']){
+      const option=document.createElement('option');option.value=m.id;option.textContent=m.name;$(id).append(option);
+    }
+  });
+  $('role-view').addEventListener('change',()=>{currentRole=$('role-view').value;drawRole();});
+  $('role-minister').addEventListener('change',()=>{currentMinister=$('role-minister').value;drawRole();});
   $('start').value=dateOf(1);$('end').value=dateOf(1);$('start').min=dateOf(1);$('end').min=dateOf(1);$('start').max=dateOf(last);$('end').max=dateOf(last);$('event-date').value=dateOf(1);$('event-date').min=dateOf(1);$('event-date').max=dateOf(last);
   events=[{id:nextEventId++,name:'Missa dominical (exemplo)',date:dateOf(((7-new Date(year,month,1).getDay())%7)+1),time:'09:00',slots:2}];
   $('absence-type').addEventListener('change',updateAbsenceFields);
@@ -121,18 +167,25 @@
     message('absence-message','Impedimento registrado nesta sessão demonstrativa.');stale();draw();
   });
   $('event-form').addEventListener('submit',ev=>{ev.preventDefault();const name=$('event-name').value.trim(),date=$('event-date').value,time=$('event-time').value,slots=Number($('event-slots').value);if(!name||!isTarget(date)||!time||!Number.isInteger(slots)||slots<1||slots>30){message('schedule-message','Informe celebração, data do próximo mês e horário.',true);return;}events.push({id:nextEventId++,name,date,time,slots});events.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));$('event-name').value='';stale();draw();});
-  $('generate').addEventListener('click',()=>{const totals=Object.fromEntries(ministers.map(m=>[m.id,0]));schedule=[];let uncovered=0;
-    for(const e of events){
-      const eligible=ministers.filter(m=>!absences.some(a=>a.minister===m.id&&matchAbsence(a,e))&&!schedule.some(row=>row.ministerId===m.id&&row.date===e.date&&row.time===e.time)).sort((a,b)=>totals[a.id]-totals[b.id]||a.id.localeCompare(b.id));
-      const selected=eligible.slice(0,e.slots);uncovered+=e.slots-selected.length;
-      selected.forEach(m=>{totals[m.id]++;schedule.push({...e,ministerId:m.id,minister:m.name});});
-    }
-    generated=true;approved=false;$('approve').disabled=uncovered>0||schedule.length===0;$('print').disabled=true;drawSchedule();message('schedule-message',uncovered?'Atenção: '+uncovered+' vaga(s) sem ministro. Ajuste quantidade ou impedimentos.':'Escala preliminar gerada. Revise e aprove para liberar a impressão.',uncovered>0);
+  $('generate').addEventListener('click',()=>{
+    const output=window.MesceScheduling.generate({ministers,events,absences});
+    schedule=output.rows;generated=true;approved=false;
+    $('approve').disabled=output.issues.length>0||schedule.length===0;
+    $('print').disabled=true;drawSchedule();
+    message('schedule-message',output.issues.length
+      ?'Foram encontrados '+output.issues.length+' problemas de cobertura ou elegibilidade. Ajuste a escala.'
+      :'Escala preliminar gerada. É possível substituir ministros individualmente antes de aprovar.',output.issues.length>0);
   });
-  $('approve').addEventListener('click',()=>{if(!generated||!schedule.length)return;approved=true;$('approve').disabled=true;$('print').disabled=false;drawSchedule();message('schedule-message','Escala aprovada nesta simulação. É possível imprimir ou salvar como PDF.');});
-  $('print').addEventListener('click',()=>{if(approved)window.print();});
+  $('approve').addEventListener('click',()=>{
+    if(!isCoordinator()||!generated||!schedule.length)return;
+    const issues=window.MesceScheduling.validate({ministers,events,absences,rows:schedule});
+    if(issues.length){message('schedule-message','Escala não pode ser aprovada: '+issues.length+' conflito(s) ou vaga(s) pendente(s).',true);return;}
+    approved=true;$('approve').disabled=true;$('print').disabled=false;drawSchedule();
+    message('schedule-message','Versão aprovada no ambiente demonstrativo. O PDF é apenas um exemplo.');
+  });
+  $('print').addEventListener('click',()=>{if(approved&&isCoordinator())window.print();});
   $('reset').addEventListener('click',()=>location.reload());
-  updateAbsenceFields();draw();drawSchedule();
+  updateAbsenceFields();drawRole();
   if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}
 })();
 </script>
