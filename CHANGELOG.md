@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Ampliação da SPEC com Projeto MESCE v3.0 (BRT; horário exato não registrado)
+- **Tipo:** `docs`.
+- **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** Incorporadas regras operacionais da referência de outubro/2026: atualização entre dias 25–29; limite mensal por ministro; locais exclusivos/preferenciais/aceitos; casal servindo como unidade; indisponibilidade por intervalo; bloqueios de inativos e afastados; equilíbrio histórico dos últimos 12 meses; validação, revisão e aprovação; PDF somente após aprovação; auditoria, dashboard, relatórios e campos personalizados. Pendências de interpretação documentadas separadamente.
+- **Validação:** leitura do documento fornecido e conferência da especificação; sem execução de compilação, testes automatizados, alterações de banco ou deploy.
+- **Pendências:** fórmula de pontuação/saldo, aplicação do limite mensal, quantidade/frequência das visitas, permissões, KofLang/KofJS e build Vercel.
+
+
 ## 2026-11-06 — Documentação inicial (BRT; horário exato não registrado)
 - **Tipo:** `docs`.
 - **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
