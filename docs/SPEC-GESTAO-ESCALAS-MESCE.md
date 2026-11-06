@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft v0.10** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
+Status: **draft v0.11** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -626,3 +626,21 @@ O login pode envolver redirecionamento direto do cliente para o Auth0, mas decis
 - Se a versão pública/interna deve seguir **A4 retrato exatamente** ou ser permitida orientação paisagem em meses muito cheios.
 - Legenda oficial das cores e uso da logomarca institucional; eventualmente fornecer arquivo de logo autorizado.
 - Se será necessário gerar **arquivos distintos** para celebrações e visitas, além da folha combinada de referência.
+
+## 17. Privacidade desde a concepção — revisão LGPD (2026-11-06)
+
+**Documento complementar obrigatório:** [PRIVACIDADE-LGPD.md](PRIVACIDADE-LGPD.md). **Backlog rastreável:** [TASKS.md](TASKS.md).
+
+### 17.1 Critério de negócio
+- Usar dados **anonimizados de fato** ou sintéticos para analytics, testes, exemplos e resultados compartilhados, considerando o risco de reidentificação com data, lugar e participação de poucos ministros. Exibir apenas totais agregados quando o risco for aceitável e ocultar amostras pequenas.
+- **Não** chamar de anônimo um nome substituído por código reversível, hash estável ou iniciais. Isso pode ser pseudonimização; as proteções da LGPD continuam aplicáveis.
+- Para organizar visitas, o sistema precisa de dados identificáveis (nome e endereço do assistido e contato autorizado). A proteção adequada nesse contexto é **minimização, segregação, acesso somente a responsáveis pela visita, auditoria e retenção limitada** — não anonimização que inviabilize o atendimento.
+- O PDF enviado à coordenação/ministros segue **mínimo necessário por destinatário**. Uma versão geral não deve incluir endereços/telefones dos assistidos; eventual guia com contatos só poderá ser acessado mediante autenticação e permissão específica.
+- Não copiar a referência `EscalaMesceNovembro0.1.pdf` para GitHub, fixtures, planilhas de teste, base de demonstração ou arquivos públicos, por conter informações pessoais de terceiros.
+- Mensagens push não incluirão nome, endereço, telefone, justificativa privada nem observações do assistido.
+- A extração de relatórios agregados só será liberada com avaliação de risco e controles de divulgação, não pela simples remoção de colunas identificadoras.
+
+### 17.2 Implementação parcial atual
+- A POC permanece **sem armazenamento persistente ou autenticação** e só usa dados fictícios em memória. O módulo `app/privacy.js` implementa exemplo de supressão de pequenos grupos para os indicadores agregados.
+- A versão funcional com dados reais depende do backend com **autorização no servidor**, integração segura de Neon/Auth0, testes de acesso negado e emissão de PDF interna, conforme tarefas `T-005` a `T-016`.
+- Nenhum dado real de assistido deverá circular na POC ou no frontend sem proteção efetiva.
