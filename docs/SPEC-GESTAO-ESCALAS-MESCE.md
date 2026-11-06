@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft v0.7** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
+Status: **draft v0.8** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -426,8 +426,8 @@ Não enviar notificações para confirmar ou recusar a designação. Eventos ext
 - **Prioridade 1:** aplicativo web responsivo operacional, publicado no Vercel.
 - **Prioridade 2:** **PWA instalável** em Android/iOS, buscando oferecer uso equivalente a um aplicativo para os fluxos essenciais da pastoral, com notificações push após permissões e compatibilidade confirmadas.
 - **Prioridade futura e condicional:** aplicativos nativos Android/iOS somente se a validação da PWA identificar lacunas importantes. Não iniciar dois clientes nativos automaticamente.
-- **Persistência preferida:** **Neon PostgreSQL**, pela integração com Vercel, branches para testes/previews e gestão centralizada; **ainda não provisionado neste projeto**.
-- **Identidade preferida:** **Auth0**, via Vercel Marketplace para provisionamento/configuração; **ainda não integrado ao projeto**.
+- **Persistência selecionada:** **Neon PostgreSQL**, pela integração com Vercel, branches para testes/previews e gestão centralizada. A responsável informou configuração concluída; foi encontrado um projeto Neon criado pelo Vercel Marketplace em 2026-11-06, porém **o vínculo específico com o projeto MESCE e a conectividade não foram verificados**.
+- **Identidade selecionada:** **Auth0**, via Vercel Marketplace. A responsável informou configuração concluída, mas **o vínculo com o projeto MESCE e o login OIDC em execução ainda não foram verificados**.
 - **Domínio/backend:** manter **KofLang como linguagem principal planejada**; requer prova técnica de runtime e comunicação com Neon e Auth0.
 
 ### 13.2 Organização lógica (não é deploy já existente)
@@ -511,7 +511,16 @@ O login pode envolver redirecionamento direto do cliente para o Auth0, mas decis
 - KofLang: https://koflang.github.io/
 
 ### 13.9 Status e riscos
-- A verificação da conta em 2026-11-06 **não encontrou conexões de conectores no projeto Vercel `messe-nsrdf` nem projeto Neon com nome MESCE**. Isso não exclui bancos em outras contas/nomeações.
+- **Atualização de 2026-11-06:** o projeto Vercel está renomeado para `mesce-nsrdf` e ligado ao GitHub `Trooper2123/mesce-nsrdf` (`main`). A responsável informou configuração de Neon e Auth0. A conta Neon contém projeto recém-criado por `vercel_marketplace` (`neon-aqua-ladder`, região `aws-sa-east-1`, PostgreSQL 18), **sem confirmação de associação ao MESCE**. A listagem de conectores do projeto Vercel retornou vazia. Não foi feito teste de conexão SQL, autenticação OIDC ou leitura de segredos.
 - **Auth0:** a integração nativa do Vercel é especialmente direcionada a Next.js; a solução KofLang depende de implementação interoperável OIDC/OAuth.
 - **Neon:** a integração Vercel não assegura por si só conectividade com runtime KofLang; realizar prova de driver/protocolo.
 - **PWA:** suporte prático de push e sessão precisa ser testado em Android e iOS instalados, antes de declarar que substitui o app nativo.
+
+## 14. Verificação de provisionamento informado (2026-11-06)
+
+- **Informação da responsável:** integrações Neon e Auth0 foram configuradas.
+- **GitHub/Vercel:** vínculo atual confirmado com `Trooper2123/mesce-nsrdf`, projeto `mesce-nsrdf`. A `main` é a branch principal no GitHub.
+- **Neon:** encontrado recurso criado por `vercel_marketplace` em 2026-11-06, mas seu vínculo com o MESCE não foi demonstrado; não executar migrações ou criar schema em projeto de destino incerto.
+- **Auth0:** nenhum vínculo foi confirmado pela listagem atual de conectores Vercel. Isso não exclui integração por outra superfície/configuração.
+- **Validação pendente:** (1) confirmar associação exata dos serviços ao projeto Vercel; (2) verificar **nomes** de variáveis de ambiente exigidas sem expor seus valores; (3) estabelecer conectividade com banco isolado de testes; (4) provar login/logout OIDC e validação de access token; (5) registrar procedimento de build KofLang.
+- **Segurança:** jamais copiar conexão, senha, client secret ou token para documentação, cliente web, logs ou arquivos versionados.
