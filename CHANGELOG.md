@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-11-06 — POC mínima web/PWA e exemplo KofLang (BRT; horário exato não registrado)
+- **Tipo:** `feat`, `docs`, `chore`.
+- **Arquivos:** `index.html`, `manifest.webmanifest`, `sw.js`, `icon.svg`, `poc-kof/main.kf`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** demonstração responsiva, com três ministros fictícios, impedimentos na sessão, celebrações avulsas, distribuição mínima por equilíbrio simples, aprovação demonstrativa e impressão para PDF. Adicionados manifesto PWA, cache somente de recursos públicos e fonte Kof mínima para futura prova de compilação.
+- **Segurança:** dados somente em memória, sem persistência, sem autenticação ou acesso a Neon/Auth0 e sem push. Não utilizar dados reais.
+- **Validação:** verificação de arquivos e deploys Vercel registrados; a compilação KofLang e os testes em dispositivos PWA ainda não foram executados. O algoritmo não implementa regras completas de produção.
+- **Pendências:** validar KofLang, conectar backend autorizado com Neon/Auth0, PNGs/instalação PWA, qualidade, regras completas e push.
+
+
 ## 2026-11-06 — Configuração informada de Neon/Auth0 e verificação de vínculo (BRT; horário exato não registrado)
 - **Tipo:** `docs`.
 - **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
