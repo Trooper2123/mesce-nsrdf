@@ -5,7 +5,7 @@ on:
     branches:
       - feature/kof-neon-auth0-backend
     paths:
-      - 'backend-kof/**'
+      - 'backend-kof/src/**'
       - '.github/workflows/kof-check.yml'
   workflow_dispatch:
 
@@ -38,4 +38,6 @@ jobs:
         run: kof version
       - name: Validar backend Kof para JVM
         run: kof check backend-kof/src/Main.kf --target jvm
+      - name: Compilar backend Kof para JVM (sem deploy)
+        run: kof build backend-kof/src --target jvm
 # Nenhum secret, nenhuma conexão Neon/Auth0, nenhuma alteração de banco e nenhum deploy.

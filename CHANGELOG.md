@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-11-06 — Backend KofLang com base segura para Auth0/Neon
+- **Tipo:** `feat`, `ci`, `docs`, `test`.
+- **Arquivos:** `backend-kof/src/Main.kf`, `backend-kof/sql/001_init.sql`, `backend-kof/README.md`, `backend-kof/.env.example`, `.github/workflows/kof-check.yml`, `tests/backend-contract.test.cjs`, `.gitignore`.
+- **Resumo:** Auth0 via RS256/JWKS com issuer e audience obrigatórios, verificação de papel pela tabela de atores, operações protegidas de ministros com criptografia AES-GCM; schema inicial Neon somente na branch de desenvolvimento.
+- **Validação:** `kof check --target jvm` aprovado usando Kof 0.7.2 e SHA-256 pinado. Oito tabelas presentes na branch Neon; testes de API/JDBC/token real ainda pendentes.
+- **Segurança:** nenhuma senha, token, cliente Auth0 ou dado pessoal real foi gravado. Sem deploy.
+- **Branch:** `feature/kof-neon-auth0-backend`, PR dependente de `feature/mesce-app-dev`.
+
+
 ## 2026-11-06 — Visitas dominicais demonstrativas
 - **Tipo:** `feat`, `test`, `docs`.
 - **Arquivos:** `app/visits.js`, `tests/visits.test.cjs`, `index.html`, `sw.js`, `scripts/dev-server.cjs`, `scripts/validate-pwa.cjs`, `package.json`, `README.md`.
