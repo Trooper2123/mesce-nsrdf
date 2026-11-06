@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft** — requisitos iniciais fornecidos pela responsável pelo projeto.  
+Status: **draft v0.2** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -85,7 +85,7 @@ Campos técnicos recomendados: ativo/inativo; data de criação/atualização. V
 - `SEPARADOS`: evitar a mesma celebração/visita, salvo autorização explícita para exceções.
 - `SEM_PREFERENCIA`: sem restrição adicional.
 - Caso a preferência conflite com capacidade, disponibilidade ou equidade, reportar o conflito para ajuste humano; não gerar atribuição inválida silenciosamente.
-- A natureza obrigatória ou facultativa de `JUNTOS`/`SEPARADOS` deve ser confirmada.
+- A referência MESCE v3.0 estabelece que `Servir Juntos = SIM` implica tratar o casal como unidade, sujeita à elegibilidade de ambos e ao limite de vagas. A força da preferência `SEPARADOS` continua pendente de confirmação.
 
 ### 3.4 Proximidade nas visitas
 - Começar por bairro/CEP ou coordenadas geocodificadas conforme qualidade e disponibilidade dos dados.
@@ -152,10 +152,100 @@ Interface PT-BR, responsiva, acessível e com estados de erro/vazio.
 3. Qual é a regra para dias sem disponibilidade declarada?
 4. Servir junto/separado é preferência flexível ou exigência obrigatória?
 5. Como tratar feriados, missas excepcionais, substituições e ausência de última hora?
-6. Equidade é aferida por mês ou considera meses anteriores?
+6. A referência define equilíbrio histórico anual com análise dos últimos 12 meses e compensação de quem serviu menos. Confirmar pontuação e peso relativo de celebrações versus visitas.
 7. Quais perfis usarão o sistema e quais dados podem aparecer em escalas compartilhadas?
 8. Como calcular proximidade (bairro/CEP, coordenada, distância real) e quais permissões de dados?
 9. É necessário confirmação da escala pelo ministro e avisos por WhatsApp/email?
 10. Qual banco de dados e qual hospedagem de backend são aceitáveis para o compilador KofLang disponível?
 
 As questões acima **não bloqueiam a documentação**; bloqueiam decisões de implementação que dependam das respostas.
+
+
+## 9. Complemento de referência — Projeto MESCE v3.0 (outubro/2026)
+
+**Fonte:** documento fornecido `Projeto MESCE.docx`, intitulado *Relatório do Projeto MESCE — Sistema de Gestão dos Ministros Extraordinários da Sagrada Comunhão Eucarística, Versão 3.0 (Especificação Funcional)*. Os itens abaixo representam exigências dessa referência; não representam recursos já implementados. A referência previa inicialmente Excel Online/Copilot, enquanto este repositório mantém o objetivo de aplicativo web em KofLang.
+
+### 9.1 Fluxo operacional e período de atualização
+- Janela mensal sugerida no documento: **dias 25 a 29**, para atualização dos dados, antes da geração da escala preliminar.
+- Fluxo: atualização dos dados → geração preliminar → validação → ajustes manuais → aprovação → geração de PDF final → publicação.
+- Tela inicial com ações de gerar escala preliminar, validar escala, aprovar escala, gerar PDF final, relatórios e dashboard.
+- Configurações de referência: ano, mês, data inicial/final de atualização, limite mensal padrão e número de meses do histórico.
+- O sistema deve diferenciar **prazo de atualização** e **data efetiva de celebração**; o comportamento fora da janela deverá ser definido por coordenação.
+
+### 9.2 Ampliação do cadastro e preferências dos ministros
+Além dos campos já descritos:
+- **E-mail**, indicador **ativo/inativo** e **limite mensal individual**.
+- Registro de **afastamento** independente de indisponibilidade por datas.
+- Preferências por local, com valores inicialmente cadastrados na referência:
+  - **Matriz**;
+  - **Carmelo Nossa Senhora do Carmo**;
+  - **Capela Nossa Senhora Aparecida**;
+  - **Eventos Externos**.
+- Classificação de preferência por local: **EXCLUSIVA** (só poderá servir no local indicado), **PREFERENCIAL** (prioridade para o local) ou **ACEITA** (pode servir em qualquer local). A escolha de vários locais exclusivos precisa de validação clara.
+- Preferências e limites devem ser editáveis sem alterar historicamente escalas já publicadas; guardar evidência do valor aplicado à geração da escala.
+
+### 9.3 Indisponibilidades e celebrações
+- Indisponibilidades têm **data inicial, data final e motivo** e podem cobrir intervalos de vários dias.
+- Tipos de celebração de referência: **Missa, Adoração, Casamento, Evento Especial**.
+- Celebração exige **data, hora, local, tipo, quantidade de ministros e observações**.
+- A quantidade necessária é **por celebração**, não uma constante global. Campos de `Ministro 1/2/3` do documento são representação visual exemplificativa; o modelo relacional deve suportar quantidade variável.
+- Evitar escala em **dois dias seguidos** e **mais de uma celebração no mesmo dia**. São critérios de preferência e aviso, enquanto indisponibilidade, afastamento, inatividade e limite mensal são bloqueios explícitos da referência.
+
+### 9.4 Equidade histórica e limite mensal
+- O documento exige **analisar os últimos 12 meses**, com objetivo de equilibrar participação ao longo do ano, não só no mês corrente.
+- Cada registro histórico deverá permitir recuperar **ministro, ano, mês, total de celebrações, total de assistidos, pontuação e saldo**.
+- **Compensação:** ministros com menor participação histórica recebem prioridade nas próximas escalas, respeitando todas as restrições obrigatórias.
+- Ninguém pode ultrapassar seu **limite mensal** (individual ou padrão). É preciso definir se o limite conta participações em celebrações e visitas em conjunto ou separadamente.
+- Os campos `pontuação` e `saldo` existem na referência, mas **não há fórmula definida**. Não inventar pesos ou tratar número de missas como automaticamente equivalente a número de assistidos.
+- Regra de equilíbrio sugerida para implementação após definição da fórmula: minimizar diferença de participação no histórico (janela móvel de 12 meses), depois distribuir vagas do mês; quando empatar, considerar preferências locais, casais, escala consecutiva e proximidade nas visitas. A precedência exata entre preferências é decisão pendente.
+
+### 9.5 Casais como unidade
+- Regra explícita do documento: quando `Servir Juntos = SIM`, o **casal deverá ser tratado como unidade**.
+- Antes de alocar a unidade, verificar **disponibilidade dos dois, vínculo válido, local permitido para ambos, capacidade para duas pessoas e limites mensais individuais**.
+- Não fazer alocação parcial silenciosa em nome do casal. Se impossível, registrar vaga em aberto ou conflito para revisão.
+- Regras de `Servir Juntos = NÃO`, caso haja separação obrigatória, precisam ser acordadas; o documento não determina proibição de coincidência.
+
+### 9.6 Estados, aprovação, PDF e auditoria
+- Estados documentados: **Pendente → Em Revisão → Aprovada**; `Publicada` pode ser estado separado de distribuição, a decidir.
+- O sistema só poderá **aprovar** quando todas as validações forem executadas e **não houver conflitos, violações de indisponibilidade nem limites excedidos**.
+- **PDF final só pode ser gerado de escala aprovada**. Uma prévia para revisão, se existir, deve ser claramente identificada e não confundida com o PDF oficial.
+- Ajustes manuais devem registrar **data, alteração e responsável** (por exemplo, troca de um ministro por outro), com revalidação obrigatória antes de aprovação.
+- Auditoria deve registrar **criação, alteração, exclusão, aprovação e emissão de PDF**, com **data/hora, usuário, ação e descrição**.
+- Manter histórico/auditoria imutável para fins de rastreabilidade; exclusão de cadastro não deve apagar trilha de escala.
+
+### 9.7 Dashboard, relatórios e campos personalizados
+- Dashboard: **ministros ativos, assistidos ativos, celebrações do mês, escalas pendentes e aprovadas**.
+- Gráficos: **participação por ministro, por casal, mensal e distribuição das celebrações**.
+- Relatório de escalas: celebrações e ministros escalados.
+- Relatório de assistidos: assistidos, responsáveis e telefones — **acesso restrito** por conter dados pessoais.
+- Relatório de participação: missas servidas, assistidos atendidos e saldo histórico.
+- Campos personalizados por entidade, sem alteração estrutural de schema. Exemplos da referência: profissão e comunidade (ministros), necessita transporte (assistidos), celebrante (celebrações).
+- Campo personalizado exige catálogo de definições com entidade, nome, tipo, obrigatoriedade e permissões; não permitir execução de código ou SQL como valor.
+- Priorizar formulários de cadastro e geração de escala no MVP; personalização e gráficos são escopo posterior, salvo decisão de prioridade diferente.
+
+### 9.8 Perfis e manual operacional de referência
+- **Coordenador:** atualizar cadastros, indisponibilidades e celebrações; gerar escala preliminar; revisar; registrar ajustes; aprovar; emitir PDF.
+- **Ministro:** informar indisponibilidades; manter dados próprios atualizados; consultar escalas publicadas.
+- Implementar autorização em backend por papel e por titularidade dos dados. A publicação de escala não implica divulgação irrestrita de endereços e telefones.
+
+### 9.9 Critérios de aceitação adicionais
+1. Ministro inativo, afastado ou indisponível nunca é escalado.
+2. Preferência **EXCLUSIVA** impede escala em local não autorizado.
+3. Casal com `Servir Juntos = SIM` entra na mesma ocorrência ou a alocação fica pendente; nenhum integrante é designado isoladamente pela rotina de casal.
+4. Um ministro nunca ultrapassa o limite mensal definido.
+5. A geração considera participação histórica de 12 meses e explicita o saldo, sem simular fórmula de pontuação ainda não aprovada.
+6. O sistema sinaliza dois dias consecutivos e duas celebrações no mesmo dia.
+7. Edição manual registra responsável e exige nova validação.
+8. Escalas com conflito não podem ser aprovadas; PDF oficial só é emitido após aprovação.
+9. Relatórios e campos pessoais só são visíveis a perfis autorizados.
+
+### 9.10 Questões ainda abertas após a referência
+- Definição da **pontuação**, do **saldo** e do peso de missas versus assistidos.
+- Se **limite mensal** se aplica a todas as modalidades somadas ou por modalidade.
+- Como interpretar período de atualização de **25 a 29** nos meses com exceções, e quem pode editar fora da janela.
+- Forma exata de lidar com eventos de vários horários e com exigência de dupla para casal.
+- Quantos ministros por visita dominical e frequência de visitas por assistido.
+- Como aplicar `SEPARADOS` e como conciliar preferências conflitantes.
+- Se os locais de celebração listados são exclusivos dessa paróquia ou exemplos editáveis.
+- Escopo e prioridade de campos personalizados, dashboards avançados e exportação de dados.
+- Política de confirmação, substituição e divulgação segura de informações dos assistidos.
