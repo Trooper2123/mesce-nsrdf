@@ -5,6 +5,11 @@ record ActorRole(String role)
 record NewMinister(String name, String phone)
 record EncryptedMinister(String id, String name_ciphertext, String phone_ciphertext)
 record MinisterResponse(String id, String name, String phone)
+record NewAssisted(String name, String address, String phone)
+record EncryptedAssisted(String id, String name_ciphertext, String address_ciphertext, String phone_ciphertext)
+record AssistedResponse(String id, String name, String address, String phone)
+record CelebrationRow(String id, String occurs_on, String starts_at, String location_code, String kind, Int required_ministers)
+record NewCelebration(String occursOn, String startsAt, String locationCode, String kind, Int requiredMinisters)
 
 main() {
     var environment = secrets.get("MESCE_API_ENV")
@@ -77,6 +82,70 @@ main() {
         var encryptedName = crypto.encryptAesGcm(input.name, dataKey)
         var encryptedPhone = crypto.encryptAesGcm(input.phone, dataKey)
         db.execute(database, "INSERT INTO mesce_dev.ministers(name_ciphertext, phone_ciphertext) VALUES(?, ?)", encryptedName, encryptedPhone)
+        return status(201, "{\"created\":true}")
+    }
+
+
+    // Assistidos: somente coordenação; nunca disponibilizar endereço a usuários gerais.
+    app.get("/api/assisted") {
+        var roles = db.query<ActorRole>(database, "SELECT role FROM mesce_dev.actors WHERE auth0_sub = ? AND active = true", auth.user())
+        if (roles.size == 0 || roles.get(0).role != "COORDINATOR") {
+            return status(403, "{\"error\":\"forbidden\"}")
+        }
+        var encrypted = db.query<EncryptedAssisted>(database, "SELECT id::text AS id, name_ciphertext, address_ciphertext, phone_ciphertext FROM mesce_dev.assisted_people WHERE active = true ORDER BY created_at")
+        var result = listOf<AssistedResponse>()
+        var index = 0
+        while (index < encrypted.size) {
+            var item = encrypted.get(index)
+            var name = crypto.decryptAesGcm(item.name_ciphertext, dataKey)
+            var address = crypto.decryptAesGcm(item.address_ciphertext, dataKey)
+            var phone = ""
+            if (item.phone_ciphertext != null && item.phone_ciphertext != "") {
+                phone = crypto.decryptAesGcm(item.phone_ciphertext, dataKey)
+            }
+            result.add(AssistedResponse(item.id, name, address, phone))
+            index = index + 1
+        }
+        return json.encode(result)
+    }
+
+    app.post("/api/assisted") {
+        var roles = db.query<ActorRole>(database, "SELECT role FROM mesce_dev.actors WHERE auth0_sub = ? AND active = true", auth.user())
+        if (roles.size == 0 || roles.get(0).role != "COORDINATOR") {
+            return status(403, "{\"error\":\"forbidden\"}")
+        }
+        var input = json.decode<NewAssisted>(body())
+        if (input.name == "" || input.address == "") {
+            return status(400, "{\"error\":\"invalid_payload\"}")
+        }
+        var name = crypto.encryptAesGcm(input.name, dataKey)
+        var address = crypto.encryptAesGcm(input.address, dataKey)
+        var phone = crypto.encryptAesGcm(input.phone, dataKey)
+        db.execute(database, "INSERT INTO mesce_dev.assisted_people(name_ciphertext,address_ciphertext,phone_ciphertext) VALUES(?,?,?)", name, address, phone)
+        return status(201, "{\"created\":true}")
+    }
+
+    // Celebrações: leitura por ministro vinculado, mutações somente coordenador.
+    app.get("/api/celebrations") {
+        var roles = db.query<ActorRole>(database, "SELECT role FROM mesce_dev.actors WHERE auth0_sub = ? AND active = true", auth.user())
+        if (roles.size == 0) {
+            return status(403, "{\"error\":\"forbidden\"}")
+        }
+        var events = db.query<CelebrationRow>(database, "SELECT id::text AS id, occurs_on::text AS occurs_on, starts_at::text AS starts_at, location_code, kind, required_ministers::int AS required_ministers FROM mesce_dev.celebrations ORDER BY occurs_on, starts_at")
+        return json.encode(events)
+    }
+
+    app.post("/api/celebrations") {
+        var roles = db.query<ActorRole>(database, "SELECT role FROM mesce_dev.actors WHERE auth0_sub = ? AND active = true", auth.user())
+        if (roles.size == 0 || roles.get(0).role != "COORDINATOR") {
+            return status(403, "{\"error\":\"forbidden\"}")
+        }
+        var input = json.decode<NewCelebration>(body())
+        if (input.kind == "" || input.locationCode == "" || input.requiredMinisters < 1 || input.requiredMinisters > 30) {
+            return status(400, "{\"error\":\"invalid_payload\"}")
+        }
+        db.execute(database, "INSERT INTO mesce_dev.celebrations(occurs_on,starts_at,location_code,kind,required_ministers) VALUES(?::date,?::time,?,?,?)",
+            input.occursOn, input.startsAt, input.locationCode, input.kind, input.requiredMinisters)
         return status(201, "{\"created\":true}")
     }
 
