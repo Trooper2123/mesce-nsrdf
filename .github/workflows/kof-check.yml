@@ -1,0 +1,41 @@
+name: KofLang backend — compile check
+
+on:
+  push:
+    branches:
+      - feature/kof-neon-auth0-backend
+    paths:
+      - 'backend-kof/**'
+      - '.github/workflows/kof-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kof-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Instalar KofLang 0.7.2 verificado por SHA-256
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 3 \
+            -o /tmp/kof.tar.gz \
+            https://github.com/KofLang/Kof4j/releases/download/kof-0.7.2-linux-x86_64/kof-0.7.2-linux-x86_64.tar.gz
+          echo "3c6687438f2d9bebe24defee9f9250f9c8487d9194df4880057b274c5bce9692  /tmp/kof.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/kof.tar.gz
+          echo "$PWD/kof-0.7.2-linux-x86_64/bin" >> "$GITHUB_PATH"
+      - name: Conferir compilador
+        run: kof version
+      - name: Validar backend Kof para JVM
+        run: kof check backend-kof/src/Main.kf --target jvm
+# Nenhum secret, nenhuma conexão Neon/Auth0, nenhuma alteração de banco e nenhum deploy.
