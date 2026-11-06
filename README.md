@@ -11,10 +11,11 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Cadastro de assistidos e contatos de familiares.
 - Calendário de visitas aos assistidos exclusivamente aos domingos.
 - Geração de escalas: respeitar indisponibilidades e conflitos; equilibrar participações; observar preferências conjugais; considerar proximidade dos endereços nas visitas.
-- Revisão de conflitos e ajustes manuais antes da publicação.
+- Limites mensais individuais, preferências de locais, histórico de 12 meses e casais que servem juntos.
+- Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 
 ## Documentação
-- [SPEC — Gestão e escalas MESCE](docs/SPEC-GESTAO-ESCALAS-MESCE.md)
+- [SPEC — Gestão e escalas MESCE, com referência Projeto MESCE v3.0](docs/SPEC-GESTAO-ESCALAS-MESCE.md)
 - [Regras dos agentes de desenvolvimento](AGENTS.md)
 - [Histórico de alterações](CHANGELOG.md)
 
