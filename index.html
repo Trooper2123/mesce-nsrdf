@@ -16,9 +16,9 @@
 <div class="alert" role="note"><strong>Ambiente demonstrativo.</strong> Todos os nomes são fictícios. Os dados ficam apenas nesta aba, desaparecem ao recarregar e não são enviados ao Neon ou Auth0. Não insira dados reais.</div>
 <div class="grid">
 <section class="panel no-print" aria-labelledby="imped-title"><h2 id="imped-title">1. Impedimentos</h2><p class="hint" id="deadline"></p>
-<form id="absence-form"><div class="field"><label for="minister">Ministro demonstrativo</label><select id="minister" required></select></div><div class="fields"><div><label for="start">Data inicial</label><input id="start" type="date" required></div><div><label for="end">Data final</label><input id="end" type="date" required></div></div><button class="btn" type="submit">Registrar impedimento</button><p class="status" id="absence-message" role="status" aria-live="polite"></p></form><h3>Registros nesta sessão</h3><ul class="rows" id="absences"></ul></section>
-<section class="panel no-print" aria-labelledby="event-title"><h2 id="event-title">2. Agenda dinâmica</h2><p class="hint">O coordenador pode adicionar celebrações extraordinárias.</p><form id="event-form"><div class="field"><label for="event-name">Celebração</label><input id="event-name" required maxlength="70" placeholder="Ex.: missa de sétimo dia"></div><div class="fields"><div><label for="event-date">Data</label><input id="event-date" type="date" required></div><div><label for="event-time">Horário</label><input id="event-time" type="time" required value="19:00"></div></div><button class="btn" type="submit">Incluir celebração</button></form><ul class="rows" id="events"></ul></section>
-<section class="panel full no-print" aria-labelledby="flow-title"><h2 id="flow-title">3. Coordenação</h2><p class="hint">A distribuição prioriza impedimentos e equilibra a quantidade de designações. Esta simulação não implementa todas as regras da SPEC.</p><div class="actions"><button class="btn" id="generate" type="button">Gerar escala preliminar</button><button class="btn secondary" id="approve" disabled type="button">Aprovar escala</button><button class="btn secondary" id="reset" type="button">Reiniciar demonstração</button></div><p id="schedule-message" class="status" role="status" aria-live="polite"></p></section>
+<form id="absence-form"><div class="field"><label for="minister">Ministro demonstrativo</label><select id="minister" required></select></div><div class="field"><label for="absence-type">Abrangência</label><select id="absence-type"><option value="CELEBRATION">Missa ou celebração específica</option><option value="DAY">Dia(s) avulsos</option><option value="PERIOD">Período contínuo</option></select></div><div class="field" id="absence-event-field"><label for="absence-event">Celebração específica</label><select id="absence-event"></select></div><div class="field" id="absence-days-field" hidden><label for="absence-days">Dias (separados por vírgula, ex.: 8, 22)</label><input id="absence-days" placeholder="8, 22" inputmode="numeric"></div><div class="fields" id="absence-period-field" hidden><div><label for="start">Data inicial</label><input id="start" type="date"></div><div><label for="end">Data final</label><input id="end" type="date"></div></div><button class="btn" type="submit">Registrar impedimento</button><p class="status" id="absence-message" role="status" aria-live="polite"></p></form><h3>Registros nesta sessão</h3><ul class="rows" id="absences"></ul></section>
+<section class="panel no-print" aria-labelledby="event-title"><h2 id="event-title">2. Agenda dinâmica</h2><p class="hint">O coordenador pode adicionar celebrações extraordinárias.</p><form id="event-form"><div class="field"><label for="event-name">Celebração</label><input id="event-name" required maxlength="70" placeholder="Ex.: missa de sétimo dia"></div><div class="fields"><div><label for="event-date">Data</label><input id="event-date" type="date" required></div><div><label for="event-time">Horário</label><input id="event-time" type="time" required value="19:00"></div></div><div class="field"><label for="event-slots">Ministros necessários</label><input id="event-slots" type="number" min="1" max="30" value="1" required></div><button class="btn" type="submit">Incluir celebração</button></form><ul class="rows" id="events"></ul></section>
+<section class="panel full no-print" aria-labelledby="flow-title"><h2 id="flow-title">3. Coordenação</h2><p class="hint">A distribuição respeita impedimentos por missa, dias ou período e o quantitativo de cada celebração. Não implementa todas as regras da SPEC.</p><div class="actions"><button class="btn" id="generate" type="button">Gerar escala preliminar</button><button class="btn secondary" id="approve" disabled type="button">Aprovar escala</button><button class="btn secondary" id="reset" type="button">Reiniciar demonstração</button></div><p id="schedule-message" class="status" role="status" aria-live="polite"></p></section>
 <section class="panel printable full" id="schedule-panel" aria-labelledby="schedule-title"><h2 id="schedule-title">4. Escala <span id="schedule-state">— não gerada</span></h2><p class="hint" id="schedule-subtitle">Gere uma proposta para visualizar as designações.</p><div class="print-title"><h1>MESCE NSR-DF — Escala demonstrativa</h1></div><div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Horário</th><th>Celebração</th><th>Ministro</th></tr></thead><tbody id="schedule-rows"><tr><td colspan="4">Nenhuma escala gerada.</td></tr></tbody></table></div><div class="actions no-print"><button class="btn" id="print" type="button" disabled>Imprimir / Salvar como PDF</button></div></section>
 </div><footer class="caption">POC 0.1 • Sem autenticação, persistência, push real, dados pessoais ou algoritmo definitivo. O PDF é obtido pela função de impressão do navegador após aprovação.</footer>
 </main>
@@ -34,7 +34,7 @@
   const last = new Date(year,month+1,0).getDate();
   const labelDate = value => value.split('-').reverse().join('/');
   const ministers = [{id:'a',name:'Ana (fictícia)'},{id:'b',name:'João (fictício)'},{id:'c',name:'Maria (fictícia)'}];
-  let absences=[],events=[],schedule=[],approved=false,generated=false;
+  let absences=[],events=[],schedule=[],approved=false,generated=false,nextEventId=1;
   const node = (tag,text,cls) => { const el=document.createElement(tag);el.textContent=text;if(cls)el.className=cls;return el; };
   const isTarget = date => date.slice(0,7)===dateOf(1).slice(0,7);
   const message = (id,text,error=false) => {$(id).textContent=text;$(id).className='status '+(error?'error':'ok');};
@@ -45,8 +45,34 @@
     items.forEach(item=>list.append(render(item)));
   }
   function draw(){
-    drawList('absences',absences,a=>{const li=node('li','');li.append(node('span',ministers.find(m=>m.id===a.minister).name+' — '+labelDate(a.start)+' a '+labelDate(a.end)));return li;});
-    drawList('events',events,e=>{const li=node('li','');li.append(node('span',labelDate(e.date)+' • '+e.time+' — '+e.name));li.append(node('span','1 vaga','tag'));return li;});
+    drawList('absences',absences,a=>{
+      const li=node('li',''),minister=ministers.find(m=>m.id===a.minister).name;
+      const summary=a.type==='CELEBRATION'?(events.find(e=>e.id===a.eventId)?.name+' ('+labelDate(events.find(e=>e.id===a.eventId).date)+')'):a.type==='DAY'?a.days.map(labelDate).join(', '):labelDate(a.start)+' a '+labelDate(a.end);
+      li.append(node('span',minister+' — '+summary));return li;
+    });
+    drawList('events',events,e=>{
+      const li=node('li','');li.append(node('span',labelDate(e.date)+' • '+e.time+' — '+e.name));
+      const box=node('span','');const lbl=node('label','Ministros necessários');const qty=document.createElement('input');
+      qty.type='number';qty.min='1';qty.max='30';qty.value=e.slots;qty.style.width='76px';lbl.append(qty);box.append(lbl);
+      qty.addEventListener('change',()=>{
+        const value=Number(qty.value);if(!Number.isInteger(value)||value<1||value>30){qty.value=e.slots;return;}
+        e.slots=value;stale();draw();
+      });li.append(box);return li;
+    });
+    const selected=$('absence-event').value;const input=$('absence-event');input.replaceChildren();
+    events.forEach(e=>{const option=document.createElement('option');option.value=e.id;option.textContent=labelDate(e.date)+' '+e.time+' — '+e.name;input.append(option);});
+    if(events.some(e=>String(e.id)===selected))input.value=selected;
+  }
+  function matchAbsence(absence,event){
+    if(absence.type==='CELEBRATION')return absence.eventId===event.id;
+    if(absence.type==='DAY')return absence.days.includes(event.date);
+    return event.date>=absence.start&&event.date<=absence.end;
+  }
+  function updateAbsenceFields(){
+    const type=$('absence-type').value;
+    $('absence-event-field').hidden=type!=='CELEBRATION';
+    $('absence-days-field').hidden=type!=='DAY';
+    $('absence-period-field').hidden=type!=='PERIOD';
   }
   function drawSchedule(){
     $('schedule-state').textContent=approved?'— aprovada (simulação)':generated?'— preliminar':'— não gerada';
@@ -58,17 +84,37 @@
   $('deadline').textContent='Mês de referência: '+target.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})+'. Envio até 25/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+'.';
   ministers.forEach(m=>{const option=document.createElement('option');option.value=m.id;option.textContent=m.name;$('minister').append(option);});
   $('start').value=dateOf(1);$('end').value=dateOf(1);$('start').min=dateOf(1);$('end').min=dateOf(1);$('start').max=dateOf(last);$('end').max=dateOf(last);$('event-date').value=dateOf(1);$('event-date').min=dateOf(1);$('event-date').max=dateOf(last);
-  events=[{name:'Missa dominical (exemplo)',date:dateOf(((7-new Date(year,month,1).getDay())%7)+1),time:'09:00'}];
-  $('absence-form').addEventListener('submit',ev=>{ev.preventDefault();const start=$('start').value,end=$('end').value;if(!isTarget(start)||!isTarget(end)||end<start){message('absence-message','Informe um intervalo válido dentro do próximo mês.',true);return;}absences.push({minister:$('minister').value,start,end});message('absence-message','Impedimento registrado nesta sessão demonstrativa.');stale();draw();});
-  $('event-form').addEventListener('submit',ev=>{ev.preventDefault();const name=$('event-name').value.trim(),date=$('event-date').value,time=$('event-time').value;if(!name||!isTarget(date)||!time){message('schedule-message','Informe celebração, data do próximo mês e horário.',true);return;}events.push({name,date,time});events.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));$('event-name').value='';stale();draw();});
+  events=[{id:nextEventId++,name:'Missa dominical (exemplo)',date:dateOf(((7-new Date(year,month,1).getDay())%7)+1),time:'09:00',slots:2}];
+  $('absence-type').addEventListener('change',updateAbsenceFields);
+  $('absence-form').addEventListener('submit',ev=>{
+    ev.preventDefault();const type=$('absence-type').value,minister=$('minister').value;
+    if(type==='CELEBRATION'){
+      const eventId=Number($('absence-event').value);if(!events.some(e=>e.id===eventId)){message('absence-message','Selecione uma celebração válida.',true);return;}
+      absences.push({minister,type,eventId});
+    }else if(type==='DAY'){
+      const numbers=$('absence-days').value.split(',').map(x=>Number(x.trim()));
+      if(!numbers.length||numbers.some(n=>!Number.isInteger(n)||n<1||n>last)){message('absence-message','Informe dias válidos separados por vírgula.',true);return;}
+      absences.push({minister,type,days:[...new Set(numbers.map(dateOf))]});
+    }else{
+      const start=$('start').value,end=$('end').value;
+      if(!isTarget(start)||!isTarget(end)||end<start){message('absence-message','Informe um período válido dentro do próximo mês.',true);return;}
+      absences.push({minister,type,start,end});
+    }
+    message('absence-message','Impedimento registrado nesta sessão demonstrativa.');stale();draw();
+  });
+  $('event-form').addEventListener('submit',ev=>{ev.preventDefault();const name=$('event-name').value.trim(),date=$('event-date').value,time=$('event-time').value,slots=Number($('event-slots').value);if(!name||!isTarget(date)||!time||!Number.isInteger(slots)||slots<1||slots>30){message('schedule-message','Informe celebração, data do próximo mês e horário.',true);return;}events.push({id:nextEventId++,name,date,time,slots});events.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));$('event-name').value='';stale();draw();});
   $('generate').addEventListener('click',()=>{const totals=Object.fromEntries(ministers.map(m=>[m.id,0]));schedule=[];let uncovered=0;
-    for(const e of events){const eligible=ministers.filter(m=>!absences.some(a=>a.minister===m.id&&e.date>=a.start&&e.date<=a.end)).sort((a,b)=>totals[a.id]-totals[b.id]||a.id.localeCompare(b.id));if(!eligible.length){uncovered++;continue;}const m=eligible[0];totals[m.id]++;schedule.push({...e,minister:m.name});}
-    generated=true;approved=false;$('approve').disabled=uncovered>0||schedule.length===0;$('print').disabled=true;drawSchedule();message('schedule-message',uncovered?'Atenção: '+uncovered+' celebração(ões) sem ministro. Ajuste e gere novamente.':'Escala preliminar gerada. Revise e aprove para liberar a impressão.',uncovered>0);
+    for(const e of events){
+      const eligible=ministers.filter(m=>!absences.some(a=>a.minister===m.id&&matchAbsence(a,e))&&!schedule.some(row=>row.ministerId===m.id&&row.date===e.date&&row.time===e.time)).sort((a,b)=>totals[a.id]-totals[b.id]||a.id.localeCompare(b.id));
+      const selected=eligible.slice(0,e.slots);uncovered+=e.slots-selected.length;
+      selected.forEach(m=>{totals[m.id]++;schedule.push({...e,ministerId:m.id,minister:m.name});});
+    }
+    generated=true;approved=false;$('approve').disabled=uncovered>0||schedule.length===0;$('print').disabled=true;drawSchedule();message('schedule-message',uncovered?'Atenção: '+uncovered+' vaga(s) sem ministro. Ajuste quantidade ou impedimentos.':'Escala preliminar gerada. Revise e aprove para liberar a impressão.',uncovered>0);
   });
   $('approve').addEventListener('click',()=>{if(!generated||!schedule.length)return;approved=true;$('approve').disabled=true;$('print').disabled=false;drawSchedule();message('schedule-message','Escala aprovada nesta simulação. É possível imprimir ou salvar como PDF.');});
   $('print').addEventListener('click',()=>{if(approved)window.print();});
   $('reset').addEventListener('click',()=>location.reload());
-  draw();drawSchedule();
+  updateAbsenceFields();draw();drawSchedule();
   if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}
 })();
 </script>
