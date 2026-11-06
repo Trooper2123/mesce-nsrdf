@@ -13,6 +13,8 @@
 - `GET /api/me`: requires Bearer **access token** Auth0 assinado RS256, validado contra JWKS, issuer e audience. Exige `auth0_sub` cadastrado, ativo, em `mesce_dev.actors`. Sem vínculo: `403`.
 - `GET /api/ministers`: somente `COORDINATOR`. Consulta SQL parametrizada, decripta nomes/telefones no servidor e não devolve dados cifrados.
 - `POST /api/ministers`: somente `COORDINATOR`; cifra nome e telefone com AES-GCM antes de persistir; retorna `201` sem retornar PII.
+- `GET /api/assisted`, `POST /api/assisted`: somente `COORDINATOR`; dados de assistidos (inclusive endereço) cifrados no armazenamento, decifrados exclusivamente no backend para coordenador autorizado.
+- `GET /api/celebrations`: disponível para ator vinculado e ativo; `POST /api/celebrations`: somente `COORDINATOR`, com quantidade obrigatória de ministros entre 1 e 30.
 - Não existe cadastro público de coordenador nem endpoint para promoção de papéis. Não permitir que usuários escolham o próprio papel.
 - Não há rotas públicas; um token Auth0 válido, mas **sem registro de autorização no banco**, permanece bloqueado.
 - Não confundir ID token com access token de API. Sem token, token inválido, errado issuer/audience/assinatura/expiração: rejeição obrigatória.

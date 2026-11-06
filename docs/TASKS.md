@@ -26,7 +26,7 @@ Atualizado em **2026-11-06**. Branch de trabalho `feature/lgpd-backlog-app`. `ma
 
 - [~] **T-030** Visitas dominicais com assistidos fictícios, alocação separada e verificação de conflitos na POC; resta persistência, localização, permissões e regras operacionais reais.
 
-- [~] **T-031** Backend KofLang + Auth0 Resource Server: verificação RS256/JWKS, issuer/audience e RBAC com vínculo no banco; `kof check` validado na CI. Necessário validar HTTP real e token Auth0 em ambiente dev.
+- [~] **T-031** Backend KofLang + Auth0 Resource Server: verificação RS256/JWKS, issuer/audience e RBAC com vínculo no banco; endpoints iniciais de ministros, assistidos e celebrações; `kof check` validado na CI. Necessário validar HTTP real, conexão JDBC e token Auth0 em ambiente dev.
 - [~] **T-032** Neon: branch de desenvolvimento isolada, migration aplicada e 8 tabelas verificadas; faltam JDBC runtime, migrations automatizadas e testes de permissões.
 - [ ] **T-033** Conectar a UI ao Auth0 PKCE e backend Kof, sem expor segredos nem liberar PII antes dos testes de autorização.
 

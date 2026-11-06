@@ -18,7 +18,7 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 
 ## Backend KofLang + Neon + Auth0 (desenvolvimento isolado)
 
-A API KofLang com validação RS256/JWKS do Auth0 e autorização pela tabela `mesce_dev.actors` já está preparada. O schema foi aplicado somente na branch Neon `mesce-dev-2026-11` (sem dados reais) e o `kof check` passou no GitHub Actions. **A conectividade JDBC, os fluxos com tokens reais e a integração da interface ainda não foram validados.**
+A API KofLang com validação RS256/JWKS do Auth0, autorização pela tabela `mesce_dev.actors` e endpoints de ministros, assistidos e celebrações já está preparada. O schema foi aplicado somente na branch Neon `mesce-dev-2026-11` (sem dados reais) e o `kof check` passou no GitHub Actions. **A conectividade JDBC, os fluxos com tokens reais e a integração da interface ainda não foram validados.**
 
 [Configuração e requisitos de segurança do backend](backend-kof/README.md) · [Migração SQL](backend-kof/sql/001_init.sql).
 

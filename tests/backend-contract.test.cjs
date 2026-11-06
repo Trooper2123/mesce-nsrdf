@@ -21,6 +21,13 @@ test('PII é cifrada antes do INSERT e consulta restrita ao coordenador',()=>{
   assert.match(sql,/name_ciphertext text NOT NULL/);
   assert.match(sql,/auth0_sub text NOT NULL UNIQUE/);
 });
+test('cadastro de assistidos e celebrações exige perfil autenticado',()=>{
+  assert.match(main,/app\.post\("\/api\/assisted"\)/);
+  assert.match(main,/app\.post\("\/api\/celebrations"\)/);
+  assert.match(main,/app\.get\("\/api\/celebrations"\)/);
+  assert.match(main,/crypto\.encryptAesGcm\(input\.address, dataKey\)/);
+  assert.match(main,/json\.encode\(input\)/);
+});
 test('migração não importa dados reais ou libera privilégios públicos',()=>{
   assert.doesNotMatch(sql,/GRANT\s+ALL\s+ON\s+.*\s+TO\s+PUBLIC/i);
   assert.doesNotMatch(sql,/INSERT\s+INTO\s+mesce_dev\./i);
