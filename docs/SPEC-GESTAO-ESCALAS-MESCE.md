@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft v0.4** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
+Status: **draft v0.5** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -356,9 +356,76 @@ Não há prazo nem compromisso de publicação nas lojas nesta etapa.
 8. Os aplicativos Android e iOS terão definição própria de escopo, testes, distribuição e tecnologias, após a conclusão do MVP web.
 
 ### 11.7 Planejamento para app móvel
-- **Descoberta:** verificar se os ministros precisam de push, resposta rápida, acesso offline, agenda pessoal, notificações e integração com calendário do telefone.
+- **Descoberta:** notificações push relacionadas às escalas são requisito confirmado; validar resposta rápida, acesso offline, agenda pessoal e integração com calendário do telefone.
 - **Decisão:** avaliar PWA versus app próprio Android/iOS considerando compatibilidade, requisitos das lojas, permissões e custos de manutenção.
 - **Construção:** adicionar clientes mobile sobre contratos de API existentes, reaproveitando regras de domínio e segurança, sem duplicar banco.
 - **Publicação:** configurar contas de distribuição, políticas de privacidade e conformidade de lojas na fase correspondente.
 
 **Em aberto:** prazo de entrega dos apps, notificação preferida, disponibilidade offline, necessidade de login biométrico, plataforma de distribuição e eventual acesso exclusivo a membros da pastoral.
+
+## 12. Notificações push de eventos da escala (decisão de 2026-11-06)
+
+**Requisito:** avisar coordenadores e ministros sobre eventos que exigem ciência ou ação no fluxo da escala, inicialmente pela interface web/PWA quando tecnicamente suportado e posteriormente por aplicativos Android/iOS. A confirmação de recebimento da notificação **não equivale** à confirmação do compromisso.
+
+### 12.1 Eventos e destinatários
+
+| Evento de domínio | Destinatário | Conteúdo mínimo / ação |
+| --- | --- | --- |
+| Nova designação proposta / pedido de confirmação | Ministro designado | "Você tem uma nova designação para confirmar"; abrir a designação autenticada |
+| Lembrete de confirmação pendente | Ministro que ainda não respondeu | "Há uma designação aguardando resposta"; abrir as pendências |
+| Confirmação recebida | Coordenador responsável | "Um ministro confirmou uma designação"; abrir acompanhamento |
+| Recusa da designação | Coordenador responsável | "Uma designação foi recusada"; abrir revisão e substituição |
+| Substituição / nova convocação | Ministro substituto e envolvidos afetados | Solicitar nova confirmação individual; informar alteração aos afetados |
+| Alteração de data, horário ou local | Ministros afetados | Comunicar alteração e indicar se exige reconfirmação |
+| Cancelamento de celebração/visita | Ministros anteriormente designados | Informar cancelamento; invalidar compromisso na agenda |
+| Escala aprovada/publicada | Ministros abrangidos | "Sua escala foi publicada"; consultar versão final |
+| Evento próximo (lembrete de serviço) | Ministros confirmados na versão vigente | Avisar proximidade do compromisso, sem gerar nova confirmação |
+| Pendências acumuladas ou vagas descobertas | Coordenador | Resumo de respostas atrasadas e necessidades de revisão |
+
+A emissão de eventos extraordinários (casamentos, missa de sétimo dia e datas comemorativas) segue as mesmas regras, sem exigir agenda mensal fixa. Visitas dominicais também geram notificações, sem incluir nome, endereço ou condição do assistido no texto push.
+
+### 12.2 Fluxo e preferências
+1. Registrar mudança de estado no servidor e evento de domínio correspondente somente após transação bem-sucedida.
+2. Identificar destinatários autorizados e preferências pessoais; criar notificação interna persistida na caixa **Notificações**.
+3. Enviar push apenas quando existir permissão válida do navegador ou dispositivo e assinatura/token ativo.
+4. Ao tocar/clicar, abrir rota HTTPS da designação/notificação; exigir autenticação e autorização antes de exibir dados.
+5. O ministro confirma/recusa **no sistema**, separadamente da leitura e do recebimento do push.
+6. Armazenar estado `UNREAD`/`READ` para notificações internas e histórico técnico de tentativa de entrega separado do histórico de escala.
+7. Permitir ao usuário ativar/desativar push no próprio dispositivo, consultar preferências e revogar inscrições. Alertas operacionais importantes devem continuar acessíveis dentro do app mesmo sem push.
+8. Horários silenciosos, frequência de lembrete e prazo para resposta serão configuráveis após decisão da pastoral. Evitar repetição excessiva e notificações durante a madrugada, exceto situações urgentes explicitamente configuradas.
+
+### 12.3 Arquitetura proposta, sujeita à validação técnica
+- Entidades lógicas: `notification_events` (evento, agregado, versão, autor, momento), `notifications` (destinatário, tipo, vínculo, leitura), `push_subscriptions` (usuário/dispositivo, plataforma, inscrição, expiração/revogação) e `notification_delivery_attempts` (tentativas, resultado e horário). Não executar schema sem decisão de backend/banco.
+- Um serviço central no backend KofLang (se viável após prova técnica) publica eventos da escala e resolve destinatários; adapters independentes entregam via **Web Push** (navegadores/PWA) ou, futuramente, provedores compatíveis com Android e iOS.
+- Usar fila ou padrão outbox transacional para reduzir perda entre confirmação de escala e solicitação de envio, conforme a infraestrutura escolhida. Entrega é **best effort**: push pode falhar ou atrasar sem bloquear operação de escala.
+- Chave de deduplicação por tipo de evento + designação + versão + destinatário; retries com backoff e expurgo de inscrições inválidas. Não notificar duas vezes pelo mesmo evento em um mesmo canal por reprocessamento.
+- Notificações de uma versão obsoleta não podem solicitar aceite como se fossem atuais; no acesso, validar versão vigente e situação da designação.
+- Não pressupor que web push funciona igualmente em todos os navegadores e versões de iOS/Android: validar permissões, service worker, HTTPS e requisitos de instalação/compatibilidade nos dispositivos-alvo.
+- Tokens, chaves e endpoints sensíveis ficam sob proteção; evitar registrar payloads ou URLs de inscrição em logs acessíveis.
+
+### 12.4 Segurança e LGPD
+- Solicitar permissão push contextual e voluntariamente; não exigir aceite de push para utilizar funcionalidades essenciais.
+- Não expor dados de assistidos, telefones, endereços, informações de saúde, justificativas de indisponibilidade ou observações nas notificações da tela bloqueada.
+- Enviar notificações apenas a usuários autorizados para o evento; retirar inscrições após logout quando aplicável, revogação, troca de conta ou exclusão do dispositivo.
+- O clique não contorna autenticação/autorização; proteger contra IDOR/BOLA.
+- Definir retenção e limpeza de inscrições e histórico de tentativas; não tratar confirmação de entrega como comprovação de leitura.
+- Registrar ações sensíveis de confirmação/recusa e revisão na auditoria da escala, e não depender de logs de push para isso.
+
+### 12.5 Critérios de aceitação
+1. Ao criar proposta, cada ministro designado com push autorizado recebe aviso e a notificação aparece em sua caixa interna.
+2. Ministro sem permissão de push visualiza a pendência no sistema e pode responder normalmente.
+3. Uma recusa informa o coordenador; a substituição notifica o novo ministro e exige confirmação própria.
+4. Alteração de horário/local/data notifica apenas afetados e exige reconfirmação quando aplicável.
+5. Cancelamento comunica afetados e impede abrir ação de confirmação para compromisso cancelado.
+6. A publicação de escala avisa os ministros correspondentes; o push não revela dados pessoais de assistidos.
+7. Reprocessar o mesmo evento não cria push duplicado para o mesmo destinatário/canal.
+8. Uma notificação antiga não consegue confirmar alocação substituída ou versão desatualizada.
+9. Erro ou bloqueio de push não impede gerar, revisar ou aprovar a escala; registrar falha e permitir consulta interna.
+10. Testes incluem autorização, revogação de permissão, falha temporária, deduplicação, versão obsoleta e viewport móvel.
+
+### 12.6 Decisões a confirmar
+- Frequência e horários exatos dos lembretes; se haverá prazo por designação.
+- Se o coordenador também receberá avisos individuais de **todas** as confirmações ou um resumo agrupado.
+- Se haverá categoria de urgência para eventos com pouco aviso prévio.
+- Quais plataformas/navegadores serão priorizados no piloto, com especial atenção ao suporte a push em iOS.
+- Canais alternativos em ausência de push (e-mail, SMS, WhatsApp) são escopo **não aprovado** e não devem ser implementados por inferência.
