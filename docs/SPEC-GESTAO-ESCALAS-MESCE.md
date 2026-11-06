@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft v0.9** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
+Status: **draft v0.10** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -569,3 +569,60 @@ O login pode envolver redirecionamento direto do cliente para o Auth0, mas decis
 9. Testar impedimentos sobrepostos, dias avulsos, casais como unidade e concorrência de edições pela coordenação.
 
 **Pendências:** quantitativo padrão para cada tipo/local ainda será configurado pelos coordenadores; política excepcional de vagas não preenchidas; tratamento de impedimentos depois do dia 25.
+
+## 16. Layout de referência para o PDF final — escala novembro/2026 (documento recebido)
+
+**Referência visual:** `EscalaMesceNovembro0.1.pdf`, fornecido pelo solicitante, **página 1 de 1**. Este documento é um **exemplo de apresentação** da escala oficial, não um conjunto de dados a importar e **não deve ser enviado ao repositório**, pois contém dados pessoais de terceiros (nomes, endereços e telefones). Os exemplos e testes devem empregar dados fictícios.
+
+### 16.1 Estrutura visual observada
+- Folha **A4 em orientação retrato**, uma página no exemplo; composição densa, com tabelas compactas, fonte pequena, linhas visíveis e conteúdo alinhado.
+- **Cabeçalho** com identificação/logotipo da paróquia à esquerda, título centralizado `Escala dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)` e **mês/ano**.
+- **Metade superior esquerda:** tabela de missas e celebrações com colunas `Dia` (data e dia da semana), `Hora`, `Ministro(s)` e `Observações`. Múltiplas celebrações no mesmo dia ocupam linhas próprias e a data pode ficar agrupada visualmente.
+- **Metade superior direita:** tabela de visitas aos assistidos com `Dia`, `Ministro(s)` e `Assistido(s)`; no exemplo, visitas nos domingos 1, 8, 15, 22 e 29.
+- **Abaixo da tabela de visitas:** seção `Observações:` com avisos textuais operacionais para os ministros.
+- **Rodapé inferior:** duas tabelas lado a lado com **assistido + endereço + contatos/referências**, em formato de guia de visita.
+- **Rodapé de versão:** no exemplo, identificação `Versão: 0.1` no canto inferior direito.
+- **Destaques de linha:** documento usa fundos de células amarelos, alaranjados e esverdeados em algumas celebrações e cinza em áreas alternadas. Pela referência visual, amarelo aparece em linhas do Carmelo; laranja em certas celebrações especiais e verde em algumas atividades de adoração. **Não tratar cores como regra exaustiva sem uma legenda formal**; assegurar entendimento por texto.
+
+### 16.2 Especificação de geração
+1. Gerar o PDF **somente após aprovação do coordenador**, com versão única e registro de data/hora de emissão, mês/ano e responsável pela aprovação.
+2. Reproduzir prioritariamente a **hierarquia do modelo**: título + duas tabelas principais + observações + informações adicionais dos assistidos, com tipografia e espaçamento legíveis.
+3. A tabela de celebrações deve suportar **uma linha por ocorrência**: data, dia da semana, horário, ministros nomeados e observações (incluindo local/tipo quando relevantes), refletindo o **quantitativo efetivo** definido na escala aprovada. Não assumir sempre três ministros.
+4. A tabela de visitas deve listar apenas os **domingos** do mês e os ministros vinculados aos respectivos assistidos, com múltiplas linhas por domingo.
+5. Campos `Observações` devem aceitar descrição de evento extraordinário (casamento, missa de sétimo dia, primeira eucaristia, adoração etc.), local, horário diferenciado e instruções operacionais. Textos longos quebram linha sem sobreposição.
+6. **Dados de contato de assistidos são confidenciais**: gerar a seção inferior apenas em **PDF interno restrito** a destinatários autorizados para visitas. Preferir duas variantes geradas da mesma escala aprovada:
+   - **Escala geral:** celebrações e visitas com dados mínimos necessários, **sem endereços/telefones** de assistidos.
+   - **Guia interno de visitas:** seção de endereço/contatos limitada aos ministros autorizados e coordenadores, com acesso autenticado e registro de downloads/compartilhamentos.
+   A distinção é uma **proposta de segurança** por LGPD; escopo exato de destinatários e dados no PDF deve ser confirmado com a coordenação antes da implementação.
+7. O arquivo pode crescer para **mais de uma página**: nunca reduzir indefinidamente a fonte para forçar tudo em uma única folha. Repetir cabeçalhos de tabela após quebra de página e impedir divisão de uma mesma atribuição ou endereço entre páginas sempre que possível.
+8. Manter cores de apoio opcionais com **legenda**, símbolos/texto inequívocos e contraste apropriado para impressão preto e branco; prever cabeçalho com nome da paróquia e logomarca autorizada.
+9. Gerar arquivo com nome estável e informativo, por exemplo `mesce-escala-2026-11-v1.pdf`; incluir identificação de versão em todas as páginas, se houver várias.
+10. A exportação deve receber **snapshot imutável da versão aprovada** e nunca montar o PDF a partir do estado mutável do navegador. Uma mudança após aprovação exige revisão, nova aprovação, novo número de versão e nova emissão.
+11. PDFs devem ser disponibilizados por links autenticados, com checagem de autorização a cada download, e não colocados em pasta pública do Vercel. Push e notificações devem encaminhar para a área protegida, sem anexar dados pessoais ao payload.
+
+### 16.3 Mapeamento dos dados para as seções
+| Área do PDF | Fonte conceitual no sistema |
+|---|---|
+| Cabeçalho e competência | Configuração da paróquia + mês/ano da escala |
+| Celebrações | Ocorrências aprovadas + alocações + observações/local/tipo |
+| Visitas aos assistidos | Visitas dominicais aprovadas + alocações |
+| Observações gerais | Campo de instruções da escala/competência, editável pelo coordenador |
+| Referência de visitas | Cadastro protegido de assistidos + contatos autorizados |
+| Versão | Revisão aprovada, data/hora e responsável pela emissão |
+
+### 16.4 Critérios de aceitação
+- A partir de um mês demonstrativo com celebrações e visitas, o PDF exibe **ambas as tabelas e observações** de modo consistente com o modelo visual de novembro/2026.
+- Três celebrações no mesmo dia, com horários e locais diferentes, permanecem distinguíveis.
+- Missa especial com cinco ministros exibe os cinco sem truncamento de nomes ou sobreposição de células.
+- Visitas aparecem apenas aos domingos.
+- Uma observação longa quebra linhas e desloca corretamente as linhas subsequentes.
+- O PDF gerado contém somente dados da **versão aprovada**.
+- Ministro não autorizado não consegue obter PDF com endereço/telefone de assistidos, mesmo por URL direta.
+- Testar mês com volume maior que uma página, impressão A4, legibilidade, preto e branco e disposição em telas pequenas via download.
+- Nenhum endereço/telefone/nome real presente no PDF recebido deve ser incluído em fixtures, documentação ou repositório público.
+
+### 16.5 Decisões pendentes sobre fidelidade visual
+- Se a escala interna com endereços será distribuída **para todos os ministros** ou somente para os que realizam visitas (recomendado restringir).
+- Se a versão pública/interna deve seguir **A4 retrato exatamente** ou ser permitida orientação paisagem em meses muito cheios.
+- Legenda oficial das cores e uso da logomarca institucional; eventualmente fornecer arquivo de logo autorizado.
+- Se será necessário gerar **arquivos distintos** para celebrações e visitas, além da folha combinada de referência.
