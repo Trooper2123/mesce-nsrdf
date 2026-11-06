@@ -7,13 +7,14 @@ record EncryptedMinister(String id, String name_ciphertext, String phone_ciphert
 record MinisterResponse(String id, String name, String phone)
 
 main() {
+    var environment = secrets.get("MESCE_API_ENV")
     var issuer = secrets.get("MESCE_AUTH0_ISSUER")
     var audience = secrets.get("MESCE_AUTH0_AUDIENCE")
     var jwksUrl = secrets.get("MESCE_AUTH0_JWKS_URL")
     var dbUrl = secrets.get("MESCE_DATABASE_URL")
     var dataKey = secrets.get("MESCE_DATA_KEY_HEX")
 
-    if (issuer == "" || audience == "" || jwksUrl == "" || dbUrl == "" || dataKey == "") {
+    if (environment != "development" || issuer == "" || audience == "" || jwksUrl == "" || dbUrl == "" || dataKey == "") {
         println("MESCE: configuração obrigatória ausente; API não iniciada.")
         return
     }
@@ -49,13 +50,16 @@ main() {
 
         var encrypted = db.query<EncryptedMinister>(database, "SELECT id::text AS id, name_ciphertext, phone_ciphertext FROM mesce_dev.ministers WHERE active = true ORDER BY created_at")
         var result = listOf<MinisterResponse>()
-        for (item in encrypted) {
+        var index = 0
+        while (index < encrypted.size) {
+            var item = encrypted.get(index)
             var name = crypto.decryptAesGcm(item.name_ciphertext, dataKey)
             var phone = ""
             if (item.phone_ciphertext != null && item.phone_ciphertext != "") {
                 phone = crypto.decryptAesGcm(item.phone_ciphertext, dataKey)
             }
             result.add(MinisterResponse(item.id, name, phone))
+            index = index + 1
         }
         return json.encode(result)
     }
@@ -76,6 +80,6 @@ main() {
         return status(201, "{\"created\":true}")
     }
 
-    // Somente loopback em desenvolvimento. Publicação exige proxy TLS e CORS/CSRF revisados.
+    // Processo de desenvolvimento: restringir acesso pela rede/firewall. Nunca publicar sem TLS, CORS e auditoria.
     app.listen(8081)
 }
