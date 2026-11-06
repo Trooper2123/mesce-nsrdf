@@ -20,8 +20,12 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - [Regras dos agentes de desenvolvimento](AGENTS.md)
 - [Histórico de alterações](CHANGELOG.md)
 
-## Tecnologia
-Linguagem principal pretendida: **KofLang**. Interface web a ser publicada no **Vercel**.
+## Plataformas e tecnologia
+- **Primeira entrega:** aplicação **web responsiva**, utilizável no computador e em navegadores de Android e iOS.
+- **Evolução prevista:** avaliar PWA instalável e, posteriormente, aplicativos Android e iOS consumindo a mesma API e base de dados.
+- **Linguagem principal pretendida:** **KofLang**, sujeita à validação real do compilador e da arquitetura.
+- **Publicação web:** **Vercel**; backend e persistência serão definidos após prova técnica.
+- **Regra arquitetural:** regras de escalas, autorizações, confirmações individuais e auditoria não devem ficar duplicadas nos clientes.
 
 **Situação:** fase de especificação; o backend, os cadastros e o algoritmo de escalas ainda não foram implementados. A compilação KofLang/KofJS, persistência e pipeline de deploy precisam ser validados antes de definir comandos de execução. O protótipo visual publicado anteriormente no Vercel não representa ainda estas funcionalidades.
 
