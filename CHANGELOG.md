@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Arquitetura candidata Neon/Auth0 e priorização PWA (BRT; horário exato não registrado)
+- **Tipo:** `docs`.
+- **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** priorizadas web responsiva e PWA como aplicativo principal, com piloto Android/iOS; Neon PostgreSQL e Auth0 preferidos pelas integrações no Vercel; definido backend KofLang com APIs e verificação OIDC, regras de privacidade do PWA, matriz de testes de login/push e critérios para eventual app nativo.
+- **Validação:** consulta de documentação pública Neon, Vercel, Auth0, Apple e MDN; inspeção sem conectores Vercel no projeto e sem projeto Neon nomeado MESCE. Sem provisionamento, alteração de banco, execução de código, compilação, testes reais ou deploy.
+- **Pendências:** prova de execução KofLang, integração SQL/OIDC, consentimento e testes PWA em Android e iOS, configuração e custo das integrações.
+
+
 ## 2026-11-06 — Notificações push relacionadas às escalas (BRT; horário exato não registrado)
 - **Tipo:** `docs`.
 - **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
