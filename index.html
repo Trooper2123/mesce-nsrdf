@@ -7,21 +7,59 @@
 <title>MESCE • POC de escalas</title>
 <style>
 :root{--forest:#17443b;--pine:#22564b;--gold:#dfb66e;--paper:#f7f9f5;--ink:#22332f;--muted:#62726b;--border:#dce5db;--danger:#9b3b35}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}header{background:var(--forest);color:white}.wrap{max-width:1050px;margin:auto;padding:0 20px}.top{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:800;font-size:1.2rem;letter-spacing:.06em}.brand span{color:var(--gold)}.pill{font-size:.78rem;border:1px solid #6c8b7e;border-radius:30px;padding:5px 11px;color:#f2dfbc}.hero{padding:30px 0 45px}.hero h1{margin:5px 0 10px;font-size:clamp(1.9rem,4.5vw,3rem);letter-spacing:-.04em;line-height:1.12}.hero p{max-width:720px;color:#e3eee8;margin:0}.alert{margin:20px 0 26px;padding:14px 18px;border-radius:12px;background:#fff3d8;border:1px solid #e8d39e;font-size:.92rem}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:white;border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 6px 22px #203a3010;margin-bottom:20px}.panel h2{font-size:1.26rem;margin:0 0 5px}.hint{color:var(--muted);font-size:.89rem;margin:0 0 18px}label{display:block;font-size:.88rem;font-weight:700;margin-bottom:5px}input,select{width:100%;min-height:43px;border-radius:9px;border:1px solid #bbcabe;padding:9px 11px;background:#fff;color:var(--ink)}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:13px}.field{margin-bottom:13px}.btn{border:0;padding:11px 18px;border-radius:9px;font-weight:700;background:var(--forest);color:white}.btn:hover{background:var(--pine)}.btn.secondary{color:var(--forest);background:#e7efe9}.btn:disabled{background:#a6b3ad;cursor:not-allowed}.rows{list-style:none;padding:0;margin:12px 0}.rows li{padding:11px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.rows li:last-child{border-bottom:0}.minor{color:var(--muted);font-size:.82rem}.tag{background:#ebf2ec;color:#245446;padding:3px 9px;border-radius:15px;font-size:.75rem;font-weight:700;white-space:nowrap}.tag.warn{background:#fff0df;color:#855223}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.status{font-weight:700;margin:12px 0 0}.status.error{color:var(--danger)}.status.ok{color:#17593a}.full{grid-column:1/-1}.caption{padding:30px 0 50px;color:var(--muted);font-size:.85rem}table{width:100%;border-collapse:collapse;font-size:.91rem}th,td{padding:11px 7px;border-bottom:1px solid var(--border);text-align:left}th{color:var(--muted);font-size:.82rem} .print-title{display:none}@media(max-width:680px){.grid,.fields{grid-template-columns:1fr}.panel{padding:18px}.hero{padding:20px 0 35px}.rows li{flex-direction:column;gap:3px}}@media print{header,.alert,.no-print,.caption{display:none!important}body{background:white}.grid{display:block}.panel{border:0;box-shadow:none;padding:0}.panel:not(.printable){display:none}.print-title{display:block}table{font-size:11pt}th,td{border-bottom:1px solid #ccc}}
+[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}header{background:var(--forest);color:white}.wrap{max-width:1050px;margin:auto;padding:0 20px}.top{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:800;font-size:1.2rem;letter-spacing:.06em}.brand span{color:var(--gold)}.pill{font-size:.78rem;border:1px solid #6c8b7e;border-radius:30px;padding:5px 11px;color:#f2dfbc}.hero{padding:30px 0 45px}.hero h1{margin:5px 0 10px;font-size:clamp(1.9rem,4.5vw,3rem);letter-spacing:-.04em;line-height:1.12}.hero p{max-width:720px;color:#e3eee8;margin:0}.alert{margin:20px 0 26px;padding:14px 18px;border-radius:12px;background:#fff3d8;border:1px solid #e8d39e;font-size:.92rem}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:white;border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 6px 22px #203a3010;margin-bottom:20px}.panel h2{font-size:1.26rem;margin:0 0 5px}.hint{color:var(--muted);font-size:.89rem;margin:0 0 18px}label{display:block;font-size:.88rem;font-weight:700;margin-bottom:5px}input,select{width:100%;min-height:43px;border-radius:9px;border:1px solid #bbcabe;padding:9px 11px;background:#fff;color:var(--ink)}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:13px}.field{margin-bottom:13px}.btn{border:0;padding:11px 18px;border-radius:9px;font-weight:700;background:var(--forest);color:white}.btn:hover{background:var(--pine)}.btn.secondary{color:var(--forest);background:#e7efe9}.btn:disabled{background:#a6b3ad;cursor:not-allowed}.rows{list-style:none;padding:0;margin:12px 0}.rows li{padding:11px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.rows li:last-child{border-bottom:0}.minor{color:var(--muted);font-size:.82rem}.tag{background:#ebf2ec;color:#245446;padding:3px 9px;border-radius:15px;font-size:.75rem;font-weight:700;white-space:nowrap}.tag.warn{background:#fff0df;color:#855223}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.status{font-weight:700;margin:12px 0 0}.status.error{color:var(--danger)}.status.ok{color:#17593a}.full{grid-column:1/-1}.caption{padding:30px 0 50px;color:var(--muted);font-size:.85rem}table{width:100%;border-collapse:collapse;font-size:.91rem}th,td{padding:11px 7px;border-bottom:1px solid var(--border);text-align:left}th{color:var(--muted);font-size:.82rem} .print-title{display:none}@media(max-width:680px){.grid,.fields{grid-template-columns:1fr}.panel{padding:18px}.hero{padding:20px 0 35px}.rows li{flex-direction:column;gap:3px}}@media print{header,.alert,.no-print,.caption{display:none!important}body{background:white}.grid{display:block}.panel{border:0;box-shadow:none;padding:0}.panel:not(.printable){display:none}.print-title{display:block}table{font-size:11pt}th,td{border-bottom:1px solid #ccc}}
 </style>
+<link rel="stylesheet" href="/app/accessibility.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Ir diretamente ao conteúdo</a>
 <header><div class="wrap"><div class="top"><div class="brand">MESCE<span> • </span>NSR-DF</div><span class="pill">PROVA DE CONCEITO</span></div><div class="hero"><h1>Escalas com clareza e cuidado.</h1><p>Exemplo navegável do fluxo mensal: informar impedimentos, incluir celebrações, gerar proposta e finalizar a escala pela coordenação.</p></div></div></header>
-<main class="wrap">
-<div class="alert" role="note"><strong>Ambiente demonstrativo.</strong> Todos os nomes são fictícios. Os dados ficam apenas nesta aba, desaparecem ao recarregar e não são enviados ao Neon ou Auth0. Não insira dados reais.</div>
+<main class="wrap" id="main-content" tabindex="-1">
+<nav class="quick-nav no-print" aria-label="Navegação principal"><a href="#imped-title">Impedimentos</a><a class="coordinator-only" href="#event-title">Celebrações</a><a class="coordinator-only" href="#visits-title">Visitas</a><a class="coordinator-only" href="#flow-title">Coordenação</a><a href="#schedule-title">Escala</a><a href="/pwa.html">Como instalar e usar</a></nav>
+<div class="alert" role="note"><strong>Ambiente demonstrativo.</strong> Todos os ministros são identificados por letras fictícias. Os dados ficam apenas nesta aba, desaparecem ao recarregar e não são enviados ao Neon ou Auth0. Não insira dados reais.</div>
+<section class="panel no-print" aria-labelledby="lgpd-title">
+<h2 id="lgpd-title">Aviso de privacidade (LGPD)</h2>
+<p>Na futura aplicação, dados dos ministros serão usados para organizar celebrações, impedimentos e escalas. Dados de assistidos, como endereço e contato, serão usados somente para organizar visitas e ficarão restritos às pessoas autorizadas.</p>
+<p>Você poderá solicitar informações, acesso e correção de seus dados e exercer os demais direitos previstos na LGPD. A identificação do responsável e o contato oficial serão publicados antes da coleta real.</p>
+<p><a href="/privacidade.html">Consultar aviso de privacidade detalhado</a></p>
+<p class="minor"><strong>Esta é uma demonstração:</strong> não há envio de dados ao Neon ou Auth0. Não informe dados pessoais verdadeiros.</p>
+</section>
+<section class="panel no-print" aria-label="Ambiente demonstrativo e papéis">
+<div class="fields">
+  <div><label for="role-view">Visualização de desenvolvimento</label><select id="role-view"><option value="COORDINATOR">Coordenador (simulação)</option><option value="MINISTER">Ministro (simulação)</option></select></div>
+  <div><label for="role-minister">Ministro visualizado</label><select id="role-minister"></select></div>
+</div>
+<p class="hint">Trocar de perfil altera apenas a interface demonstrativa. Não é autenticação nem controle real de acesso.</p>
+</section>
 <div class="grid">
 <section class="panel no-print" aria-labelledby="imped-title"><h2 id="imped-title">1. Impedimentos</h2><p class="hint" id="deadline"></p>
-<form id="absence-form"><div class="field"><label for="minister">Ministro demonstrativo</label><select id="minister" required></select></div><div class="fields"><div><label for="start">Data inicial</label><input id="start" type="date" required></div><div><label for="end">Data final</label><input id="end" type="date" required></div></div><button class="btn" type="submit">Registrar impedimento</button><p class="status" id="absence-message" role="status" aria-live="polite"></p></form><h3>Registros nesta sessão</h3><ul class="rows" id="absences"></ul></section>
-<section class="panel no-print" aria-labelledby="event-title"><h2 id="event-title">2. Agenda dinâmica</h2><p class="hint">O coordenador pode adicionar celebrações extraordinárias.</p><form id="event-form"><div class="field"><label for="event-name">Celebração</label><input id="event-name" required maxlength="70" placeholder="Ex.: missa de sétimo dia"></div><div class="fields"><div><label for="event-date">Data</label><input id="event-date" type="date" required></div><div><label for="event-time">Horário</label><input id="event-time" type="time" required value="19:00"></div></div><button class="btn" type="submit">Incluir celebração</button></form><ul class="rows" id="events"></ul></section>
-<section class="panel full no-print" aria-labelledby="flow-title"><h2 id="flow-title">3. Coordenação</h2><p class="hint">A distribuição prioriza impedimentos e equilibra a quantidade de designações. Esta simulação não implementa todas as regras da SPEC.</p><div class="actions"><button class="btn" id="generate" type="button">Gerar escala preliminar</button><button class="btn secondary" id="approve" disabled type="button">Aprovar escala</button><button class="btn secondary" id="reset" type="button">Reiniciar demonstração</button></div><p id="schedule-message" class="status" role="status" aria-live="polite"></p></section>
-<section class="panel printable full" id="schedule-panel" aria-labelledby="schedule-title"><h2 id="schedule-title">4. Escala <span id="schedule-state">— não gerada</span></h2><p class="hint" id="schedule-subtitle">Gere uma proposta para visualizar as designações.</p><div class="print-title"><h1>MESCE NSR-DF — Escala demonstrativa</h1></div><div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Horário</th><th>Celebração</th><th>Ministro</th></tr></thead><tbody id="schedule-rows"><tr><td colspan="4">Nenhuma escala gerada.</td></tr></tbody></table></div><div class="actions no-print"><button class="btn" id="print" type="button" disabled>Imprimir / Salvar como PDF</button></div></section>
-</div><footer class="caption">POC 0.1 • Sem autenticação, persistência, push real, dados pessoais ou algoritmo definitivo. O PDF é obtido pela função de impressão do navegador após aprovação.</footer>
+<form id="absence-form"><div class="field"><label for="minister">Ministro demonstrativo</label><select id="minister" required></select></div><div class="field"><label for="absence-type">Abrangência</label><select id="absence-type"><option value="CELEBRATION">Missa ou celebração específica</option><option value="DAY">Dia(s) avulsos</option><option value="PERIOD">Período contínuo</option></select></div><div class="field" id="absence-event-field"><label for="absence-event">Celebração específica</label><select id="absence-event"></select></div><div class="field" id="absence-days-field" hidden><label for="absence-days">Dias (separados por vírgula, ex.: 8, 22)</label><input id="absence-days" placeholder="8, 22" inputmode="numeric"></div><div class="fields" id="absence-period-field" hidden><div><label for="start">Data inicial</label><input id="start" type="date"></div><div><label for="end">Data final</label><input id="end" type="date"></div></div><button class="btn" type="submit">Registrar impedimento</button><p class="status" id="absence-message" role="status" aria-live="polite"></p></form><h3>Registros nesta sessão</h3><ul class="rows" id="absences"></ul></section>
+<section class="panel no-print coordinator-only" aria-labelledby="event-title"><h2 id="event-title">2. Agenda dinâmica</h2><p class="hint">O coordenador pode adicionar celebrações extraordinárias.</p><form id="event-form"><div class="field"><label for="event-name">Celebração</label><input id="event-name" required maxlength="70" placeholder="Ex.: missa de sétimo dia"></div><div class="fields"><div><label for="event-date">Data</label><input id="event-date" type="date" required></div><div><label for="event-time">Horário</label><input id="event-time" type="time" required value="19:00"></div></div><div class="field"><label for="event-slots">Ministros necessários</label><input id="event-slots" type="number" min="1" max="30" value="1" required></div><button class="btn" type="submit">Incluir celebração</button></form><ul class="rows" id="events"></ul></section>
+<section class="panel full no-print coordinator-only" aria-labelledby="visits-title">
+<h2 id="visits-title">3. Visitas dominicais</h2>
+<p class="hint">Assistidos inteiramente fictícios. Na POC, uma visita ocupa o domingo inteiro para evitar dupla designação.</p>
+<form id="visit-form">
+<div class="fields"><div><label for="visit-day">Domingo</label><select id="visit-day" required></select></div>
+<div><label for="assisted">Assistido demonstrativo</label><select id="assisted" required></select></div></div>
+<div class="field"><label for="visit-slots">Ministros necessários</label><input id="visit-slots" type="number" min="1" max="8" value="1" required></div>
+<button class="btn" type="submit">Incluir visita</button>
+</form><ul class="rows" id="visit-plans"></ul>
+</section>
+<section class="panel full no-print coordinator-only" aria-labelledby="flow-title"><h2 id="flow-title">4. Coordenação</h2><p class="hint">A distribuição respeita impedimentos por missa, dias ou período e o quantitativo de cada celebração. Não implementa todas as regras da SPEC.</p><div class="actions"><button class="btn" id="generate" type="button">Gerar escala preliminar</button><button class="btn secondary" id="approve" disabled type="button">Aprovar escala</button><button class="btn secondary" id="reset" type="button">Reiniciar demonstração</button></div><p id="schedule-message" class="status" role="status" aria-live="polite"></p></section>
+<section class="panel full no-print coordinator-only" aria-labelledby="aggregate-title"><h2 id="aggregate-title">Indicadores agregados • demonstração</h2><p class="hint">Não apresenta nomes, endereços ou dados individuais. Valores pequenos são suprimidos para reduzir risco de identificação. Não é certificação de anonimização.</p><p id="aggregate-result" role="status" aria-live="polite">Gere uma escala para consultar os indicadores.</p></section>
+<section class="panel printable full" id="schedule-panel" aria-labelledby="schedule-title"><h2 id="schedule-title">5. Escala <span id="schedule-state">— não gerada</span></h2><p class="hint" id="schedule-subtitle">Gere uma proposta para visualizar as designações.</p><div class="print-title"><h1>MESCE NSR-DF — Escala demonstrativa</h1></div><div style="overflow-x:auto" role="region" aria-label="Tabela de escala" tabindex="0"><table><thead><tr><th scope="col">Data</th><th scope="col">Horário</th><th scope="col">Celebração</th><th scope="col">Ministro</th></tr></thead><tbody id="schedule-rows"><tr><td colspan="4">Nenhuma escala gerada.</td></tr></tbody></table></div><div class="actions no-print"><button class="btn" id="print" type="button" disabled>Imprimir / Salvar como PDF</button></div></section>
+<section class="panel printable full" aria-labelledby="visits-schedule-title">
+<h2 id="visits-schedule-title">6. Visitas aos assistidos (fictícios)</h2>
+<p class="hint">Somente domingos. Nenhum dado real de endereço ou contato é utilizado.</p>
+<div role="region" aria-label="Tabela de visitas" tabindex="0" style="overflow-x:auto">
+<table><thead><tr><th scope="col">Domingo</th><th scope="col">Assistido fictício</th><th scope="col">Ministro</th></tr></thead>
+<tbody id="visits-rows"><tr><td colspan="3">Nenhuma visita escalada.</td></tr></tbody></table>
+</div></section>
+</div><footer class="caption">POC 0.2 • Resumos agregados com supressão de amostras pequenas; não equivale a anonimização certificada. Sem autenticação, persistência, push real, dados pessoais ou algoritmo definitivo. O PDF é obtido pela função de impressão do navegador após aprovação.</footer>
 </main>
+<script src="/app/privacy.js"></script>
+<script src="/app/scheduling.js"></script>
+<script src="/app/visits.js"></script>
 <script>
 (() => {
   'use strict';
@@ -33,42 +71,184 @@
   const dateOf = day => year+'-'+pad(month+1)+'-'+pad(day);
   const last = new Date(year,month+1,0).getDate();
   const labelDate = value => value.split('-').reverse().join('/');
-  const ministers = [{id:'a',name:'Ana (fictícia)'},{id:'b',name:'João (fictício)'},{id:'c',name:'Maria (fictícia)'}];
-  let absences=[],events=[],schedule=[],approved=false,generated=false;
+  const ministers = Array.from('ABCDEFGH',letter=>({id:letter.toLowerCase(),name:'Ministro '+letter+' (fictício)'}));
+  let absences=[],events=[],schedule=[],visitPlans=[],visitRows=[],approved=false,generated=false,nextEventId=1,nextVisitId=1;
+  const fictionalAssisted=Array.from({length:4},(_,i)=>({id:'demo-'+(i+1),label:'Assistido fictício '+String(i+1).padStart(2,'0')}));
+  let currentRole='COORDINATOR',currentMinister='a';
+  const isCoordinator=()=>currentRole==='COORDINATOR';
+  function drawRole(){
+    document.querySelectorAll('.coordinator-only').forEach(element=>{element.hidden=!isCoordinator();});
+    $('minister').value=currentMinister;
+    $('minister').disabled=!isCoordinator();
+    $('print').hidden=!isCoordinator();
+    drawSchedule();
+    drawVisits();
+    draw();
+  }
   const node = (tag,text,cls) => { const el=document.createElement(tag);el.textContent=text;if(cls)el.className=cls;return el; };
   const isTarget = date => date.slice(0,7)===dateOf(1).slice(0,7);
   const message = (id,text,error=false) => {$(id).textContent=text;$(id).className='status '+(error?'error':'ok');};
-  const stale = () => {schedule=[];generated=false;approved=false;drawSchedule();$('approve').disabled=true;$('print').disabled=true;message('schedule-message','Agenda alterada: gere novamente a escala preliminar.');};
+  const stale = () => {schedule=[];visitRows=[];generated=false;approved=false;drawSchedule();drawVisits();$('approve').disabled=true;$('print').disabled=true;message('schedule-message','Agenda alterada: gere novamente a escala preliminar.');};
   function drawList(id,items,render){
     const list=$(id);list.replaceChildren();
     if(!items.length){list.append(node('li','Nenhum registro.','minor'));return;}
     items.forEach(item=>list.append(render(item)));
   }
   function draw(){
-    drawList('absences',absences,a=>{const li=node('li','');li.append(node('span',ministers.find(m=>m.id===a.minister).name+' — '+labelDate(a.start)+' a '+labelDate(a.end)));return li;});
-    drawList('events',events,e=>{const li=node('li','');li.append(node('span',labelDate(e.date)+' • '+e.time+' — '+e.name));li.append(node('span','1 vaga','tag'));return li;});
+    drawList('absences',isCoordinator()?absences:absences.filter(item=>item.minister===currentMinister),a=>{
+      const li=node('li',''),minister=ministers.find(m=>m.id===a.minister).name;
+      const summary=a.type==='CELEBRATION'?(events.find(e=>e.id===a.eventId)?.name+' ('+labelDate(events.find(e=>e.id===a.eventId).date)+')'):a.type==='DAY'?a.days.map(labelDate).join(', '):labelDate(a.start)+' a '+labelDate(a.end);
+      li.append(node('span',minister+' — '+summary));return li;
+    });
+    drawList('events',events,e=>{
+      const li=node('li','');li.append(node('span',labelDate(e.date)+' • '+e.time+' — '+e.name));
+      const box=node('span','');const lbl=node('label','Ministros necessários');const qty=document.createElement('input');
+      qty.type='number';qty.min='1';qty.max='30';qty.value=e.slots;qty.style.width='76px';lbl.append(qty);box.append(lbl);
+      qty.addEventListener('change',()=>{
+        const value=Number(qty.value);if(!Number.isInteger(value)||value<1||value>30){qty.value=e.slots;return;}
+        e.slots=value;stale();draw();
+      });li.append(box);return li;
+    });
+    const selected=$('absence-event').value;const input=$('absence-event');input.replaceChildren();
+    events.forEach(e=>{const option=document.createElement('option');option.value=e.id;option.textContent=labelDate(e.date)+' '+e.time+' — '+e.name;input.append(option);});
+    if(events.some(e=>String(e.id)===selected))input.value=selected;
+  }
+  function matchAbsence(absence,event){
+    if(absence.type==='CELEBRATION')return absence.eventId===event.id;
+    if(absence.type==='DAY')return absence.days.includes(event.date);
+    return event.date>=absence.start&&event.date<=absence.end;
+  }
+  function updateAbsenceFields(){
+    const type=$('absence-type').value;
+    $('absence-event-field').hidden=type!=='CELEBRATION';
+    $('absence-days-field').hidden=type!=='DAY';
+    $('absence-period-field').hidden=type!=='PERIOD';
+  }
+  function updateAggregate(){
+    const area=$('aggregate-result');
+    if(!generated){area.textContent='Gere uma escala para consultar os indicadores.';return;}
+    const report=window.MescePrivacy.aggregateAssignments(schedule);
+    area.textContent=report.published
+      ? report.celebrationCount+' celebrações e '+report.assignmentCount+' designações (sem identificadores).'
+      : 'Dados suprimidos: amostra insuficiente para exibição agregada segura.';
+  }
+  function drawVisits(){
+    const list=$('visit-plans');list.replaceChildren();
+    if(!visitPlans.length)list.append(node('li','Nenhuma visita prevista.','minor'));
+    visitPlans.forEach(v=>list.append(node('li',labelDate(v.date)+' — '+v.assistedLabel+' ('+v.slots+' vaga(s))')));
+    const table=$('visits-rows');table.replaceChildren();
+    const visible=isCoordinator()?visitRows:visitRows.filter(r=>r.ministerId===currentMinister);
+    if(!visible.length){const tr=document.createElement('tr'),cell=node('td','Nenhuma visita atribuída.');cell.colSpan=3;tr.append(cell);table.append(tr);}
+    visible.forEach(v=>{const tr=document.createElement('tr');
+      [labelDate(v.date),v.assistedLabel,v.minister].forEach(value=>tr.append(node('td',value)));table.append(tr);
+    });
+  }
+  function allIssues(){
+    return window.MesceScheduling.validate({ministers,events,absences,rows:schedule}).length+
+      window.MesceVisits.validate({visits:visitPlans,ministers,absences,celebrationRows:schedule,rows:visitRows}).length;
   }
   function drawSchedule(){
+    updateAggregate();
     $('schedule-state').textContent=approved?'— aprovada (simulação)':generated?'— preliminar':'— não gerada';
     $('schedule-subtitle').textContent=approved?'Esta versão está liberada para impressão demonstrativa.':generated?'Revise a distribuição antes da aprovação.':'Gere uma proposta para visualizar as designações.';
     const body=$('schedule-rows');body.replaceChildren();
     if(!schedule.length){const tr=document.createElement('tr'),td=node('td',generated?'Nenhuma atribuição possível.':'Nenhuma escala gerada.');td.colSpan=4;tr.append(td);body.append(tr);return;}
-    schedule.forEach(a=>{const tr=document.createElement('tr');[labelDate(a.date),a.time,a.name,a.minister].forEach(v=>tr.append(node('td',v)));body.append(tr);});
+    const visible=isCoordinator()?schedule:schedule.filter(row=>row.ministerId===currentMinister);
+    if(!visible.length){const tr=document.createElement('tr'),td=node('td','Nenhuma designação para o perfil selecionado.');td.colSpan=4;tr.append(td);body.append(tr);}
+    visible.forEach(a=>{
+      const tr=document.createElement('tr');
+      [labelDate(a.date),a.time,a.name].forEach(v=>tr.append(node('td',v)));
+      const td=document.createElement('td');
+      if(isCoordinator()&&generated&&!approved){
+        const select=document.createElement('select');
+        select.setAttribute('aria-label','Substituir ministro em '+a.name+' em '+labelDate(a.date));
+        ministers.forEach(m=>{const option=document.createElement('option');option.value=m.id;option.textContent=m.name;select.append(option);});
+        select.value=a.ministerId;
+        select.addEventListener('change',()=>{
+          const output=window.MesceScheduling.replace({ministers,events,absences,rows:schedule,eventId:a.id,oldMinisterId:a.ministerId,newMinisterId:select.value});
+          if(!output.ok){
+            message('schedule-message',output.reason==='INELIGIBLE'?'Ministro impedido ou já escalado no horário.':'Substituição inválida: '+output.reason,true);
+            select.value=a.ministerId;return;
+          }
+          schedule=output.rows;
+          const issues=allIssues();
+          $('approve').disabled=issues>0;
+          drawSchedule();drawVisits();
+          message('schedule-message',issues?'Substituição realizada, mas há conflitos. Gere novamente.':'Substituição manual realizada.',issues>0);
+        });
+        td.append(select);
+      }else td.textContent=a.minister;
+      tr.append(td);body.append(tr);
+    });
   }
   $('deadline').textContent='Mês de referência: '+target.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})+'. Envio até 25/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+'.';
-  ministers.forEach(m=>{const option=document.createElement('option');option.value=m.id;option.textContent=m.name;$('minister').append(option);});
-  $('start').value=dateOf(1);$('end').value=dateOf(1);$('start').min=dateOf(1);$('end').min=dateOf(1);$('start').max=dateOf(last);$('end').max=dateOf(last);$('event-date').value=dateOf(1);$('event-date').min=dateOf(1);$('event-date').max=dateOf(last);
-  events=[{name:'Missa dominical (exemplo)',date:dateOf(((7-new Date(year,month,1).getDay())%7)+1),time:'09:00'}];
-  $('absence-form').addEventListener('submit',ev=>{ev.preventDefault();const start=$('start').value,end=$('end').value;if(!isTarget(start)||!isTarget(end)||end<start){message('absence-message','Informe um intervalo válido dentro do próximo mês.',true);return;}absences.push({minister:$('minister').value,start,end});message('absence-message','Impedimento registrado nesta sessão demonstrativa.');stale();draw();});
-  $('event-form').addEventListener('submit',ev=>{ev.preventDefault();const name=$('event-name').value.trim(),date=$('event-date').value,time=$('event-time').value;if(!name||!isTarget(date)||!time){message('schedule-message','Informe celebração, data do próximo mês e horário.',true);return;}events.push({name,date,time});events.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));$('event-name').value='';stale();draw();});
-  $('generate').addEventListener('click',()=>{const totals=Object.fromEntries(ministers.map(m=>[m.id,0]));schedule=[];let uncovered=0;
-    for(const e of events){const eligible=ministers.filter(m=>!absences.some(a=>a.minister===m.id&&e.date>=a.start&&e.date<=a.end)).sort((a,b)=>totals[a.id]-totals[b.id]||a.id.localeCompare(b.id));if(!eligible.length){uncovered++;continue;}const m=eligible[0];totals[m.id]++;schedule.push({...e,minister:m.name});}
-    generated=true;approved=false;$('approve').disabled=uncovered>0||schedule.length===0;$('print').disabled=true;drawSchedule();message('schedule-message',uncovered?'Atenção: '+uncovered+' celebração(ões) sem ministro. Ajuste e gere novamente.':'Escala preliminar gerada. Revise e aprove para liberar a impressão.',uncovered>0);
+  ministers.forEach(m=>{
+    for(const id of ['minister','role-minister']){
+      const option=document.createElement('option');option.value=m.id;option.textContent=m.name;$(id).append(option);
+    }
   });
-  $('approve').addEventListener('click',()=>{if(!generated||!schedule.length)return;approved=true;$('approve').disabled=true;$('print').disabled=false;drawSchedule();message('schedule-message','Escala aprovada nesta simulação. É possível imprimir ou salvar como PDF.');});
-  $('print').addEventListener('click',()=>{if(approved)window.print();});
+  $('role-view').addEventListener('change',()=>{currentRole=$('role-view').value;drawRole();});
+  $('role-minister').addEventListener('change',()=>{currentMinister=$('role-minister').value;drawRole();});
+  $('start').value=dateOf(1);$('end').value=dateOf(1);$('start').min=dateOf(1);$('end').min=dateOf(1);$('start').max=dateOf(last);$('end').max=dateOf(last);$('event-date').value=dateOf(1);$('event-date').min=dateOf(1);$('event-date').max=dateOf(last);
+  for(let day=1;day<=last;day++){
+    const iso=dateOf(day);
+    if(window.MesceVisits.sunday(iso)){const option=document.createElement('option');option.value=iso;option.textContent=labelDate(iso);$('visit-day').append(option);}
+  }
+  fictionalAssisted.forEach(p=>{const option=document.createElement('option');option.value=p.id;option.textContent=p.label;$('assisted').append(option);});
+  events=[{id:nextEventId++,name:'Missa dominical (exemplo)',date:dateOf(((7-new Date(year,month,1).getDay())%7)+1),time:'09:00',slots:2}];
+  $('absence-type').addEventListener('change',updateAbsenceFields);
+  $('absence-form').addEventListener('submit',ev=>{
+    ev.preventDefault();const type=$('absence-type').value,minister=$('minister').value;
+    if(type==='CELEBRATION'){
+      const eventId=Number($('absence-event').value);if(!events.some(e=>e.id===eventId)){message('absence-message','Selecione uma celebração válida.',true);return;}
+      absences.push({minister,type,eventId});
+    }else if(type==='DAY'){
+      const numbers=$('absence-days').value.split(',').map(x=>Number(x.trim()));
+      if(!numbers.length||numbers.some(n=>!Number.isInteger(n)||n<1||n>last)){message('absence-message','Informe dias válidos separados por vírgula.',true);return;}
+      absences.push({minister,type,days:[...new Set(numbers.map(dateOf))]});
+    }else{
+      const start=$('start').value,end=$('end').value;
+      if(!isTarget(start)||!isTarget(end)||end<start){message('absence-message','Informe um período válido dentro do próximo mês.',true);return;}
+      absences.push({minister,type,start,end});
+    }
+    message('absence-message','Impedimento registrado nesta sessão demonstrativa.');stale();draw();
+  });
+  $('event-form').addEventListener('submit',ev=>{ev.preventDefault();const name=$('event-name').value.trim(),date=$('event-date').value,time=$('event-time').value,slots=Number($('event-slots').value);if(!name||!isTarget(date)||!time||!Number.isInteger(slots)||slots<1||slots>30){message('schedule-message','Informe celebração, data do próximo mês e horário.',true);return;}events.push({id:nextEventId++,name,date,time,slots});events.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));$('event-name').value='';stale();draw();});
+  $('visit-form').addEventListener('submit',ev=>{
+    ev.preventDefault();if(!isCoordinator())return;
+    const date=$('visit-day').value,assistedId=$('assisted').value,slots=Number($('visit-slots').value);
+    const p=fictionalAssisted.find(x=>x.id===assistedId);
+    if(!window.MesceVisits.sunday(date)||!p||!Number.isInteger(slots)||slots<1||slots>8){
+      message('schedule-message','Visita inválida.',true);return;
+    }
+    if(visitPlans.some(v=>v.date===date&&v.assistedId===assistedId)){
+      message('schedule-message','Assistido já cadastrado nesse domingo.',true);return;
+    }
+    visitPlans.push({id:nextVisitId++,date,assistedId,assistedLabel:p.label,slots});
+    stale();drawVisits();
+  });
+  $('generate').addEventListener('click',()=>{
+    const output=window.MesceScheduling.generate({ministers,events,absences});
+    schedule=output.rows;
+    const visits=window.MesceVisits.generate({ministers,visits:visitPlans,absences,celebrationRows:schedule});
+    visitRows=visits.rows;generated=true;approved=false;
+    const issues=allIssues();
+    $('approve').disabled=issues>0||(schedule.length===0&&visitRows.length===0);
+    $('print').disabled=true;drawSchedule();drawVisits();
+    message('schedule-message',issues
+      ?'Foram encontrados '+issues+' problemas de cobertura em celebrações ou visitas.'
+      :'Escalas preliminares geradas. Revise antes de aprovar.',issues>0);
+  });
+  $('approve').addEventListener('click',()=>{
+    if(!isCoordinator()||!generated||!schedule.length)return;
+    const issues=allIssues();
+    if(issues){message('schedule-message','Escala não pode ser aprovada: '+issues+' conflito(s) ou vaga(s) pendente(s).',true);return;}
+    approved=true;$('approve').disabled=true;$('print').disabled=false;drawSchedule();
+    message('schedule-message','Versão aprovada no ambiente demonstrativo. O PDF é apenas um exemplo.');
+  });
+  $('print').addEventListener('click',()=>{if(approved&&isCoordinator())window.print();});
   $('reset').addEventListener('click',()=>location.reload());
-  draw();drawSchedule();
+  updateAbsenceFields();drawRole();drawVisits();
   if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}
 })();
 </script>

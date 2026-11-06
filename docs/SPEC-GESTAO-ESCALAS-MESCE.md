@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft v0.8** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
+Status: **draft v0.11** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -27,16 +27,21 @@ Campos técnicos recomendados: ativo/inativo; data de criação/atualização. V
 - Data e hora de início (e término/duração, para verificar conflito).
 - Tipo: missa, celebração ou evento extraordinário.
 - Recorrência opcional para eventos habituais; inclusão avulsa e a qualquer tempo de casamentos, missa de sétimo dia, datas comemorativas e outros eventos; exceções, remarcações e cancelamentos por data. Nenhum evento extraordinário depende de um padrão mensal fixo.
-- Número de ministros necessários por ocorrência (**configurável; não foi informado**).
+- **Quantidade de ministros necessária por celebração:** valor inteiro positivo configurável por ocorrência e visível na criação, calendário e escala. As missas habituais podem usar uma quantidade padrão, mas **missas especiais e celebrações avulsas podem exigir quantidade diferente**.
+- **O coordenador pode alterar o quantitativo diretamente durante a revisão da escala**, sem precisar alterar permanentemente o padrão de missas recorrentes. Registrar quantidade originalmente prevista e efetiva, autor e justificativa.
 - Local da celebração, se necessário para distância/logística (**a confirmar**).
 - Observações.
 - Exibição em calendário mensal.
 - Padrões recorrentes não devem gerar duplicações de ocorrências do mesmo evento.
 
 ### 2.3 Disponibilidade dos ministros (`minister_availability`)
-- Ministro, data (ou padrão semanal, se adotado), faixa de horário opcional e estado: disponível/indisponível.
+- Ministro e impedimento do tipo **`CELEBRATION` (celebração/missa específica)**, **`DAY` (dia inteiro ou dias avulsos)** ou **`PERIOD` (intervalo de datas inclusivo)**, com estado indisponível; disponibilidade explícita futura pode ser modelada separadamente.
+- Para `CELEBRATION`, guardar identificador da ocorrência concreta e bloquear **somente aquela celebração**, não outras missas do mesmo dia.
+- Para `DAY`, guardar data de impedimento e bloquear todas as atividades nesse dia (permitir registrar vários dias, inclusive não consecutivos).
+- Para `PERIOD`, guardar data inicial e final, ambas inclusivas; impedir todas as atividades no intervalo.
 - Justificativa/observação opcional.
-- Indisponibilidade explícita bloqueia designação para atividades coincidentes.
+- Indisponibilidade explícita bloqueia designação para atividades no escopo indicado. Caso haja impedimento por celebração, não generalizá-lo automaticamente para o dia todo.
+- Validar que a ocorrência referenciada exista e que o intervalo inicial não seja posterior ao final; impedir duplicidade equivalente, mantendo a autoria e alterações auditadas.
 - Ausência de registro **não é automaticamente disponibilidade confirmada**; adotar regra operacional configurável após decisão.
 - Para celebrações e visitas, verificar conflito de intervalos, inclusive deslocamento quando aplicável.
 
@@ -67,7 +72,7 @@ Campos técnicos recomendados: ativo/inativo; data de criação/atualização. V
 1. Não alocar ministro explicitamente indisponível no dia/horário.
 2. Não gerar sobreposição de atividades de um mesmo ministro.
 3. Não designar ministros inativos.
-4. Respeitar vagas necessárias e não duplicar o mesmo ministro no mesmo compromisso.
+4. Respeitar a **quantidade efetiva de vagas por ocorrência**, incluindo alterações manuais na escala; não duplicar um ministro na mesma celebração.
 5. Visitas são escaladas apenas aos domingos.
 6. Endereços só podem ser usados para cálculo geográfico por serviço confiável e autorizado; não expor informação residencial a público ou serviço externo sem avaliação de privacidade.
 
@@ -100,7 +105,7 @@ Campos técnicos recomendados: ativo/inativo; data de criação/atualização. V
 2. **Ministros informam impedimentos e ausências até o dia 25 do mês anterior.** A informação alimenta o cadastro de indisponibilidades. A ausência de envio de resposta não é aceite de designação nem garante disponibilidade; política de omissão ainda requer definição.
 3. **Coordenador consolida e complementa** as informações recebidas, corrigindo cadastros e atualizando a agenda com missas habituais e celebrações extras (casamentos, sétimo dia, datas comemorativas etc.).
 4. **Coordenador gera escalas preliminares** de celebrações e visitas, com validação de regras obrigatórias e equilíbrio.
-5. **Coordenador faz ajustes manuais pontuais**, com registro de autoria/justificativa, e executa novamente as validações afetadas.
+5. **Coordenador faz ajustes manuais pontuais**, incluindo **aumentar ou diminuir o número de ministros por celebração diretamente na escala**, com registro de autoria/justificativa e revalidação das vagas e alocações afetadas.
 6. **Coordenador aprova** a versão final após verificar impedimentos, conflitos, limites, casais, preferências locais e vagas.
 7. **Sistema gera planilhas finais em PDF somente da versão aprovada** e o coordenador **envia/disponibiliza aos ministros**; o canal de entrega é configurável e ainda não está decidido.
 8. Eventos avulsos inseridos após o fechamento passam por **revisão pontual e nova versão aprovada**, com comunicação das alterações aos afetados. Não alterar retroativamente a versão oficial sem auditoria.
@@ -524,3 +529,118 @@ O login pode envolver redirecionamento direto do cliente para o Auth0, mas decis
 - **Auth0:** nenhum vínculo foi confirmado pela listagem atual de conectores Vercel. Isso não exclui integração por outra superfície/configuração.
 - **Validação pendente:** (1) confirmar associação exata dos serviços ao projeto Vercel; (2) verificar **nomes** de variáveis de ambiente exigidas sem expor seus valores; (3) estabelecer conectividade com banco isolado de testes; (4) provar login/logout OIDC e validação de access token; (5) registrar procedimento de build KofLang.
 - **Segurança:** jamais copiar conexão, senha, client secret ou token para documentação, cliente web, logs ou arquivos versionados.
+
+## 15. Quantitativo por celebração e impedimentos de diferentes abrangências (decisão de 2026-11-06)
+
+### 15.1 Quantidade de ministros na escala
+- Cada **ocorrência individual** da celebração tem `required_ministers` (inteiro positivo), com opção de herdar inicialmente o valor do padrão recorrente.
+- O coordenador visualiza na escala `necessários`, `alocados` e `vagas em aberto`. Exemplo: missa habitual com 3 vagas; casamento com 2; missa especial com 5.
+- O coordenador pode **alterar o quantitativo na própria escala preliminar ou em revisão**. A mudança vale para aquela ocorrência e não muda o padrão de outras missas.
+- Ao **aumentar** o quantitativo, adicionar vagas pendentes e sugerir elegíveis sem mexer desnecessariamente em ministros já alocados; revalidar limites, casais, indisponibilidades, equilíbrio e conflitos.
+- Ao **diminuir** o quantitativo, não remover pessoas arbitrariamente sem visibilidade: destacar designações excedentes e pedir ajuste explícito do coordenador, registrando quem foi retirado.
+- Escala aprovada/publicada não é editada em silêncio: abrir revisão versionada, efetuar correções, reaprovar, regenerar PDF e avisar afetados.
+- Não aprovar escala com vagas não preenchidas ou alocações excedentes sem política formal de exceção ainda não definida.
+- Dados recomendados: `celebrations.default_required_ministers` (para padrão), `celebration_occurrences.required_ministers` (efetivo), `schedule_assignments` (uma linha por ministro), `schedule_adjustments` (quantidade anterior, nova, usuário, horário e justificativa).
+
+### 15.2 Tipos de impedimento
+| Tipo | Como registrar | O que bloqueia | Exemplo |
+|---|---|---|---|
+| `CELEBRATION` | Identificador de **uma missa/celebração específica** | Somente a ocorrência indicada | Indisponível na missa das 7h, mas disponível na das 18h |
+| `DAY` | Um dia inteiro, com possibilidade de selecionar **vários dias avulsos** | Todas as celebrações e visitas nos dias selecionados | Sem disponibilidade nos dias 8 e 22 |
+| `PERIOD` | Data inicial e data final **inclusivas** | Todas as celebrações e visitas no intervalo | Ausente de 10 a 17 |
+
+- Esses impedimentos são informados pelos ministros para o mês seguinte até o dia 25 do mês anterior e podem ser complementados pelo coordenador. Eventos avulsos inseridos depois também devem respeitar impedimentos de dia/período existentes.
+- Impedimento vinculado a uma ocorrência **não se estende automaticamente** a outros eventos da data. Se o evento for cancelado, manter o registro histórico e não bloquear eventos distintos.
+- Se uma ocorrência for **remarcada**, sinalizar o impedimento específico para revisão, pois a pessoa pode estar disponível em outra data/horário. Não mover indisponibilidade de dia/período para outra data por inferência.
+- Regras de precedência: impedimento explícito por qualquer abrangência aplicável = **bloqueio obrigatório**, mesmo com preferência de local ou equidade favorável.
+- No formulário, apresentar opções **"Celebração específica"**, **"Dia(s)"**, **"Período"** e campos condicionais, com explicação visível do que será bloqueado.
+- Na escala, mostrar o **motivo de inelegibilidade por tipo** ao coordenador sem divulgar detalhes íntimos do motivo a quem não tem permissão.
+- Armazenar escopo explícito (discriminador) e relação com ocorrência ou intervalo, validando campos obrigatórios para cada tipo.
+
+### 15.3 Critérios de aceitação
+1. Duas missas no mesmo domingo, às 7h e às 18h: ministro impedido só para a primeira permanece elegível para a segunda.
+2. Impedimento do dia bloqueia ambas as missas e visitas no dia; vários dias não consecutivos podem ser enviados de uma vez.
+3. Impedimento de período de 10 a 17 bloqueia também as datas 10 e 17.
+4. Coordenador altera na escala a missa especial de 3 para 5 ministros; mostra 2 novas vagas e reavalia candidatos.
+5. Reduzir de 5 para 3 não exclui designações automaticamente; sinaliza 2 excedentes para revisão.
+6. A alteração de quantidade da ocorrência não modifica missas habituais de outras datas.
+7. Alterações após aprovação geram nova versão, nova validação, novo PDF e notificação aos afetados.
+8. O backend rejeita tipo de impedimento inválido, referência de celebração inexistente, datas invertidas e quantitativo não positivo.
+9. Testar impedimentos sobrepostos, dias avulsos, casais como unidade e concorrência de edições pela coordenação.
+
+**Pendências:** quantitativo padrão para cada tipo/local ainda será configurado pelos coordenadores; política excepcional de vagas não preenchidas; tratamento de impedimentos depois do dia 25.
+
+## 16. Layout de referência para o PDF final — escala novembro/2026 (documento recebido)
+
+**Referência visual:** `EscalaMesceNovembro0.1.pdf`, fornecido pelo solicitante, **página 1 de 1**. Este documento é um **exemplo de apresentação** da escala oficial, não um conjunto de dados a importar e **não deve ser enviado ao repositório**, pois contém dados pessoais de terceiros (nomes, endereços e telefones). Os exemplos e testes devem empregar dados fictícios.
+
+### 16.1 Estrutura visual observada
+- Folha **A4 em orientação retrato**, uma página no exemplo; composição densa, com tabelas compactas, fonte pequena, linhas visíveis e conteúdo alinhado.
+- **Cabeçalho** com identificação/logotipo da paróquia à esquerda, título centralizado `Escala dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)` e **mês/ano**.
+- **Metade superior esquerda:** tabela de missas e celebrações com colunas `Dia` (data e dia da semana), `Hora`, `Ministro(s)` e `Observações`. Múltiplas celebrações no mesmo dia ocupam linhas próprias e a data pode ficar agrupada visualmente.
+- **Metade superior direita:** tabela de visitas aos assistidos com `Dia`, `Ministro(s)` e `Assistido(s)`; no exemplo, visitas nos domingos 1, 8, 15, 22 e 29.
+- **Abaixo da tabela de visitas:** seção `Observações:` com avisos textuais operacionais para os ministros.
+- **Rodapé inferior:** duas tabelas lado a lado com **assistido + endereço + contatos/referências**, em formato de guia de visita.
+- **Rodapé de versão:** no exemplo, identificação `Versão: 0.1` no canto inferior direito.
+- **Destaques de linha:** documento usa fundos de células amarelos, alaranjados e esverdeados em algumas celebrações e cinza em áreas alternadas. Pela referência visual, amarelo aparece em linhas do Carmelo; laranja em certas celebrações especiais e verde em algumas atividades de adoração. **Não tratar cores como regra exaustiva sem uma legenda formal**; assegurar entendimento por texto.
+
+### 16.2 Especificação de geração
+1. Gerar o PDF **somente após aprovação do coordenador**, com versão única e registro de data/hora de emissão, mês/ano e responsável pela aprovação.
+2. Reproduzir prioritariamente a **hierarquia do modelo**: título + duas tabelas principais + observações + informações adicionais dos assistidos, com tipografia e espaçamento legíveis.
+3. A tabela de celebrações deve suportar **uma linha por ocorrência**: data, dia da semana, horário, ministros nomeados e observações (incluindo local/tipo quando relevantes), refletindo o **quantitativo efetivo** definido na escala aprovada. Não assumir sempre três ministros.
+4. A tabela de visitas deve listar apenas os **domingos** do mês e os ministros vinculados aos respectivos assistidos, com múltiplas linhas por domingo.
+5. Campos `Observações` devem aceitar descrição de evento extraordinário (casamento, missa de sétimo dia, primeira eucaristia, adoração etc.), local, horário diferenciado e instruções operacionais. Textos longos quebram linha sem sobreposição.
+6. **Dados de contato de assistidos são confidenciais**: gerar a seção inferior apenas em **PDF interno restrito** a destinatários autorizados para visitas. Preferir duas variantes geradas da mesma escala aprovada:
+   - **Escala geral:** celebrações e visitas com dados mínimos necessários, **sem endereços/telefones** de assistidos.
+   - **Guia interno de visitas:** seção de endereço/contatos limitada aos ministros autorizados e coordenadores, com acesso autenticado e registro de downloads/compartilhamentos.
+   A distinção é uma **proposta de segurança** por LGPD; escopo exato de destinatários e dados no PDF deve ser confirmado com a coordenação antes da implementação.
+7. O arquivo pode crescer para **mais de uma página**: nunca reduzir indefinidamente a fonte para forçar tudo em uma única folha. Repetir cabeçalhos de tabela após quebra de página e impedir divisão de uma mesma atribuição ou endereço entre páginas sempre que possível.
+8. Manter cores de apoio opcionais com **legenda**, símbolos/texto inequívocos e contraste apropriado para impressão preto e branco; prever cabeçalho com nome da paróquia e logomarca autorizada.
+9. Gerar arquivo com nome estável e informativo, por exemplo `mesce-escala-2026-11-v1.pdf`; incluir identificação de versão em todas as páginas, se houver várias.
+10. A exportação deve receber **snapshot imutável da versão aprovada** e nunca montar o PDF a partir do estado mutável do navegador. Uma mudança após aprovação exige revisão, nova aprovação, novo número de versão e nova emissão.
+11. PDFs devem ser disponibilizados por links autenticados, com checagem de autorização a cada download, e não colocados em pasta pública do Vercel. Push e notificações devem encaminhar para a área protegida, sem anexar dados pessoais ao payload.
+
+### 16.3 Mapeamento dos dados para as seções
+| Área do PDF | Fonte conceitual no sistema |
+|---|---|
+| Cabeçalho e competência | Configuração da paróquia + mês/ano da escala |
+| Celebrações | Ocorrências aprovadas + alocações + observações/local/tipo |
+| Visitas aos assistidos | Visitas dominicais aprovadas + alocações |
+| Observações gerais | Campo de instruções da escala/competência, editável pelo coordenador |
+| Referência de visitas | Cadastro protegido de assistidos + contatos autorizados |
+| Versão | Revisão aprovada, data/hora e responsável pela emissão |
+
+### 16.4 Critérios de aceitação
+- A partir de um mês demonstrativo com celebrações e visitas, o PDF exibe **ambas as tabelas e observações** de modo consistente com o modelo visual de novembro/2026.
+- Três celebrações no mesmo dia, com horários e locais diferentes, permanecem distinguíveis.
+- Missa especial com cinco ministros exibe os cinco sem truncamento de nomes ou sobreposição de células.
+- Visitas aparecem apenas aos domingos.
+- Uma observação longa quebra linhas e desloca corretamente as linhas subsequentes.
+- O PDF gerado contém somente dados da **versão aprovada**.
+- Ministro não autorizado não consegue obter PDF com endereço/telefone de assistidos, mesmo por URL direta.
+- Testar mês com volume maior que uma página, impressão A4, legibilidade, preto e branco e disposição em telas pequenas via download.
+- Nenhum endereço/telefone/nome real presente no PDF recebido deve ser incluído em fixtures, documentação ou repositório público.
+
+### 16.5 Decisões pendentes sobre fidelidade visual
+- Se a escala interna com endereços será distribuída **para todos os ministros** ou somente para os que realizam visitas (recomendado restringir).
+- Se a versão pública/interna deve seguir **A4 retrato exatamente** ou ser permitida orientação paisagem em meses muito cheios.
+- Legenda oficial das cores e uso da logomarca institucional; eventualmente fornecer arquivo de logo autorizado.
+- Se será necessário gerar **arquivos distintos** para celebrações e visitas, além da folha combinada de referência.
+
+## 17. Privacidade desde a concepção — revisão LGPD (2026-11-06)
+
+**Documento complementar obrigatório:** [PRIVACIDADE-LGPD.md](PRIVACIDADE-LGPD.md). **Backlog rastreável:** [TASKS.md](TASKS.md).
+
+### 17.1 Critério de negócio
+- Usar dados **anonimizados de fato** ou sintéticos para analytics, testes, exemplos e resultados compartilhados, considerando o risco de reidentificação com data, lugar e participação de poucos ministros. Exibir apenas totais agregados quando o risco for aceitável e ocultar amostras pequenas.
+- **Não** chamar de anônimo um nome substituído por código reversível, hash estável ou iniciais. Isso pode ser pseudonimização; as proteções da LGPD continuam aplicáveis.
+- Para organizar visitas, o sistema precisa de dados identificáveis (nome e endereço do assistido e contato autorizado). A proteção adequada nesse contexto é **minimização, segregação, acesso somente a responsáveis pela visita, auditoria e retenção limitada** — não anonimização que inviabilize o atendimento.
+- O PDF enviado à coordenação/ministros segue **mínimo necessário por destinatário**. Uma versão geral não deve incluir endereços/telefones dos assistidos; eventual guia com contatos só poderá ser acessado mediante autenticação e permissão específica.
+- Não copiar a referência `EscalaMesceNovembro0.1.pdf` para GitHub, fixtures, planilhas de teste, base de demonstração ou arquivos públicos, por conter informações pessoais de terceiros.
+- Mensagens push não incluirão nome, endereço, telefone, justificativa privada nem observações do assistido.
+- A extração de relatórios agregados só será liberada com avaliação de risco e controles de divulgação, não pela simples remoção de colunas identificadoras.
+
+### 17.2 Implementação parcial atual
+- A POC permanece **sem armazenamento persistente ou autenticação** e só usa dados fictícios em memória. O módulo `app/privacy.js` implementa exemplo de supressão de pequenos grupos para os indicadores agregados.
+- A versão funcional com dados reais depende do backend com **autorização no servidor**, integração segura de Neon/Auth0, testes de acesso negado e emissão de PDF interna, conforme tarefas `T-005` a `T-016`.
+- Nenhum dado real de assistido deverá circular na POC ou no frontend sem proteção efetiva.

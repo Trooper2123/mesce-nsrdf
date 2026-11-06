@@ -1,5 +1,62 @@
 # CHANGELOG
 
+## 2026-11-06 — Visitas dominicais demonstrativas
+- **Tipo:** `feat`, `test`, `docs`.
+- **Arquivos:** `app/visits.js`, `tests/visits.test.cjs`, `index.html`, `sw.js`, `scripts/dev-server.cjs`, `scripts/validate-pwa.cjs`, `package.json`, `README.md`.
+- **Resumo:** visitas em domingos com dados sintéticos, distribuição separada e validação conjunta na aprovação da escala.
+- **Segurança:** nenhum dado identificável de assistidos; sem conexão Neon/Auth0 nem deploy.
+- **Limite:** alocação conservadora sem visita e celebração no mesmo domingo; proximidade e regras completas pendentes.
+
+
+## 2026-11-06 — Workflow CI e guia de uso PWA
+- **Tipo:** `ci`, `test`, `docs`, `feat`.
+- **Arquivos:** `.github/workflows/ci.yml`, `scripts/validate-pwa.cjs`, `docs/GUIA-PWA.md`, `pwa.html`, `index.html`, `sw.js`, `scripts/dev-server.cjs`, `package.json`, `tests/dev-server.test.cjs`, `README.md`, `docs/TASKS.md`.
+- **Resumo:** testes no GitHub Actions sem Vercel e instruções acessíveis de instalação/uso em Android, iOS e computadores.
+- **Validação:** checagem de sintaxe e estrutura dos arquivos; primeira execução real do Actions e teste em dispositivos pendentes.
+- **Branch:** `feature/lgpd-backlog-app`; sem merge na `main` e sem deploy.
+
+
+## 2026-11-06 — Legibilidade e acessibilidade visual na POC
+- **Tipo:** `style`, `feat`, `docs`.
+- **Arquivos:** `app/accessibility.css`, `index.html`, `scripts/dev-server.cjs`, `sw.js`, `docs/ACESSIBILIDADE-UI.md`, `README.md`, `docs/TASKS.md`, `AGENTS.md`.
+- **Resumo:** alto contraste, texto ampliado, navegação por âncoras, link para ir ao conteúdo, foco evidente e estilos sem animação. Servidor local habilitado para servir a folha CSS.
+- **Validação:** revisão estática; testes reais de teclado, zoom, leitor de tela e contraste completo permanecem pendentes. Nenhum deploy executado.
+- **Branch:** `feature/lgpd-backlog-app`; `main` preservada.
+
+
+## 2026-11-06 — Ambiente local e motor demonstrativo de escalas
+- **Tipo:** `feat`, `test`, `docs`, `chore`.
+- **Arquivos:** `app/scheduling.js`, `tests/scheduling.test.cjs`, `scripts/dev-server.cjs`, `package.json`, `index.html`, `sw.js`, `docs/AMBIENTE-DESENVOLVIMENTO.md`, `docs/TASKS.md`, `README.md`.
+- **Resumo:** ambiente de desenvolvimento local sem dependências externas; domínio demonstrativo de bloqueios por celebração/dias/período, quantitativos variáveis, alocação e substituições; interface com visualizações simuladas de coordenador/ministro; testes e cache PWA de recursos estáticos.
+- **Validação:** sintaxe de scripts e execução de cenários em runtime JavaScript isolado. **Ainda não executados** `npm test`/teste HTTP real, compilação KofLang, autenticação Auth0, acesso Neon nem testes reais de navegador.
+- **Branch:** `feature/lgpd-backlog-app`; sem merge na `main`, sem deploy.
+
+
+## 2026-11-06 — Planejamento de hashing e criptografia no Neon
+- **Tipo:** `docs`.
+- **Arquivos:** `docs/PRIVACIDADE-LGPD.md`, `docs/TASKS.md`, `CHANGELOG.md`.
+- **Resumo:** definido uso proposto de UUIDs, HMAC-SHA-256 para deduplicação/pesquisa exata de campos normalizados e cifragem autenticada para campos recuperáveis; chave separada do Neon, autorização e rotação obrigatórias.
+- **Validação:** revisão documental; **nenhuma migração, criação de segredo ou alteração no banco real**.
+- **Branch:** `feature/lgpd-backlog-app` sem merge na `main`.
+
+
+## 2026-11-06 — Backlog e resumo agregado com proteção LGPD (sem deploy)
+- **Tipo:** `feat`, `test`, `docs`.
+- **Arquivos:** `docs/TASKS.md`, `docs/PRIVACIDADE-LGPD.md`, `app/privacy.js`, `tests/privacy.test.cjs`, `index.html`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** backlog P0/P1/P2, política de minimização/pseudonimização, resumo agregado da POC com supressão de coortes pequenas; ministros de teste substituídos por identificadores fictícios.
+- **Validação:** verificação de sintaxe e testes da função de agregação; sem build KofLang, Neon/Auth0, testes PWA reais ou deploy.
+- **Branch:** `feature/lgpd-backlog-app`. Nenhum merge automático na `main`.
+
+
+## 2026-11-06 — Vagas por celebração e impedimentos de escopo variável (BRT; horário exato não registrado)
+- **Tipo:** `feat`, `docs`, `fix`.
+- **Arquivos:** `index.html`, `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** quantidade de ministros configurável por ocorrência (inclusive missa especial) e editável na escala; impedimentos por missa específica, dia(s) não consecutivos ou período inclusivo. A POC demonstrativa passa a distribuir múltiplas vagas e sinalizar as descobertas; os dados continuam somente em memória.
+- **Validação:** sintaxe JavaScript da POC verificada e documentação revisada. Não houve testes funcionais em navegador/dispositivos, build KofLang ou integração com Neon/Auth0.
+- **Branch:** `feature/quantitativos-impedimentos`. **Nenhuma alteração aplicada à `main`**; realizar revisão e merge consolidado para produção.
+- **Pendências:** algoritmo completo de produção, histórico e casais, auditoria persistente, e validação funcional dos três tipos de impedimento.
+
+
 ## 2026-11-06 — POC mínima web/PWA e exemplo KofLang (BRT; horário exato não registrado)
 - **Tipo:** `feat`, `docs`, `chore`.
 - **Arquivos:** `index.html`, `manifest.webmanifest`, `sw.js`, `icon.svg`, `poc-kof/main.kf`, `README.md`, `CHANGELOG.md`.
