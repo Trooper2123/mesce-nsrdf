@@ -16,6 +16,9 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 - **Notificações push** para solicitação de impedimentos, lembretes antes do dia 25, atualizações recebidas, escala final/PDF, alterações, cancelamentos e lembretes de serviço. Histórico de avisos dentro do sistema.
 
+## Acessibilidade da interface
+A POC adota alto contraste, texto base de **18 px**, controles de **48 px**, navegação direta e foco visível. Não utiliza efeitos piscantes ou animações automáticas. Veja [diretrizes e testes pendentes](docs/ACESSIBILIDADE-UI.md).
+
 ## Ambiente local de desenvolvimento
 
 A aplicação demonstrativa pode ser executada **localmente, sem Vercel e sem dependências externas**, utilizando Node.js 20+:

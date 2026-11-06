@@ -18,6 +18,9 @@ Atualizado em **2026-11-06**. Branch de trabalho `feature/lgpd-backlog-app`. `ma
 - [~] **T-024** Montar ambiente local com `npm run dev`, motor de escala isolado, interface simulada de coordenador/ministro, testes e servidor localhost somente com arquivos permitidos. Falta executar `npm test` em CI e validar UX no navegador.
 - [~] **T-025** Revisar restrições de algoritmo da POC e portar regras de domínio para KofLang quando toolchain estiver validada; cobertura atual é inicial (impedimentos/vagas/conflitos).
 
+- [~] **T-026** UI acessível: alto contraste, fontes maiores, foco visível, atalhos simples e ausência de efeitos automáticos aplicados na POC; falta validar navegação, contraste de todos os estados e zoom.
+- [ ] **T-027** Testar WCAG 2.2 AA, zoom 200%, teclado, VoiceOver/TalkBack, Android e iOS com representantes de ministros e coordenadores.
+
 ## P1 — MVP operacional protegido
 - [ ] **T-008** Backend KofLang: API versionada de ministros, locais, assistidos, eventos, indisponibilidades e escalas; validação de entrada.
 - [ ] **T-009** Auth0: login/logout, renovação, papéis `COORDINATOR`/`MINISTER`, vínculo com ministro, testes `401/403` e IDOR.

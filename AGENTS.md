@@ -26,7 +26,7 @@
 - Todo texto de interface deverá estar em **português do Brasil**.
 - Antes de criar páginas ou componentes, consultar `UI-GUIDE.md` e `design-system.md` **quando esses documentos existirem**.
 - Centralizar cores, espaçamentos, tipografia e estados visuais em tokens; não criar hexadecimais avulsos em cada componente.
-- Priorizar visualização mobile, navegação por teclado, foco visível, contraste adequado, estados de carregamento/erro/vazio e HTML semântico.
+- Priorizar **alto contraste, tipografia grande, navegação simples e previsível**, controles com altura mínima de 48 px (onde aplicável), foco visível e HTML semântico. Evitar elementos piscantes, animações automáticas e excesso de estímulos; respeitar `prefers-reduced-motion` e validar teclado, zoom e WCAG 2.2 AA.
 - HTML e CSS podem ser usados como recursos da web, mas lógica de domínio deverá permanecer em KofLang sempre que tecnicamente viável.
 
 ## Arquitetura e deploy

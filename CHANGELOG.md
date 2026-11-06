@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Legibilidade e acessibilidade visual na POC
+- **Tipo:** `style`, `feat`, `docs`.
+- **Arquivos:** `app/accessibility.css`, `index.html`, `scripts/dev-server.cjs`, `sw.js`, `docs/ACESSIBILIDADE-UI.md`, `README.md`, `docs/TASKS.md`, `AGENTS.md`.
+- **Resumo:** alto contraste, texto ampliado, navegação por âncoras, link para ir ao conteúdo, foco evidente e estilos sem animação. Servidor local habilitado para servir a folha CSS.
+- **Validação:** revisão estática; testes reais de teclado, zoom, leitor de tela e contraste completo permanecem pendentes. Nenhum deploy executado.
+- **Branch:** `feature/lgpd-backlog-app`; `main` preservada.
+
+
 ## 2026-11-06 — Ambiente local e motor demonstrativo de escalas
 - **Tipo:** `feat`, `test`, `docs`, `chore`.
 - **Arquivos:** `app/scheduling.js`, `tests/scheduling.test.cjs`, `scripts/dev-server.cjs`, `package.json`, `index.html`, `sw.js`, `docs/AMBIENTE-DESENVOLVIMENTO.md`, `docs/TASKS.md`, `README.md`.
