@@ -6,8 +6,8 @@ Aplicativo para gerenciamento das atividades dos **Ministros Extraordinários da
 Organizar ministros, celebrações/missas, assistidos e visitas dominicais, permitindo criar escalas mensais equilibradas.
 
 ### Funcionalidades planejadas
-- Cadastro de ministros, vínculos conjugais e disponibilidades.
-- Agenda dinâmica: celebrações habituais e eventos avulsos (casamentos, sétimo dia, datas comemorativas) a qualquer momento.
+- Cadastro de ministros, vínculos conjugais e impedimentos **por celebração específica, por dia(s) avulsos ou por período**.
+- Agenda dinâmica: celebrações habituais e eventos avulsos (casamentos, sétimo dia, datas comemorativas) a qualquer momento, com **quantidade configurável de ministros por ocorrência e ajuste direto na escala**.
 - Cadastro de assistidos e contatos de familiares.
 - Calendário de visitas aos assistidos exclusivamente aos domingos.
 - Geração de escalas: respeitar indisponibilidades e conflitos; equilibrar participações; observar preferências conjugais; considerar proximidade dos endereços nas visitas.
@@ -23,12 +23,12 @@ A raiz do repositório contém uma POC estática navegável em `index.html`, com
 **Fluxo demonstrativo (dados fictícios, somente em memória):**
 1. Escolher um dos três ministros fictícios e registrar um impedimento dentro do próximo mês.
 2. Adicionar uma celebração extraordinária com data e horário.
-3. Gerar uma escala preliminar simplificada, que evita ministros impedidos nas datas e distribui a menor quantidade de compromissos.
+3. Selecionar impedimento por **missa específica**, **dia(s)** ou **período**; ajustar o número de ministros de cada celebração diretamente na lista; gerar escala preliminar simplificada, que respeita os três tipos de impedimento e tenta preencher todas as vagas.
 4. Aprovar a escala na simulação e usar a impressão do navegador para **Salvar como PDF**.
 
 **Limitações intencionais:**
 - Não é sistema operacional: **não inserir nomes, endereços ou contatos reais**. Tudo é perdido ao recarregar.
-- O fluxo do coordenador não possui autenticação. A POC não chama **Auth0**, **Neon** ou APIs de produção, não dispara push, não implementa casais, limite mensal, visitas, locais ou algoritmo histórico completo.
+- As edições do quantitativo ficam apenas na sessão demonstrativa e ainda não geram auditoria persistente. O fluxo do coordenador não possui autenticação. A POC não chama **Auth0**, **Neon** ou APIs de produção, não dispara push, não implementa casais, limite mensal, visitas, locais ou algoritmo histórico completo.
 - A aprovação e a impressão são simulações: a geração de PDF usa `window.print()` e não representa um PDF oficial do MESCE.
 - O service worker só cacheia recursos estáticos públicos. Não cachear dados pessoais/autenticação em futuras versões.
 - PWA: manifesto e service worker são apenas a base. A instalação e compatibilidade no Android/iOS **não foram testadas**; podem requerer ícones PNG, ajustes de navegador e fluxo Auth0.
