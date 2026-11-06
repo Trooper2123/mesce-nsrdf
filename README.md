@@ -7,11 +7,12 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 
 ### Funcionalidades planejadas
 - Cadastro de ministros, vínculos conjugais e disponibilidades.
-- Calendário mensal de celebrações fixas e extraordinárias.
+- Agenda dinâmica: celebrações habituais e eventos avulsos (casamentos, sétimo dia, datas comemorativas) a qualquer momento.
 - Cadastro de assistidos e contatos de familiares.
 - Calendário de visitas aos assistidos exclusivamente aos domingos.
 - Geração de escalas: respeitar indisponibilidades e conflitos; equilibrar participações; observar preferências conjugais; considerar proximidade dos endereços nas visitas.
 - Limites mensais individuais, preferências de locais, histórico de 12 meses e casais que servem juntos.
+- Coordenador monta a escala preliminar; cada ministro confirma ou recusa individualmente suas designações; coordenador revisa, aprova e publica.
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 
 ## Documentação
