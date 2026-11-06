@@ -12,9 +12,9 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Calendário de visitas aos assistidos exclusivamente aos domingos.
 - Geração de escalas: respeitar indisponibilidades e conflitos; equilibrar participações; observar preferências conjugais; considerar proximidade dos endereços nas visitas.
 - Limites mensais individuais, preferências de locais, histórico de 12 meses e casais que servem juntos.
-- Coordenador monta a escala preliminar; cada ministro confirma ou recusa individualmente suas designações; coordenador revisa, aprova e publica.
+- **Fluxo vigente:** coordenador solicita impedimentos para o mês seguinte; ministros informam ausências **até dia 25 do mês anterior**; coordenador consolida dados e celebrações extras, gera a escala preliminar, ajusta manualmente, aprova, gera PDFs finais e envia aos ministros. **Não há aceite individual de cada designação para aprovação.**
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
-- **Notificações push** para novas designações, confirmação pendente, confirmações, recusas, substituições, mudanças de horário/local, cancelamentos, publicação e lembretes de serviço. Histórico de avisos dentro do sistema.
+- **Notificações push** para solicitação de impedimentos, lembretes antes do dia 25, atualizações recebidas, escala final/PDF, alterações, cancelamentos e lembretes de serviço. Histórico de avisos dentro do sistema.
 
 ## Documentação
 - [SPEC — Gestão e escalas MESCE, com referência Projeto MESCE v3.0](docs/SPEC-GESTAO-ESCALAS-MESCE.md)
@@ -30,7 +30,7 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - **Banco escolhido para avaliação:** **Neon PostgreSQL** integrado ao Vercel; verificar conectividade com KofLang antes de provisionar e criar schema.
 - **Autenticação escolhida para avaliação:** **Auth0** via Marketplace do Vercel; integração pronta é focada em Next.js, portanto validar OIDC/OAuth com KofLang.
 - **Backend:** hospedagem a definir após prova técnica.
-- **Regra arquitetural:** regras de escalas, autorizações, confirmações individuais e auditoria não devem ficar duplicadas nos clientes.
+- **Regra arquitetural:** regras de escalas, autorizações, impedimentos, aprovação pela coordenação e auditoria não devem ficar duplicadas nos clientes.
 
 **Situação:** fase de especificação; Neon e Auth0 ainda não estão conectados a este projeto.  o backend, os cadastros e o algoritmo de escalas ainda não foram implementados. A compilação KofLang/KofJS, persistência e pipeline de deploy precisam ser validados antes de definir comandos de execução. O protótipo visual publicado anteriormente no Vercel não representa ainda estas funcionalidades.
 
