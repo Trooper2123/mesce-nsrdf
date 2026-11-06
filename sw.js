@@ -1,4 +1,4 @@
-const CACHE = 'mesce-poc-static-v6';
+const CACHE = 'mesce-poc-static-v7';
 const ASSETS = ['/', '/index.html', '/manifest.webmanifest', '/icon.svg', '/privacidade.html', '/pwa.html', '/app/privacy.js', '/app/scheduling.js', '/app/visits.js', '/app/accessibility.css'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
@@ -9,9 +9,15 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
+  const url = new URL(event.request.url);
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  // Never intercept/cache operational HTML, JS, API or auth configuration.
+  if (url.pathname === '/operacional.html' || url.pathname === '/app/operational.js' ||
+      url.pathname.startsWith('/api/') || url.pathname.startsWith('/dev/')) return;
   if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request).catch(() => caches.match('/index.html')));
+    event.respondWith(fetch(event.request).catch(() =>
+      url.pathname === '/' || url.pathname === '/index.html'
+        ? caches.match('/index.html') : Response.error()));
     return;
   }
   event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request)));

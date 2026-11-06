@@ -45,6 +45,9 @@ VALUES ($1, 'COORDINATOR', true);
 
 `$1` representa parâmetro vinculado pela ferramenta operacional; **não** fazer concatenação SQL com entradas de usuários e não colocar um `sub` real em arquivo ou migration.
 
+## UI operacional local (novo)
+A aplicação disponibiliza `/operacional.html` com OAuth2 Code + PKCE, perfil consultado em `GET /api/me`, listagem e cadastro de celebrações. O Node somente encaminha as rotas allowlisted para este Kof; o banco não é acessado diretamente da interface. Veja [guia do fluxo operacional](../docs/FLUXO-OPERACIONAL-DEV.md).
+
 ## Próximos gates antes de cadastro real
 - [x] Schema isolado no Neon de desenvolvimento, sem PII, confirmado via `information_schema`.
 - [x] Código Kof compilável no `kof check` (GitHub Actions, Kof 0.7.2).
