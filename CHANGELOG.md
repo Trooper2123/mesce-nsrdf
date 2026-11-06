@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Plano web-first e clientes Android/iOS (BRT; horário exato não registrado)
+- **Tipo:** `docs`.
+- **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** interface web responsiva obrigatória para o MVP; PWA como possibilidade intermediária; Android/iOS previstos em fase futura; contratos de API e fonte de dados única para clientes web/móveis; fluxos de coordenador e ministro, autenticação, confirmação individual e privacidade multiplataforma.
+- **Validação:** revisão de arquitetura documental; nenhuma implementação, compilação KofLang, build, teste automatizado ou implantação foi executada.
+- **Pendências:** validar toolchain KofLang, hospedagem de serviços e requisitos específicos dos aplicativos.
+
+
 ## 2026-11-06 — Agenda dinâmica e confirmação individual (BRT; horário exato não registrado)
 - **Tipo:** `docs`.
 - **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
