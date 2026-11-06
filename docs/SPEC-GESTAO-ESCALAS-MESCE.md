@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft v0.8** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
+Status: **draft v0.9** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -27,16 +27,21 @@ Campos técnicos recomendados: ativo/inativo; data de criação/atualização. V
 - Data e hora de início (e término/duração, para verificar conflito).
 - Tipo: missa, celebração ou evento extraordinário.
 - Recorrência opcional para eventos habituais; inclusão avulsa e a qualquer tempo de casamentos, missa de sétimo dia, datas comemorativas e outros eventos; exceções, remarcações e cancelamentos por data. Nenhum evento extraordinário depende de um padrão mensal fixo.
-- Número de ministros necessários por ocorrência (**configurável; não foi informado**).
+- **Quantidade de ministros necessária por celebração:** valor inteiro positivo configurável por ocorrência e visível na criação, calendário e escala. As missas habituais podem usar uma quantidade padrão, mas **missas especiais e celebrações avulsas podem exigir quantidade diferente**.
+- **O coordenador pode alterar o quantitativo diretamente durante a revisão da escala**, sem precisar alterar permanentemente o padrão de missas recorrentes. Registrar quantidade originalmente prevista e efetiva, autor e justificativa.
 - Local da celebração, se necessário para distância/logística (**a confirmar**).
 - Observações.
 - Exibição em calendário mensal.
 - Padrões recorrentes não devem gerar duplicações de ocorrências do mesmo evento.
 
 ### 2.3 Disponibilidade dos ministros (`minister_availability`)
-- Ministro, data (ou padrão semanal, se adotado), faixa de horário opcional e estado: disponível/indisponível.
+- Ministro e impedimento do tipo **`CELEBRATION` (celebração/missa específica)**, **`DAY` (dia inteiro ou dias avulsos)** ou **`PERIOD` (intervalo de datas inclusivo)**, com estado indisponível; disponibilidade explícita futura pode ser modelada separadamente.
+- Para `CELEBRATION`, guardar identificador da ocorrência concreta e bloquear **somente aquela celebração**, não outras missas do mesmo dia.
+- Para `DAY`, guardar data de impedimento e bloquear todas as atividades nesse dia (permitir registrar vários dias, inclusive não consecutivos).
+- Para `PERIOD`, guardar data inicial e final, ambas inclusivas; impedir todas as atividades no intervalo.
 - Justificativa/observação opcional.
-- Indisponibilidade explícita bloqueia designação para atividades coincidentes.
+- Indisponibilidade explícita bloqueia designação para atividades no escopo indicado. Caso haja impedimento por celebração, não generalizá-lo automaticamente para o dia todo.
+- Validar que a ocorrência referenciada exista e que o intervalo inicial não seja posterior ao final; impedir duplicidade equivalente, mantendo a autoria e alterações auditadas.
 - Ausência de registro **não é automaticamente disponibilidade confirmada**; adotar regra operacional configurável após decisão.
 - Para celebrações e visitas, verificar conflito de intervalos, inclusive deslocamento quando aplicável.
 
@@ -67,7 +72,7 @@ Campos técnicos recomendados: ativo/inativo; data de criação/atualização. V
 1. Não alocar ministro explicitamente indisponível no dia/horário.
 2. Não gerar sobreposição de atividades de um mesmo ministro.
 3. Não designar ministros inativos.
-4. Respeitar vagas necessárias e não duplicar o mesmo ministro no mesmo compromisso.
+4. Respeitar a **quantidade efetiva de vagas por ocorrência**, incluindo alterações manuais na escala; não duplicar um ministro na mesma celebração.
 5. Visitas são escaladas apenas aos domingos.
 6. Endereços só podem ser usados para cálculo geográfico por serviço confiável e autorizado; não expor informação residencial a público ou serviço externo sem avaliação de privacidade.
 
@@ -100,7 +105,7 @@ Campos técnicos recomendados: ativo/inativo; data de criação/atualização. V
 2. **Ministros informam impedimentos e ausências até o dia 25 do mês anterior.** A informação alimenta o cadastro de indisponibilidades. A ausência de envio de resposta não é aceite de designação nem garante disponibilidade; política de omissão ainda requer definição.
 3. **Coordenador consolida e complementa** as informações recebidas, corrigindo cadastros e atualizando a agenda com missas habituais e celebrações extras (casamentos, sétimo dia, datas comemorativas etc.).
 4. **Coordenador gera escalas preliminares** de celebrações e visitas, com validação de regras obrigatórias e equilíbrio.
-5. **Coordenador faz ajustes manuais pontuais**, com registro de autoria/justificativa, e executa novamente as validações afetadas.
+5. **Coordenador faz ajustes manuais pontuais**, incluindo **aumentar ou diminuir o número de ministros por celebração diretamente na escala**, com registro de autoria/justificativa e revalidação das vagas e alocações afetadas.
 6. **Coordenador aprova** a versão final após verificar impedimentos, conflitos, limites, casais, preferências locais e vagas.
 7. **Sistema gera planilhas finais em PDF somente da versão aprovada** e o coordenador **envia/disponibiliza aos ministros**; o canal de entrega é configurável e ainda não está decidido.
 8. Eventos avulsos inseridos após o fechamento passam por **revisão pontual e nova versão aprovada**, com comunicação das alterações aos afetados. Não alterar retroativamente a versão oficial sem auditoria.
@@ -524,3 +529,43 @@ O login pode envolver redirecionamento direto do cliente para o Auth0, mas decis
 - **Auth0:** nenhum vínculo foi confirmado pela listagem atual de conectores Vercel. Isso não exclui integração por outra superfície/configuração.
 - **Validação pendente:** (1) confirmar associação exata dos serviços ao projeto Vercel; (2) verificar **nomes** de variáveis de ambiente exigidas sem expor seus valores; (3) estabelecer conectividade com banco isolado de testes; (4) provar login/logout OIDC e validação de access token; (5) registrar procedimento de build KofLang.
 - **Segurança:** jamais copiar conexão, senha, client secret ou token para documentação, cliente web, logs ou arquivos versionados.
+
+## 15. Quantitativo por celebração e impedimentos de diferentes abrangências (decisão de 2026-11-06)
+
+### 15.1 Quantidade de ministros na escala
+- Cada **ocorrência individual** da celebração tem `required_ministers` (inteiro positivo), com opção de herdar inicialmente o valor do padrão recorrente.
+- O coordenador visualiza na escala `necessários`, `alocados` e `vagas em aberto`. Exemplo: missa habitual com 3 vagas; casamento com 2; missa especial com 5.
+- O coordenador pode **alterar o quantitativo na própria escala preliminar ou em revisão**. A mudança vale para aquela ocorrência e não muda o padrão de outras missas.
+- Ao **aumentar** o quantitativo, adicionar vagas pendentes e sugerir elegíveis sem mexer desnecessariamente em ministros já alocados; revalidar limites, casais, indisponibilidades, equilíbrio e conflitos.
+- Ao **diminuir** o quantitativo, não remover pessoas arbitrariamente sem visibilidade: destacar designações excedentes e pedir ajuste explícito do coordenador, registrando quem foi retirado.
+- Escala aprovada/publicada não é editada em silêncio: abrir revisão versionada, efetuar correções, reaprovar, regenerar PDF e avisar afetados.
+- Não aprovar escala com vagas não preenchidas ou alocações excedentes sem política formal de exceção ainda não definida.
+- Dados recomendados: `celebrations.default_required_ministers` (para padrão), `celebration_occurrences.required_ministers` (efetivo), `schedule_assignments` (uma linha por ministro), `schedule_adjustments` (quantidade anterior, nova, usuário, horário e justificativa).
+
+### 15.2 Tipos de impedimento
+| Tipo | Como registrar | O que bloqueia | Exemplo |
+|---|---|---|---|
+| `CELEBRATION` | Identificador de **uma missa/celebração específica** | Somente a ocorrência indicada | Indisponível na missa das 7h, mas disponível na das 18h |
+| `DAY` | Um dia inteiro, com possibilidade de selecionar **vários dias avulsos** | Todas as celebrações e visitas nos dias selecionados | Sem disponibilidade nos dias 8 e 22 |
+| `PERIOD` | Data inicial e data final **inclusivas** | Todas as celebrações e visitas no intervalo | Ausente de 10 a 17 |
+
+- Esses impedimentos são informados pelos ministros para o mês seguinte até o dia 25 do mês anterior e podem ser complementados pelo coordenador. Eventos avulsos inseridos depois também devem respeitar impedimentos de dia/período existentes.
+- Impedimento vinculado a uma ocorrência **não se estende automaticamente** a outros eventos da data. Se o evento for cancelado, manter o registro histórico e não bloquear eventos distintos.
+- Se uma ocorrência for **remarcada**, sinalizar o impedimento específico para revisão, pois a pessoa pode estar disponível em outra data/horário. Não mover indisponibilidade de dia/período para outra data por inferência.
+- Regras de precedência: impedimento explícito por qualquer abrangência aplicável = **bloqueio obrigatório**, mesmo com preferência de local ou equidade favorável.
+- No formulário, apresentar opções **"Celebração específica"**, **"Dia(s)"**, **"Período"** e campos condicionais, com explicação visível do que será bloqueado.
+- Na escala, mostrar o **motivo de inelegibilidade por tipo** ao coordenador sem divulgar detalhes íntimos do motivo a quem não tem permissão.
+- Armazenar escopo explícito (discriminador) e relação com ocorrência ou intervalo, validando campos obrigatórios para cada tipo.
+
+### 15.3 Critérios de aceitação
+1. Duas missas no mesmo domingo, às 7h e às 18h: ministro impedido só para a primeira permanece elegível para a segunda.
+2. Impedimento do dia bloqueia ambas as missas e visitas no dia; vários dias não consecutivos podem ser enviados de uma vez.
+3. Impedimento de período de 10 a 17 bloqueia também as datas 10 e 17.
+4. Coordenador altera na escala a missa especial de 3 para 5 ministros; mostra 2 novas vagas e reavalia candidatos.
+5. Reduzir de 5 para 3 não exclui designações automaticamente; sinaliza 2 excedentes para revisão.
+6. A alteração de quantidade da ocorrência não modifica missas habituais de outras datas.
+7. Alterações após aprovação geram nova versão, nova validação, novo PDF e notificação aos afetados.
+8. O backend rejeita tipo de impedimento inválido, referência de celebração inexistente, datas invertidas e quantitativo não positivo.
+9. Testar impedimentos sobrepostos, dias avulsos, casais como unidade e concorrência de edições pela coordenação.
+
+**Pendências:** quantitativo padrão para cada tipo/local ainda será configurado pelos coordenadores; política excepcional de vagas não preenchidas; tratamento de impedimentos depois do dia 25.
