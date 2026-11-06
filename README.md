@@ -14,6 +14,7 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Limites mensais individuais, preferências de locais, histórico de 12 meses e casais que servem juntos.
 - Coordenador monta a escala preliminar; cada ministro confirma ou recusa individualmente suas designações; coordenador revisa, aprova e publica.
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
+- **Notificações push** para novas designações, confirmação pendente, confirmações, recusas, substituições, mudanças de horário/local, cancelamentos, publicação e lembretes de serviço. Histórico de avisos dentro do sistema.
 
 ## Documentação
 - [SPEC — Gestão e escalas MESCE, com referência Projeto MESCE v3.0](docs/SPEC-GESTAO-ESCALAS-MESCE.md)
@@ -22,7 +23,7 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 
 ## Plataformas e tecnologia
 - **Primeira entrega:** aplicação **web responsiva**, utilizável no computador e em navegadores de Android e iOS.
-- **Evolução prevista:** avaliar PWA instalável e, posteriormente, aplicativos Android e iOS consumindo a mesma API e base de dados.
+- **Evolução prevista:** avaliar PWA instalável com notificações Web Push, e posteriormente aplicativos Android e iOS consumindo a mesma API, eventos de escala e base de dados. A compatibilidade de push depende de plataforma, permissões e suporte do dispositivo.
 - **Linguagem principal pretendida:** **KofLang**, sujeita à validação real do compilador e da arquitetura.
 - **Publicação web:** **Vercel**; backend e persistência serão definidos após prova técnica.
 - **Regra arquitetural:** regras de escalas, autorizações, confirmações individuais e auditoria não devem ficar duplicadas nos clientes.
