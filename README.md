@@ -22,13 +22,17 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - [Histórico de alterações](CHANGELOG.md)
 
 ## Plataformas e tecnologia
-- **Primeira entrega:** aplicação **web responsiva**, utilizável no computador e em navegadores de Android e iOS.
-- **Evolução prevista:** avaliar PWA instalável com notificações Web Push, e posteriormente aplicativos Android e iOS consumindo a mesma API, eventos de escala e base de dados. A compatibilidade de push depende de plataforma, permissões e suporte do dispositivo.
+- **Prioridade 1:** aplicação **web responsiva**, utilizável no computador e em navegadores de Android e iOS.
+- **Prioridade 2:** **PWA instalável em Android e iOS**, com notificações Web Push e testes reais de login, instalação, confirmação e entrega de alertas. Priorizar a PWA como aplicativo principal se atender ao uso da pastoral.
+- **App nativo Android/iOS:** somente após avaliar limitações reais da PWA; preservar as mesmas APIs e regras de domínio.
 - **Linguagem principal pretendida:** **KofLang**, sujeita à validação real do compilador e da arquitetura.
-- **Publicação web:** **Vercel**; backend e persistência serão definidos após prova técnica.
+- **Publicação web:** **Vercel**.
+- **Banco escolhido para avaliação:** **Neon PostgreSQL** integrado ao Vercel; verificar conectividade com KofLang antes de provisionar e criar schema.
+- **Autenticação escolhida para avaliação:** **Auth0** via Marketplace do Vercel; integração pronta é focada em Next.js, portanto validar OIDC/OAuth com KofLang.
+- **Backend:** hospedagem a definir após prova técnica.
 - **Regra arquitetural:** regras de escalas, autorizações, confirmações individuais e auditoria não devem ficar duplicadas nos clientes.
 
-**Situação:** fase de especificação; o backend, os cadastros e o algoritmo de escalas ainda não foram implementados. A compilação KofLang/KofJS, persistência e pipeline de deploy precisam ser validados antes de definir comandos de execução. O protótipo visual publicado anteriormente no Vercel não representa ainda estas funcionalidades.
+**Situação:** fase de especificação; Neon e Auth0 ainda não estão conectados a este projeto.  o backend, os cadastros e o algoritmo de escalas ainda não foram implementados. A compilação KofLang/KofJS, persistência e pipeline de deploy precisam ser validados antes de definir comandos de execução. O protótipo visual publicado anteriormente no Vercel não representa ainda estas funcionalidades.
 
 Repositório: [Trooper2123/mesce-nsrdf](https://github.com/Trooper2123/mesce-nsrdf) · branch principal: `main`.
 
