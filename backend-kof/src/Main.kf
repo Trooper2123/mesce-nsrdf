@@ -144,8 +144,8 @@ main() {
         if (input.kind == "" || input.locationCode == "" || input.requiredMinisters < 1 || input.requiredMinisters > 30) {
             return status(400, "{\"error\":\"invalid_payload\"}")
         }
-        db.execute(database, "INSERT INTO mesce_dev.celebrations(occurs_on,starts_at,location_code,kind,required_ministers) VALUES(?::date,?::time,?,?,?)",
-            input.occursOn, input.startsAt, input.locationCode, input.kind, input.requiredMinisters)
+        // Um JSON vinculável evita depender de overload com cinco parâmetros.
+        db.execute(database, "WITH payload AS (SELECT ?::jsonb AS j) INSERT INTO mesce_dev.celebrations(occurs_on,starts_at,location_code,kind,required_ministers) SELECT (j->>'occursOn')::date, (j->>'startsAt')::time, j->>'locationCode', j->>'kind', (j->>'requiredMinisters')::smallint FROM payload", json.encode(input))
         return status(201, "{\"created\":true}")
     }
 
