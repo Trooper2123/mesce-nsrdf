@@ -1,6 +1,6 @@
 # SPEC — Gestão e escalas dos Ministros Extraordinários da Sagrada Comunhão Eucarística (MESCE)
 
-Status: **draft v0.3** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
+Status: **draft v0.4** — requisitos iniciais e referência adicional *Projeto MESCE v3.0* (outubro/2026).  
 Repositório: `Trooper2123/mesce-nsrdf` · branch principal: `main`.
 
 ## 1. Objetivo
@@ -294,3 +294,71 @@ Além dos campos já descritos:
 - Prazo para cada ministro responder, notificações e meios de contato.
 - Possibilidade de o ministro retirar uma confirmação e até quando; procedimento emergencial após publicação.
 - Se o coordenador poderá finalizar vaga **sem cobertura** em casos excepcionais, mediante justificativa e aprovação explícita, sem jamais marcar ministro como confirmado indevidamente.
+
+## 11. Plataforma web e evolução para Android/iOS (decisão de 2026-11-06)
+
+### 11.1 Objetivo e fases
+A **interface web é parte obrigatória da primeira entrega funcional**. A arquitetura deverá preservar a possibilidade de criar aplicativos Android e iOS em etapas posteriores, sem reimplementar regras de distribuição nem criar bases de dados independentes.
+
+- **Fase 1 — Web responsiva (prioridade):** oferecer o fluxo funcional completo, com autenticação e autorização, agenda dinâmica, ministros, assistidos, disponibilidades, propostas de escala, confirmação/recusa individual, revisão, aprovação, publicação e PDF oficial.
+- **Fase 2 — PWA (opção a validar):** manifesto, instalação na tela inicial, ícones, navegação móvel e cache seguro dos recursos estáticos; capacidades offline e notificações push exigem análise específica de compatibilidade e privacidade. PWA não equivale automaticamente a aplicativo nativo distribuído nas lojas.
+- **Fase 3 — Android e iOS (planejamento):** avaliar aplicativos nativos ou multiplataforma que consumam a mesma API autenticada, conforme necessidades concretas de notificações, dispositivos, distribuição e manutenção. Não escolher framework móvel antes de validar requisitos e integração com KofLang.
+
+Não há prazo nem compromisso de publicação nas lojas nesta etapa.
+
+### 11.2 Interfaces e jornadas
+**Coordenador — web e futura experiência móvel:**
+- Autenticação e painel com escala do período, pendências, confirmações, recusas e eventos extraordinários.
+- Criação/edição de compromissos recorrentes e avulsos, inclusive casamento, missa de sétimo dia e datas comemorativas.
+- Cadastro protegido de ministros, assistidos, locais e regras; ajuste de vagas e consulta de histórico.
+- Geração ou edição de proposta; encaminhamento para respostas individuais; acompanhamento de pendências.
+- Substituições com reconfirmação dos envolvidos; revisão de conflitos, aprovação, PDF e publicação.
+
+**Ministro — web e futura experiência móvel:**
+- Autenticação, tela **Minhas escalas**, com data, hora, local e tipo de celebração.
+- **Confirmar** ou **recusar** cada designação separadamente, com feedback e histórico da resposta.
+- Informar indisponibilidades e manter seus dados, dentro dos limites de permissão definidos.
+- Consultar apenas informações de assistidos estritamente necessárias às visitas atribuídas e autorizadas.
+- Ser informado de alterações que exijam nova confirmação; definição de canal/prazo está pendente.
+
+### 11.3 Contratos e compartilhamento entre plataformas
+- Uma única fonte de verdade para ministros, celebrações, assistidos, alocações, respostas, permissões e histórico.
+- Colocar cálculo de elegibilidade, equilíbrio, unidade de casais, limites, confirmação individual, aprovação e auditoria no **serviço de domínio/backend**, nunca exclusivamente na interface web ou móvel.
+- Expor APIs versionadas e autorizadas (contrato a definir), reutilizáveis por web, Android e iOS.
+- Validar autenticação/autorização em cada chamada e impedir acesso cruzado por troca de identificadores.
+- Tratar horário com fuso da celebração, guardar instantes adequadamente e apresentar datas no padrão local.
+- Eventos de confirmação devem ser idempotentes para evitar duplicações em conexões instáveis.
+- Compartilhar design tokens, regras de acessibilidade e terminologia; não exigir compartilhamento do mesmo código de interface entre tecnologias diferentes.
+
+### 11.4 KofLang e publicação
+- **KofLang permanece a linguagem principal planejada**; comprovar com um protótipo mínimo compilável qual runtime, saída web/JS, toolchain, testes e hospedagem são realmente suportados.
+- Vercel segue como alvo para a interface web. Não pressupor execução de backend KofLang diretamente no Vercel sem teste validado.
+- Selecionar hospedagem do backend, persistência e autenticação depois da prova técnica; registrar decisões arquiteturais antes de implementar.
+- Se KofLang não disponibilizar uma integração móvel estável, os futuros clientes Android/iOS poderão usar tecnologia própria, consumindo os mesmos contratos e regras do backend KofLang, mediante decisão documentada.
+- O protótipo HTML anteriormente publicado não é prova da compilação KofLang nem representa aplicação operacional.
+
+### 11.5 Qualidade e segurança multiplataforma
+- Layout responsivo para celulares, tablets e desktops; navegação por toque e teclado; foco, contraste, mensagens de erro, estados vazios/carregamento.
+- Não armazenar listas completas de endereços, telefones, informações de assistidos ou tokens de longa duração em caches públicos ou armazenamento offline inseguro.
+- Exigir sessão autenticada nas telas com dados pessoais; tratamento seguro de logout, expiração e perda de dispositivo.
+- Proteger APIs contra acesso não autorizado e operações duplicadas, inclusive no fluxo de confirmação.
+- Projetar notificações com conteúdo mínimo e sem dados sensíveis em prévias na tela bloqueada.
+- Medir usabilidade de confirmação/recusa em viewport móvel, com alvos de toque adequados.
+
+### 11.6 Critérios de aceitação e marcos
+1. A versão web permite ao coordenador realizar o ciclo completo: criar evento avulso → propor escala → coletar respostas → revisar → aprovar → emitir PDF.
+2. Cada ministro consegue entrar pelo navegador móvel e confirmar/recusar **somente as próprias designações**, com persistência da resposta e autoria.
+3. A mesma informação aparece atualizada em sessões diferentes; não existe estado privado apenas no frontend que represente uma confirmação final.
+4. O layout funciona em celular e desktop; ações principais são acessíveis por toque e teclado.
+5. A interface web é publicada em ambiente controlado com autenticação e controles LGPD antes de receber dados reais.
+6. A prova de compilação KofLang/KofJS e a execução de backend estão documentadas com comandos reais e resultados.
+7. Há um contrato de serviços preparado para futuros consumidores móveis, sem necessidade de implementar aplicativos ainda.
+8. Os aplicativos Android e iOS terão definição própria de escopo, testes, distribuição e tecnologias, após a conclusão do MVP web.
+
+### 11.7 Planejamento para app móvel
+- **Descoberta:** verificar se os ministros precisam de push, resposta rápida, acesso offline, agenda pessoal, notificações e integração com calendário do telefone.
+- **Decisão:** avaliar PWA versus app próprio Android/iOS considerando compatibilidade, requisitos das lojas, permissões e custos de manutenção.
+- **Construção:** adicionar clientes mobile sobre contratos de API existentes, reaproveitando regras de domínio e segurança, sem duplicar banco.
+- **Publicação:** configurar contas de distribuição, políticas de privacidade e conformidade de lojas na fase correspondente.
+
+**Em aberto:** prazo de entrega dos apps, notificação preferida, disponibilidade offline, necessidade de login biométrico, plataforma de distribuição e eventual acesso exclusivo a membros da pastoral.
