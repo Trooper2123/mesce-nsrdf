@@ -16,6 +16,12 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 - **Notificações push** para solicitação de impedimentos, lembretes antes do dia 25, atualizações recebidas, escala final/PDF, alterações, cancelamentos e lembretes de serviço. Histórico de avisos dentro do sistema.
 
+## Backend KofLang + Neon + Auth0 (desenvolvimento isolado)
+
+A API KofLang com validação RS256/JWKS do Auth0, autorização pela tabela `mesce_dev.actors` e endpoints de ministros, assistidos e celebrações já está preparada. O schema foi aplicado somente na branch Neon `mesce-dev-2026-11` (sem dados reais) e o `kof check` passou no GitHub Actions. **A conectividade JDBC, os fluxos com tokens reais e a integração da interface ainda não foram validados.**
+
+[Configuração e requisitos de segurança do backend](backend-kof/README.md) · [Migração SQL](backend-kof/sql/001_init.sql).
+
 ## Acessibilidade da interface
 A POC adota alto contraste, texto base de **18 px**, controles de **48 px**, navegação direta e foco visível. Não utiliza efeitos piscantes ou animações automáticas. Veja [diretrizes e testes pendentes](docs/ACESSIBILIDADE-UI.md).
 
