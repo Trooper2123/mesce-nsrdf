@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Notificações push relacionadas às escalas (BRT; horário exato não registrado)
+- **Tipo:** `docs`.
+- **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** planejamento de push para convocação, lembrete de resposta, confirmação/recusa, substituição, mudança de compromisso, cancelamento, publicação e lembretes de serviço; destinatários por papel, caixa de notificações, deduplicação, revogação, privacidade e possibilidade de reutilização por clientes Android/iOS.
+- **Validação:** conferência documental e regras de negócio; nenhuma integração real de push, compilação, build, teste automatizado ou deploy foi executada.
+- **Pendências:** testar plataforma KofLang, Web Push em dispositivos reais e definir horário/frequência de lembretes e canais alternativos.
+
+
 ## 2026-11-06 — Plano web-first e clientes Android/iOS (BRT; horário exato não registrado)
 - **Tipo:** `docs`.
 - **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
