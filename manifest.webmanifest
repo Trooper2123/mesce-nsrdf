@@ -1,0 +1,19 @@
+{
+  "name": "MESCE NSR-DF — POC",
+  "short_name": "MESCE",
+  "description": "Demonstração de escala mensal MESCE, sem dados reais.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f9f5",
+  "theme_color": "#17443b",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
