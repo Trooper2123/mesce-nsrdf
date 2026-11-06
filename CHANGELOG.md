@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Configuração informada de Neon/Auth0 e verificação de vínculo (BRT; horário exato não registrado)
+- **Tipo:** `docs`.
+- **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
+- **Resumo:** responsável informou configuração de Neon e Auth0. Confirmado projeto Vercel renomeado para `mesce-nsrdf` e repositório GitHub correspondente; encontrado Neon recém-provisionado via Marketplace, sem associação ao MESCE confirmada; nenhum conector listado no projeto pela API consultada. Mantidas pendências de prova SQL/OIDC.
+- **Validação:** metadados GitHub, Vercel e Neon (sem consultar segredos); não foram feitos teste de conexão, autenticação, build, migração de banco ou deploy.
+- **Pendências:** identificar o vínculo de ambas integrações com o projeto e validar banco, Auth0 e KofLang.
+
+
 ## 2026-11-06 — Novo fluxo de aprovação pelo coordenador (BRT; horário exato não registrado)
 - **Tipo:** `docs`.
 - **Arquivos:** `docs/SPEC-GESTAO-ESCALAS-MESCE.md`, `README.md`, `CHANGELOG.md`.
