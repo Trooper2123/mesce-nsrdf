@@ -459,7 +459,7 @@ O login pode envolver redirecionamento direto do cliente para o Auth0, mas decis
 - Usar **OpenID Connect/OAuth 2.0** com Authorization Code + PKCE onde aplicável, e fluxos adequados para uma aplicação web/PWA.
 - Autenticação central no Auth0; manter no Neon o perfil interno (`auth0_sub` ou identificador externo equivalente, vínculo com ministro, papéis, permissões e status). Não copiar senhas para o banco.
 - Papéis mínimos: **COORDINATOR** e **MINISTER**; poderes e escopo de acesso validados pelo backend (não apenas por claims ou interface).
-- O ministro só confirma/recusa designações associadas à sua identidade; coordenador administra, revisa e aprova; impedir IDOR/BOLA.
+- O ministro só registra/consulta impedimentos de sua própria identidade e consulta suas escalas publicadas; coordenador administra, revisa e aprova; impedir IDOR/BOLA.
 - O backend deve validar **access token de API** (assinatura/JWKS, emissor, audiência, validade, permissões) e não usar ID token para autorizar operações de API.
 - A integração Auth0 do Vercel oferece configuração automatizada e SDK pronto sobretudo para **Next.js**; não pressupor SDK compatível com KofLang. Implementar padrões OIDC com bibliotecas realmente suportadas após prova técnica.
 - Documentar callback URLs para produção, previews e PWA instalada. Testar login, refresh/expiração, logout e deep links sem expor tokens em armazenamento inseguro.
