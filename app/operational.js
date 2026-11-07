@@ -41,12 +41,30 @@ async function login(){
   location.assign(target.href);
 }
 function eraseTransient(){sessionStorage.removeItem(transientKey);}
+// Classificação explícita e limitada: não renderiza error_description arbitrário do provedor.
+function authErrorMessage(params){
+  const code=params.get('error')||'';
+  const description=(params.get('error_description')||'').toLowerCase();
+  if(/callback url|redirect_uri|redirect uri|redirect url|callback mismatch|not in the list of allowed callback/.test(description))
+    return 'Auth0 recusou a URL de retorno (callback). Confira Allowed Callback URLs no aplicativo Auth0 do MESCE.';
+  if(code==='login_required')return 'O Auth0 exige uma nova autenticação. Clique em Entrar novamente.';
+  if(code==='consent_required')return 'A autorização da aplicação ou API MESCE precisa ser concedida no Auth0.';
+  if(code==='unauthorized_client')return 'O cliente Auth0 não está autorizado para este fluxo. Verifique o tipo da aplicação e o grant Authorization Code.';
+  if(code==='invalid_scope')return 'O Auth0 recusou os escopos solicitados pela aplicação.';
+  if(code==='invalid_request')return 'A solicitação de login foi recusada. Verifique callback, Client ID e configuração da aplicação Auth0.';
+  if(code==='access_denied'){
+    if(/unauthorized|not authorized|permission|consent/.test(description))
+      return 'O Auth0 negou autorização ao aplicativo ou à API MESCE. Verifique as permissões configuradas.';
+    return 'Acesso negado pelo Auth0. Confira a aplicação selecionada, os logs do Auth0 e as URLs de callback.';
+  }
+  return 'Falha no Auth0 ('+(code&&/^[a-z_]{1,40}$/.test(code)?code:'erro desconhecido')+'). Verifique os logs do Auth0 e a configuração do callback.';
+}
 async function exchangeIfCallback(){
   const params=new URLSearchParams(location.search);
   if(!params.has('code')&&!params.has('error'))return false;
   history.replaceState(null,'',location.pathname);
   const stored=sessionStorage.getItem(transientKey);eraseTransient();
-  if(params.has('error'))throw new Error('O provedor recusou a autenticação.');
+  if(params.has('error'))throw new Error(authErrorMessage(params));
   if(!stored)throw new Error('Sessão de autenticação ausente. Entre novamente.');
   let challengeData;
   try{challengeData=JSON.parse(stored);}catch{throw new Error('Sessão de autenticação inválida.');}
@@ -149,6 +167,6 @@ async function init(){
     else status('Configuração disponível. Entre com Auth0 para acessar os dados.');
   }catch(e){signOut(false);status(e.message);}
 }
-if(typeof module!=='undefined'&&module.exports)module.exports={validateConfig};
+if(typeof module!=='undefined'&&module.exports)module.exports={validateConfig,authErrorMessage};
 if(root&&root.document)document.addEventListener('DOMContentLoaded',init);
 })(typeof window!=='undefined'?window:undefined);
