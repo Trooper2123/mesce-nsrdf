@@ -36,10 +36,10 @@ test('callback inválido não tenta troca de código',async()=>{
   assert.match(res.headers.Location,/missing_flow/);
  }finally{restore();}
 });
-test('sessão ausente ou adulterada nunca autentica',()=>{
+test('sessão ausente ou adulterada nunca autentica',async()=>{
  const restore=putEnv();try{
   for(const headers of [{},{cookie:'mesce_session=bad-cookie'}]){
-   const res=response();session({method:'GET',headers},res);
+   const res=response();await session({method:'GET',headers},res);
    assert.deepEqual(JSON.parse(res.output),{authenticated:false,backendReady:false});
   }
  }finally{restore();}
