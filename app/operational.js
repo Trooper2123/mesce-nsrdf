@@ -136,8 +136,14 @@ async function init(){
     catch(e){status(e.message);}finally{button.disabled=false;}
   });
   try{
-    const response=await fetch('/dev/auth-config',{cache:'no-store'});
-    if(!response.ok)throw new Error('Configure as variáveis públicas do Auth0 para iniciar. Consulte docs/FLUXO-OPERACIONAL-DEV.md.');
+    const local=['localhost','127.0.0.1'].includes(location.hostname);
+    const response=await fetch(local?'/dev/auth-config':'/api/auth-config',{cache:'no-store'});
+    if(!response.ok){
+      const detail=await response.json().catch(()=>({}));
+      if(detail.error==='auth0_api_audience_missing')throw new Error('Auth0 cadastrado na Vercel, mas falta AUTH0_AUDIENCE (identificador da API).');
+      if(detail.error==='auth0_public_configuration_missing')throw new Error('AUTH0_DOMAIN ou AUTH0_CLIENT_ID indisponível neste ambiente.');
+      throw new Error('Não foi possível carregar a configuração Auth0 deste ambiente.');
+    }
     config=validateConfig(await response.json());$('login').disabled=false;
     if(await exchangeIfCallback())await establishSession();
     else status('Configuração disponível. Entre com Auth0 para acessar os dados.');

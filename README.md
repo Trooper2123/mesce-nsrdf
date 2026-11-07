@@ -16,6 +16,9 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 - **Notificações push** para solicitação de impedimentos, lembretes antes do dia 25, atualizações recebidas, escala final/PDF, alterações, cancelamentos e lembretes de serviço. Histórico de avisos dentro do sistema.
 
+## Auth0 em Production
+A Vercel já contém `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID` e `AUTH0_CLIENT_SECRET` em Production. A Function `/api/auth-config` publica apenas o emissor e Client ID; **nunca** o segredo. Para tokens de API válidos ainda é necessário configurar `AUTH0_AUDIENCE` ou `MESCE_AUTH0_AUDIENCE` com a audiência real da API Auth0. Cliente Auth0 confidencial exige troca do código em backend/BFF, não navegador. Não usar cadastros reais até os testes de login e autorização.
+
 ## Login e cadastros operacionais (ambiente local)
 
 A página [operacional.html](operacional.html) implementa **Auth0 Authorization Code + PKCE**, consulta o perfil autenticado no KofLang e permite **listar celebrações** (ministro/coordenador) e **cadastrar celebrações** (somente coordenador). O servidor local possui proxy limitado às rotas `/api/me` e `/api/celebrations`, desabilitado por padrão. Não usa os dados fictícios da POC como substituição de um login real.

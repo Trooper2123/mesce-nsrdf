@@ -17,6 +17,7 @@ assert(html.includes('href="/app/accessibility.css"'),'Falta folha de acessibili
 assert(html.includes('href="/operacional.html"'),'Falta entrada para modo operacional');
 assert(fs.existsSync(path.join(root,'operacional.html')),'Tela operacional ausente');
 assert(fs.existsSync(path.join(root,'app/operational.js')),'Cliente PKCE ausente');
+assert(fs.existsSync(path.join(root,'api/auth-config.js')),'Function Auth0 ausente');
 assert(worker.includes("url.pathname.startsWith('/api/')"),'Service worker não exclui API autenticada');
 assert(worker.includes("url.pathname === '/operacional.html'"),'Service worker não exclui tela operacional');
 const assets=['/index.html','/pwa.html','/privacidade.html','/app/privacy.js','/app/scheduling.js','/app/visits.js','/app/accessibility.css'];

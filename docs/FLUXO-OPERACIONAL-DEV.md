@@ -49,3 +49,8 @@ A CI testa a validação de configurações, o proxy (401/503, allowlist, corpo 
 - Revisar proteção de HTTP loopback, CORS do Auth0, permissões e rate limiting; validar funcionamento de Kof com PostgreSQL/JDBC e token real.
 - A interface não persiste tokens; após recarregar é necessário logar novamente. Logout local remove o token da memória (sem revogação automática de tokens já emitidos pelo provedor).
 - Serviço de produção deve implementar BFF/sessão segura, HTTPS, gestão e rotação de segredos, auditoria de acesso e política LGPD final antes de aceitar dados reais.
+
+## Variáveis Auth0 presentes na Vercel
+A Function de produção `/api/auth-config` lê `AUTH0_DOMAIN` e `AUTH0_CLIENT_ID` e **não** revela `AUTH0_CLIENT_SECRET` nem `AUTH0_SECRET`.
+O identificador da API deve ser configurado como `AUTH0_AUDIENCE` ou `MESCE_AUTH0_AUDIENCE` — atualmente não encontrado. Sem ele, a resposta será `503/auth0_api_audience_missing`.
+Verificar o tipo de aplicação Auth0: clientes confidenciais precisam de troca de authorization code no servidor usando o Client Secret. O login PKCE no browser não substitui um BFF nesses casos.
