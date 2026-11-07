@@ -67,3 +67,19 @@ Este cliente Auth0 é **Regular Web Application** (confidencial), portanto a ant
 Configurar **Allowed Callback URLs = `https://mescensrdf.vercel.app/api/auth/callback`**. O Auth0 também precisa de **Authorization Code Grant**, `AUTH0_AUDIENCE` correspondente à MESCE API, e o Client ID/Secret da **mesma** aplicação. O domínio principal é fixo por padrão; se usar outro domínio, cadastrar `MESCE_APP_ORIGIN` com URL HTTPS exata e atualizar a callback no Auth0.
 
 Esta etapa **não implanta o KofLang na Vercel**, não aprovisiona perfis no Neon e não representa liberação de cadastro real. Cookies de sessão protegidos devem ser avaliados por auditoria de segurança antes de uso por terceiros.
+
+## Diagnóstico de falhas no callback Auth0 (2026-11-06)
+
+O código limpa o query string de callback antes de apresentar qualquer diagnóstico; um `error_description` enviado pelo provedor **não é reproduzido literalmente**, pois pode conter detalhes que não devem ser expostos. O usuário recebe mensagens específicas para erros conhecidos: `access_denied`, `unauthorized_client`, `invalid_request`, `login_required`, `consent_required`, `invalid_scope` e divergência de callback.
+
+Para o domínio `https://mescensrdf.vercel.app`, verificar no **aplicativo Auth0 vinculado ao Client ID do MESCE**:
+- Allowed Callback URLs: `https://mescensrdf.vercel.app/operacional.html`
+- Allowed Logout URLs: `https://mescensrdf.vercel.app/operacional.html`
+- Allowed Web Origins: `https://mescensrdf.vercel.app`
+- Allowed Origins (CORS): `https://mescensrdf.vercel.app`
+
+O código deriva o callback de `location.origin`; outros domínios Vercel precisam de cadastro próprio. O aparecimento da identidade visual Meus Vampiros sugere reutilização da configuração de Auth0, mas não prova qual aplicação foi escolhida. Confirmar o Client ID e o evento em **Auth0 → Monitoring → Logs**.
+
+O login de produção ainda requer backend Kof disponível e testes end-to-end; este patch é apenas diagnóstico seguro do callback.
+
+**Atualização para Regular Web Application:** a callback efetiva é `/api/auth/callback`, não `/operacional.html`. A função Vercel classifica erros conhecidos sem incluir descrições brutas na URL de retorno.

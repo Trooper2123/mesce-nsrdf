@@ -7,7 +7,15 @@ module.exports=async function(req,res){
  // One-time flow cookie; clear it on any outcome.
  res.setHeader('Set-Cookie',a.cookie(a.flowName,'',0,'/api/auth'));
  const query=new URL(req.url,'https://mescensrdf.vercel.app').searchParams;
- if(query.has('error'))return a.fail(res,'provider_denied');
+ if(query.has('error')){
+   const error=query.get('error');
+   const desc=(query.get('error_description')||'').toLowerCase();
+   if(/callback url|redirect_uri|redirect uri|callback mismatch/.test(desc))return a.fail(res,'callback_mismatch');
+   if(error==='unauthorized_client')return a.fail(res,'unauthorized_client');
+   if(error==='consent_required')return a.fail(res,'consent_required');
+   if(error==='login_required')return a.fail(res,'login_required');
+   return a.fail(res,'provider_denied');
+ }
  const code=query.get('code'),state=query.get('state');
  if(!code||!state||code.length>4096||state.length>512)return a.fail(res,'invalid_callback');
  let data;
