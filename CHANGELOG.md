@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-06 — Auth0 Vercel Production
+- **Tipo:** `fix`, `test`, `docs`.
+- **Resumo:** Function pública com mapeamento dos nomes Auth0 existentes e erro específico para audiência da API ausente; sem exposição de segredos nem deploy nesta etapa.
+- **Arquivos:** `api/auth-config.js`, `tests/vercel-auth-config.test.cjs`, `app/operational.js`, documentação e checks.
+
+
 ## 2026-11-06 — Fluxo operacional inicial com Auth0 PKCE e proxy Kof (somente dev)
 - **Tipo:** `feat`, `test`, `docs`.
 - **Arquivos:** `operacional.html`, `app/operational.js`, `scripts/dev-server.cjs`, `tests/operational.test.cjs`, `sw.js`, `docs/FLUXO-OPERACIONAL-DEV.md`, `package.json`, `README.md`.
