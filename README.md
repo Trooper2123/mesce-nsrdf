@@ -16,6 +16,10 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 - **Notificações push** para solicitação de impedimentos, lembretes antes do dia 25, atualizações recebidas, escala final/PDF, alterações, cancelamentos e lembretes de serviço. Histórico de avisos dentro do sistema.
 
+## Auth0 → Vercel → KofLang → Neon (integração do BFF)
+
+A Vercel oferece as rotas `/api/me`, `/api/celebrations` e `/api/auth/session`. O cookie Auth0 HttpOnly é decifrado **somente no servidor**, e o access token é encaminhado por HTTPS à API KofLang configurada em `MESCE_KOF_API_URL`. O Kof valida RS256/JWKS, emissor/audience e perfil ativo no Neon. Sem Kof acessível, as rotas operacionais retornam 503 e a interface permanece bloqueada. Não há acesso direto ao Neon pela Vercel. **A integração real ainda exige hospedar Kof, configurar a URL HTTPS e testar com identidade real.**
+
 ## Auth0 Regular Web Application — autenticação no servidor
 
 O fluxo de produção usa `/api/auth/login` → Auth0 → `/api/auth/callback`, com troca do código no servidor da Vercel usando `AUTH0_CLIENT_SECRET`. O navegador recebe cookie HttpOnly/Secure/SameSite=Lax criptografado com chave derivada de `AUTH0_SECRET`, **sem access token no JavaScript**. `/api/auth/session` informa apenas autenticado ou não; a interface mantém as operações de cadastros bloqueadas até o KofLang estar operacional e autorizar o papel no Neon.

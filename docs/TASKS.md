@@ -34,6 +34,10 @@ Atualizado em **2026-11-06**. Branch de trabalho `feature/lgpd-backlog-app`. `ma
 - [~] **T-035** Proxy local allowlisted para API KofLang e cadastro/consulta de celebrações com controle de papel no backend; testar E2E com Neon dev e tokens reais antes de liberar cadastros pessoais.
 - [~] **T-036** PWA não armazena telas, respostas de API ou recursos operacionais autenticados; executar auditoria de cache no navegador.
 
+- [~] **T-037** Ponte BFF Vercel → KofLang: servidor encaminha o access token cifrado em cookie HttpOnly para API Kof sobre HTTPS, sem browser token; role vem de consulta ao Neon através de `/api/me`. Rotas `/api/celebrations` protegidas; falta hospedar Kof e testar JWT/Neon reais.
+- [~] **T-038** Portal operacional usa papel autorizado por Kof/Neon para mostrar agenda e cadastro; falha fechada sem autorização. Falta E2E e cadastro real de coordenador.
+- [ ] **T-039** Definir host HTTPS da API Kof, instalar driver PostgreSQL e validar conectividade Neon, sem armazenar strings de conexão no cliente ou GitHub.
+
 ## P1 — MVP operacional protegido
 - [ ] **T-008** Backend KofLang: API versionada de ministros, locais, assistidos, eventos, indisponibilidades e escalas; validação de entrada.
 - [ ] **T-009** Auth0: login/logout, renovação, papéis `COORDINATOR`/`MINISTER`, vínculo com ministro, testes `401/403` e IDOR.

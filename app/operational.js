@@ -132,6 +132,41 @@ async function establishSession(){
   await loadCelebrations();
   status('Login validado e celebrações carregadas do backend.');
 }
+function operationalCreateHandler(){
+  $('celebration-form').addEventListener('submit',async event=>{
+    event.preventDefault();if(role!=='COORDINATOR')return;
+    const form=$('celebration-form'),button=$('submit');
+    if(!form.reportValidity())return;
+    const payload={
+      occursOn:$('occursOn').value,startsAt:$('startsAt').value,
+      locationCode:$('locationCode').value.trim(),kind:$('kind').value.trim(),
+      requiredMinisters:Number($('requiredMinisters').value)
+    };
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(payload.occursOn)||
+       !/^([01]\d|2[0-3]):[0-5]\d$/.test(payload.startsAt)||
+       !payload.locationCode||!payload.kind||
+       !Number.isInteger(payload.requiredMinisters)||payload.requiredMinisters<1||payload.requiredMinisters>30){
+      status('Verifique a data, o horário e os demais campos.');return;
+    }
+    button.disabled=true;
+    try{
+      const response=await fetch('/api/celebrations',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload),cache:'no-store'
+      });
+      if(!response.ok)throw new Error(response.status===403?'Sem permissão para cadastrar celebrações.':
+        response.status===401?'Sessão expirada. Faça login novamente.':'Não foi possível salvar ('+response.status+').');
+      await loadOperationalCelebrations();form.reset();status('Celebração persistida pela API KofLang.');
+    }catch(e){status(e.message);}finally{button.disabled=false;}
+  });
+}
+async function loadOperationalCelebrations(){
+  const response=await fetch('/api/celebrations',{cache:'no-store'});
+  if(!response.ok)throw new Error(response.status===403?'Acesso negado à agenda.':'Não foi possível carregar as celebrações ('+response.status+').');
+  const rows=await response.json();
+  if(!Array.isArray(rows))throw new Error('Resposta da agenda inválida.');
+  renderCelebrations(rows);
+}
 async function init(){
   // Production: Auth0 Regular Web Application. O segredo e o access token ficam no servidor.
   if(!['localhost','127.0.0.1'].includes(location.hostname)){
@@ -142,14 +177,20 @@ async function init(){
       try{
         const response=await fetch('/api/auth/logout',{method:'POST',cache:'no-store'});
         if(!response.ok)throw Error('logout_failed');
+        role=null;
         $('role').textContent='Não autenticado.';
         $('logout').hidden=true;$('login').hidden=false;
+        $('celebrations-panel').hidden=true;$('create-panel').hidden=true;$('refresh').hidden=true;
         status('Sessão encerrada.');
       }catch{status('Não foi possível encerrar a sessão.');}
     });
     $('refresh').hidden=true;
     $('celebrations-panel').hidden=true;
     $('create-panel').hidden=true;
+    operationalCreateHandler();
+    $('refresh').addEventListener('click',()=>{
+      loadOperationalCelebrations().then(()=>status('Agenda atualizada.')).catch(e=>status(e.message));
+    });
     const reason=new URLSearchParams(location.search).get('auth_error');
     if(reason){
       history.replaceState(null,'',location.pathname);
@@ -174,9 +215,22 @@ async function init(){
       if(!response.ok)throw Error('session_unavailable');
       const session=await response.json();
       if(session.authenticated===true){
-        $('role').textContent='Sessão Auth0 autenticada. Perfil MESCE ainda não verificado.';
         $('login').hidden=true;$('logout').hidden=false;
-        if(!reason)status('Login concluído. Cadastro e consulta aguardam a conexão segura com a API KofLang.');
+        if(session.backendReady===true&&(session.role==='COORDINATOR'||session.role==='MINISTER')){
+          role=session.role;
+          $('role').textContent=role==='COORDINATOR'?'Perfil MESCE: Coordenação.':'Perfil MESCE: Ministro.';
+          $('celebrations-panel').hidden=false;
+          $('create-panel').hidden=role!=='COORDINATOR';
+          $('refresh').hidden=false;
+          try{await loadOperationalCelebrations();if(!reason)status('Login e autorização confirmados pelo backend KofLang.');}
+          catch(e){$('celebrations-panel').hidden=true;$('create-panel').hidden=true;status(e.message);}
+        }else if(session.authorized===false){
+          $('role').textContent='Autenticado no Auth0, sem vínculo MESCE ativo.';
+          status('Acesso ao MESCE não autorizado. Um coordenador precisa provisionar seu perfil.');
+        }else{
+          $('role').textContent='Autenticado no Auth0. Backend MESCE indisponível.';
+          status('A conexão com a API KofLang ainda não está configurada ou disponível.');
+        }
       }else if(!reason){status('Entre com Auth0 para validar sua identidade.');}
     }catch{if(!reason)status('Serviço de autenticação indisponível no momento.');$('login').disabled=true;}
     return;
