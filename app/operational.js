@@ -41,12 +41,30 @@ async function login(){
   location.assign(target.href);
 }
 function eraseTransient(){sessionStorage.removeItem(transientKey);}
+// Classificação explícita e limitada: não renderiza error_description arbitrário do provedor.
+function authErrorMessage(params){
+  const code=params.get('error')||'';
+  const description=(params.get('error_description')||'').toLowerCase();
+  if(/callback url|redirect_uri|redirect uri|redirect url|callback mismatch|not in the list of allowed callback/.test(description))
+    return 'Auth0 recusou a URL de retorno (callback). Confira Allowed Callback URLs no aplicativo Auth0 do MESCE.';
+  if(code==='login_required')return 'O Auth0 exige uma nova autenticação. Clique em Entrar novamente.';
+  if(code==='consent_required')return 'A autorização da aplicação ou API MESCE precisa ser concedida no Auth0.';
+  if(code==='unauthorized_client')return 'O cliente Auth0 não está autorizado para este fluxo. Verifique o tipo da aplicação e o grant Authorization Code.';
+  if(code==='invalid_scope')return 'O Auth0 recusou os escopos solicitados pela aplicação.';
+  if(code==='invalid_request')return 'A solicitação de login foi recusada. Verifique callback, Client ID e configuração da aplicação Auth0.';
+  if(code==='access_denied'){
+    if(/unauthorized|not authorized|permission|consent/.test(description))
+      return 'O Auth0 negou autorização ao aplicativo ou à API MESCE. Verifique as permissões configuradas.';
+    return 'Acesso negado pelo Auth0. Confira a aplicação selecionada, os logs do Auth0 e as URLs de callback.';
+  }
+  return 'Falha no Auth0 ('+(code&&/^[a-z_]{1,40}$/.test(code)?code:'erro desconhecido')+'). Verifique os logs do Auth0 e a configuração do callback.';
+}
 async function exchangeIfCallback(){
   const params=new URLSearchParams(location.search);
   if(!params.has('code')&&!params.has('error'))return false;
   history.replaceState(null,'',location.pathname);
   const stored=sessionStorage.getItem(transientKey);eraseTransient();
-  if(params.has('error'))throw new Error('O provedor recusou a autenticação.');
+  if(params.has('error'))throw new Error(authErrorMessage(params));
   if(!stored)throw new Error('Sessão de autenticação ausente. Entre novamente.');
   let challengeData;
   try{challengeData=JSON.parse(stored);}catch{throw new Error('Sessão de autenticação inválida.');}
@@ -115,6 +133,54 @@ async function establishSession(){
   status('Login validado e celebrações carregadas do backend.');
 }
 async function init(){
+  // Production: Auth0 Regular Web Application. O segredo e o access token ficam no servidor.
+  if(!['localhost','127.0.0.1'].includes(location.hostname)){
+    $('login').disabled=false;
+    $('login').textContent='Entrar com Auth0';
+    $('login').addEventListener('click',()=>location.assign('/api/auth/login'));
+    $('logout').addEventListener('click',async()=>{
+      try{
+        const response=await fetch('/api/auth/logout',{method:'POST',cache:'no-store'});
+        if(!response.ok)throw Error('logout_failed');
+        $('role').textContent='Não autenticado.';
+        $('logout').hidden=true;$('login').hidden=false;
+        status('Sessão encerrada.');
+      }catch{status('Não foi possível encerrar a sessão.');}
+    });
+    $('refresh').hidden=true;
+    $('celebrations-panel').hidden=true;
+    $('create-panel').hidden=true;
+    const reason=new URLSearchParams(location.search).get('auth_error');
+    if(reason){
+      history.replaceState(null,'',location.pathname);
+      const messages={
+        provider_denied:'O Auth0 negou o acesso. Confira os registros no painel Auth0.',
+        callback_mismatch:'Callback não autorizada no Auth0. Configure https://mescensrdf.vercel.app/api/auth/callback.',
+        unauthorized_client:'A aplicação Auth0 não está autorizada para esse fluxo. Verifique Regular Web Application e Authorization Code.',
+        consent_required:'O Auth0 exige autorização da aplicação para a API MESCE.',
+        login_required:'O Auth0 exige um novo login. Tente novamente.',
+        exchange_denied:'O Auth0 recusou a troca do código. Confirme Client ID, Client Secret, callback e configuração de autenticação.',
+        invalid_callback:'Retorno do Auth0 incompleto. Inicie o login novamente.',
+        invalid_state:'A validação de segurança do login falhou. Inicie o login novamente.',
+        missing_flow:'A sessão de login expirou ou não foi encontrada. Inicie o login novamente.',
+        exchange_unavailable:'Não foi possível contactar o Auth0 para finalizar o login.',
+        invalid_token_response:'O Auth0 retornou uma resposta inválida.',
+        configuration:'A configuração do Auth0 no servidor está incompleta.'
+      };
+      status(messages[reason]||'Não foi possível concluir o login.');
+    }
+    try{
+      const response=await fetch('/api/auth/session',{cache:'no-store'});
+      if(!response.ok)throw Error('session_unavailable');
+      const session=await response.json();
+      if(session.authenticated===true){
+        $('role').textContent='Sessão Auth0 autenticada. Perfil MESCE ainda não verificado.';
+        $('login').hidden=true;$('logout').hidden=false;
+        if(!reason)status('Login concluído. Cadastro e consulta aguardam a conexão segura com a API KofLang.');
+      }else if(!reason){status('Entre com Auth0 para validar sua identidade.');}
+    }catch{if(!reason)status('Serviço de autenticação indisponível no momento.');$('login').disabled=true;}
+    return;
+  }
   $('login').addEventListener('click',()=>login().catch(e=>status(e.message)));
   $('logout').addEventListener('click',()=>{signOut(true);});
   $('refresh').addEventListener('click',()=>loadCelebrations().then(()=>status('Dados atualizados.')).catch(e=>status(e.message)));
@@ -149,6 +215,6 @@ async function init(){
     else status('Configuração disponível. Entre com Auth0 para acessar os dados.');
   }catch(e){signOut(false);status(e.message);}
 }
-if(typeof module!=='undefined'&&module.exports)module.exports={validateConfig};
+if(typeof module!=='undefined'&&module.exports)module.exports={validateConfig,authErrorMessage};
 if(root&&root.document)document.addEventListener('DOMContentLoaded',init);
 })(typeof window!=='undefined'?window:undefined);
