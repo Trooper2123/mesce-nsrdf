@@ -83,3 +83,19 @@ O código deriva o callback de `location.origin`; outros domínios Vercel precis
 O login de produção ainda requer backend Kof disponível e testes end-to-end; este patch é apenas diagnóstico seguro do callback.
 
 **Atualização para Regular Web Application:** a callback efetiva é `/api/auth/callback`, não `/operacional.html`. A função Vercel classifica erros conhecidos sem incluir descrições brutas na URL de retorno.
+
+## Ponte operacional Vercel → KofLang → Neon
+
+O BFF da Vercel agora expõe `/api/me`, `/api/celebrations` (GET/POST) e consulta Kof em `MESCE_KOF_API_URL`. O cookie `mesce_session` é decifrado na Vercel e o access token é enviado unicamente como `Authorization: Bearer` ao Kof por **HTTPS**, com timeout, sem redirects, cookies ou cabeçalhos do browser. A URL de backend é uma variável **server-only** e não aceita localhost/IPs privados HTTP. O navegador não recebe tokens ou dados cifrados.
+
+No Kof, o resource server deve validar RS256/JWKS, `issuer`, `audience` e `exp` e exigir `auth0_sub` ativo na tabela `mesce_dev.actors`. O endpoint `/api/me` retorna exclusivamente `COORDINATOR` ou `MINISTER`. Sem papel, o BFF apresenta ausência de autorização; o backend não disponível resulta em indisponibilidade, não em permissões concedidas. O `POST /api/celebrations` exige também Origem correta, JSON válido e checagem de papel feita novamente no Kof.
+
+### Configuração para conectar efetivamente
+
+1. Hospedar Kof JVM com PostgreSQL JDBC, TLS, segurança da rede e conexão ao Neon apropriado; não há host Kof atualmente cadastrado na Vercel.
+2. Definir na Vercel Production **`MESCE_KOF_API_URL=https://HOST-DO-KOF/`** (HTTPS real e controlado). Não reutilizar `localhost:8081`.
+3. Provisionar manualmente e com identidade verificada o coordenador no Neon correspondente; **não criar usuários com privilégios a partir de e-mail ou UI**.
+4. Validar login, `GET /api/auth/session` com `backendReady:true` e papel, `GET /api/celebrations` e `POST` pelo coordenador, depois testes negativos 401/403.
+5. Só então habilitar dados pessoais reais após auditoria LGPD, criptografia em execução e acesso restrito.
+
+A branch foi preparada sem deploy; a confirmação end-to-end exige infraestrutura real do Kof. Nenhuma credencial deve ser colocada em variáveis públicas.
