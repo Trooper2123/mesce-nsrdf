@@ -16,6 +16,12 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 - **Notificações push** para solicitação de impedimentos, lembretes antes do dia 25, atualizações recebidas, escala final/PDF, alterações, cancelamentos e lembretes de serviço. Histórico de avisos dentro do sistema.
 
+## Login e cadastros operacionais (ambiente local)
+
+A página [operacional.html](operacional.html) implementa **Auth0 Authorization Code + PKCE**, consulta o perfil autenticado no KofLang e permite **listar celebrações** (ministro/coordenador) e **cadastrar celebrações** (somente coordenador). O servidor local possui proxy limitado às rotas `/api/me` e `/api/celebrations`, desabilitado por padrão. Não usa os dados fictícios da POC como substituição de um login real.
+
+Para configurar o Auth0 SPA e Neon de desenvolvimento, leia [FLUXO-OPERACIONAL-DEV.md](docs/FLUXO-OPERACIONAL-DEV.md). Nenhum segredo vai para o navegador. **Ainda falta provar o fluxo end-to-end com Auth0 e JDBC reais**, portanto não cadastrar pessoas.
+
 ## Backend KofLang + Neon + Auth0 (desenvolvimento isolado)
 
 A API KofLang com validação RS256/JWKS do Auth0, autorização pela tabela `mesce_dev.actors` e endpoints de ministros, assistidos e celebrações já está preparada. O schema foi aplicado somente na branch Neon `mesce-dev-2026-11` (sem dados reais) e o `kof check` passou no GitHub Actions. **A conectividade JDBC, os fluxos com tokens reais e a integração da interface ainda não foram validados.**

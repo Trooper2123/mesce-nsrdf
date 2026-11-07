@@ -30,6 +30,10 @@ Atualizado em **2026-11-06**. Branch de trabalho `feature/lgpd-backlog-app`. `ma
 - [~] **T-032** Neon: branch de desenvolvimento isolada, migration aplicada e 8 tabelas verificadas; faltam JDBC runtime, migrations automatizadas e testes de permissões.
 - [ ] **T-033** Conectar a UI ao Auth0 PKCE e backend Kof, sem expor segredos nem liberar PII antes dos testes de autorização.
 
+- [~] **T-034** Tela operacional independente com Auth0 Authorization Code/PKCE, validação de estado, token de acesso em memória e logout; exige validação real no tenant Auth0 de desenvolvimento.
+- [~] **T-035** Proxy local allowlisted para API KofLang e cadastro/consulta de celebrações com controle de papel no backend; testar E2E com Neon dev e tokens reais antes de liberar cadastros pessoais.
+- [~] **T-036** PWA não armazena telas, respostas de API ou recursos operacionais autenticados; executar auditoria de cache no navegador.
+
 ## P1 — MVP operacional protegido
 - [ ] **T-008** Backend KofLang: API versionada de ministros, locais, assistidos, eventos, indisponibilidades e escalas; validação de entrada.
 - [ ] **T-009** Auth0: login/logout, renovação, papéis `COORDINATOR`/`MINISTER`, vínculo com ministro, testes `401/403` e IDOR.

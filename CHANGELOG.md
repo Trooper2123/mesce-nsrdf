@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-06 — Fluxo operacional inicial com Auth0 PKCE e proxy Kof (somente dev)
+- **Tipo:** `feat`, `test`, `docs`.
+- **Arquivos:** `operacional.html`, `app/operational.js`, `scripts/dev-server.cjs`, `tests/operational.test.cjs`, `sw.js`, `docs/FLUXO-OPERACIONAL-DEV.md`, `package.json`, `README.md`.
+- **Resumo:** login OAuth2 code + PKCE Auth0, acesso autorizado ao perfil, listagem e cadastro de celebrações, proxy local com allowlist e sem cache, sem segredos no navegador. A página de demonstração original permanece isolada.
+- **Validação:** testes de configuração, proxy e segurança em CI. Fluxo Auth0/JDBC real ainda depende de configuração; não usar dados reais.
+- **Branch:** `feature/operational-auth0-neon-flow`; não há merge nem deploy.
+
+
 ## 2026-11-06 — Backend KofLang com base segura para Auth0/Neon
 - **Tipo:** `feat`, `ci`, `docs`, `test`.
 - **Arquivos:** `backend-kof/src/Main.kf`, `backend-kof/sql/001_init.sql`, `backend-kof/README.md`, `backend-kof/.env.example`, `.github/workflows/kof-check.yml`, `tests/backend-contract.test.cjs`, `.gitignore`.

@@ -14,6 +14,11 @@ assert(Array.isArray(manifest.icons)&&manifest.icons.length>0,'Manifesto sem ico
 assert(html.includes('rel="manifest"'),'Manifesto nao referenciado');
 assert(html.includes('href="/pwa.html"'),'Falta acesso ao guia PWA');
 assert(html.includes('href="/app/accessibility.css"'),'Falta folha de acessibilidade');
+assert(html.includes('href="/operacional.html"'),'Falta entrada para modo operacional');
+assert(fs.existsSync(path.join(root,'operacional.html')),'Tela operacional ausente');
+assert(fs.existsSync(path.join(root,'app/operational.js')),'Cliente PKCE ausente');
+assert(worker.includes("url.pathname.startsWith('/api/')"),'Service worker não exclui API autenticada');
+assert(worker.includes("url.pathname === '/operacional.html'"),'Service worker não exclui tela operacional');
 const assets=['/index.html','/pwa.html','/privacidade.html','/app/privacy.js','/app/scheduling.js','/app/visits.js','/app/accessibility.css'];
 for(const asset of assets){
   assert(server.includes("'"+asset+"'"),'Asset nao permitido pelo servidor: '+asset);
