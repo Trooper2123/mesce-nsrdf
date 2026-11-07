@@ -115,6 +115,50 @@ async function establishSession(){
   status('Login validado e celebrações carregadas do backend.');
 }
 async function init(){
+  // Production: Auth0 Regular Web Application. O segredo e o access token ficam no servidor.
+  if(!['localhost','127.0.0.1'].includes(location.hostname)){
+    $('login').disabled=false;
+    $('login').textContent='Entrar com Auth0';
+    $('login').addEventListener('click',()=>location.assign('/api/auth/login'));
+    $('logout').addEventListener('click',async()=>{
+      try{
+        const response=await fetch('/api/auth/logout',{method:'POST',cache:'no-store'});
+        if(!response.ok)throw Error('logout_failed');
+        $('role').textContent='Não autenticado.';
+        $('logout').hidden=true;$('login').hidden=false;
+        status('Sessão encerrada.');
+      }catch{status('Não foi possível encerrar a sessão.');}
+    });
+    $('refresh').hidden=true;
+    $('celebrations-panel').hidden=true;
+    $('create-panel').hidden=true;
+    const reason=new URLSearchParams(location.search).get('auth_error');
+    if(reason){
+      history.replaceState(null,'',location.pathname);
+      const messages={
+        provider_denied:'O Auth0 negou o acesso. Confira os registros no painel Auth0.',
+        exchange_denied:'O Auth0 recusou a troca do código. Confirme Client ID, Client Secret, callback e configuração de autenticação.',
+        invalid_callback:'Retorno do Auth0 incompleto. Inicie o login novamente.',
+        invalid_state:'A validação de segurança do login falhou. Inicie o login novamente.',
+        missing_flow:'A sessão de login expirou ou não foi encontrada. Inicie o login novamente.',
+        exchange_unavailable:'Não foi possível contactar o Auth0 para finalizar o login.',
+        invalid_token_response:'O Auth0 retornou uma resposta inválida.',
+        configuration:'A configuração do Auth0 no servidor está incompleta.'
+      };
+      status(messages[reason]||'Não foi possível concluir o login.');
+    }
+    try{
+      const response=await fetch('/api/auth/session',{cache:'no-store'});
+      if(!response.ok)throw Error('session_unavailable');
+      const session=await response.json();
+      if(session.authenticated===true){
+        $('role').textContent='Sessão Auth0 autenticada. Perfil MESCE ainda não verificado.';
+        $('login').hidden=true;$('logout').hidden=false;
+        if(!reason)status('Login concluído. Cadastro e consulta aguardam a conexão segura com a API KofLang.');
+      }else if(!reason){status('Entre com Auth0 para validar sua identidade.');}
+    }catch{if(!reason)status('Serviço de autenticação indisponível no momento.');$('login').disabled=true;}
+    return;
+  }
   $('login').addEventListener('click',()=>login().catch(e=>status(e.message)));
   $('logout').addEventListener('click',()=>{signOut(true);});
   $('refresh').addEventListener('click',()=>loadCelebrations().then(()=>status('Dados atualizados.')).catch(e=>status(e.message)));

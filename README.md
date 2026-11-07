@@ -16,6 +16,12 @@ Organizar ministros, celebrações/missas, assistidos e visitas dominicais, perm
 - Revisão e aprovação, trilha de auditoria, PDF oficial após aprovação e relatórios gerenciais.
 - **Notificações push** para solicitação de impedimentos, lembretes antes do dia 25, atualizações recebidas, escala final/PDF, alterações, cancelamentos e lembretes de serviço. Histórico de avisos dentro do sistema.
 
+## Auth0 Regular Web Application — autenticação no servidor
+
+O fluxo de produção usa `/api/auth/login` → Auth0 → `/api/auth/callback`, com troca do código no servidor da Vercel usando `AUTH0_CLIENT_SECRET`. O navegador recebe cookie HttpOnly/Secure/SameSite=Lax criptografado com chave derivada de `AUTH0_SECRET`, **sem access token no JavaScript**. `/api/auth/session` informa apenas autenticado ou não; a interface mantém as operações de cadastros bloqueadas até o KofLang estar operacional e autorizar o papel no Neon.
+
+Registrar em Auth0 Allowed Callback URLs: `https://mescensrdf.vercel.app/api/auth/callback` e Allowed Logout URLs: `https://mescensrdf.vercel.app/operacional.html`. As origens/callbacks antigos não substituem o callback do servidor.
+
 ## Auth0 em Production
 A Vercel já contém `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID` e `AUTH0_CLIENT_SECRET` em Production. A Function `/api/auth-config` publica apenas o emissor e Client ID; **nunca** o segredo. Para tokens de API válidos ainda é necessário configurar `AUTH0_AUDIENCE` ou `MESCE_AUTH0_AUDIENCE` com a audiência real da API Auth0. Cliente Auth0 confidencial exige troca do código em backend/BFF, não navegador. Não usar cadastros reais até os testes de login e autorização.
 

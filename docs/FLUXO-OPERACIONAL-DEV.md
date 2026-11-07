@@ -54,3 +54,16 @@ A CI testa a validação de configurações, o proxy (401/503, allowlist, corpo 
 A Function de produção `/api/auth-config` lê `AUTH0_DOMAIN` e `AUTH0_CLIENT_ID` e **não** revela `AUTH0_CLIENT_SECRET` nem `AUTH0_SECRET`.
 O identificador da API deve ser configurado como `AUTH0_AUDIENCE` ou `MESCE_AUTH0_AUDIENCE` — atualmente não encontrado. Sem ele, a resposta será `503/auth0_api_audience_missing`.
 Verificar o tipo de aplicação Auth0: clientes confidenciais precisam de troca de authorization code no servidor usando o Client Secret. O login PKCE no browser não substitui um BFF nesses casos.
+
+## Production como homologação — Regular Web Application
+
+Este cliente Auth0 é **Regular Web Application** (confidencial), portanto a antiga troca de token pelo navegador não deve ser usada em Production. Foi criado:
+- `GET /api/auth/login`: envia ao Auth0 com `state` e PKCE S256; `state` e `code_verifier` vão somente em cookie temporário HttpOnly, cifrado e SameSite=Lax.
+- `GET /api/auth/callback`: valida `state`, expiração e troca `code` por tokens no servidor com `AUTH0_CLIENT_SECRET`. Cookie HttpOnly cifrado e com expiração limitada, sem expor tokens no navegador.
+- `GET /api/auth/session`: retorna somente `authenticated`/ `backendReady:false`. Autenticação Auth0 **não concede automaticamente papel de coordenador**.
+- `POST /api/auth/logout`: encerra a sessão local, com proteção de origem.
+- A página `/operacional.html` usa essas rotas fora de localhost e mantém ações administrativas desabilitadas enquanto a API KofLang não está operante.
+
+Configurar **Allowed Callback URLs = `https://mescensrdf.vercel.app/api/auth/callback`**. O Auth0 também precisa de **Authorization Code Grant**, `AUTH0_AUDIENCE` correspondente à MESCE API, e o Client ID/Secret da **mesma** aplicação. O domínio principal é fixo por padrão; se usar outro domínio, cadastrar `MESCE_APP_ORIGIN` com URL HTTPS exata e atualizar a callback no Auth0.
+
+Esta etapa **não implanta o KofLang na Vercel**, não aprovisiona perfis no Neon e não representa liberação de cadastro real. Cookies de sessão protegidos devem ser avaliados por auditoria de segurança antes de uso por terceiros.

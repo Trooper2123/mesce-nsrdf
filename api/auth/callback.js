@@ -32,6 +32,7 @@ module.exports=async function(req,res){
   // Server-only encrypted cookie. Never expose access token to browser JS.
   const seconds=Math.max(1,Math.min(3600,Math.floor(result.expires_in)));
   const session=a.seal({accessToken:result.access_token,expiresAt:Date.now()+seconds*1000},cfg.secret);
+  if(session.length>3500)return a.fail(res,'session_too_large');
   res.setHeader('Set-Cookie',[a.cookie(a.flowName,'',0,'/api/auth'),a.cookie(a.name,session,seconds)]);
   a.noStore(res);return a.redirect(res,'/operacional.html');
  }catch{return a.fail(res,'exchange_unavailable');}
